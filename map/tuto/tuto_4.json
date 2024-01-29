@@ -1,0 +1,349 @@
+[
+    {
+        "face": 1,
+        "valeur_de_fin": 10,
+        "gravite": [
+            0,
+            0,
+            0
+        ]
+    },
+    [
+        {
+            "type": "player",
+            "taille": 30,
+            "coor": [
+                0,
+                25,
+                220
+            ],
+            "color": [
+                255,
+                255,
+                255
+            ],
+            "texture": null
+        },
+        {
+            "type": "block",
+            "taille": [
+                50,
+                250,
+                300
+            ],
+            "coor": [
+                -50,
+                -100,
+                0
+            ],
+            "color": [
+                125,
+                125,
+                125
+            ],
+            "texture": null
+        },
+        {
+            "type": "block",
+            "taille": [
+                800,
+                50,
+                50
+            ],
+            "coor": [
+                0,
+                0,
+                0
+            ],
+            "color": [
+                125,
+                125,
+                125
+            ],
+            "texture": null
+        },
+        {
+            "type": "block",
+            "taille": [
+                800,
+                50,
+                50
+            ],
+            "coor": [
+                0,
+                0,
+                250
+            ],
+            "color": [
+                125,
+                125,
+                125
+            ],
+            "texture": null
+        },
+        {
+            "type": "core",
+            "taille": [
+                50,
+                50,
+                50
+            ],
+            "coor": [
+                200,
+                0,
+                200
+            ],
+            "color": [
+                0,
+                0,
+                0
+            ],
+            "texture": [
+                "texture/the core atente v4.png",
+                "texture/the core demare v4.png",
+                "texture/the core charger v4.png"
+            ],
+            "id": 1,
+            "tick": 60,
+            "change face": {
+                "1": "0",
+                "0": "1"
+            }
+        },
+        {
+            "type": "interupteur",
+            "taille": [
+                50,
+                50,
+                50
+            ],
+            "coor": [
+                200,
+                0,
+                250
+            ],
+            "color": [
+                0,
+                255,
+                255
+            ],
+            "texture": null,
+            "id": 1,
+            "mode": "bouton"
+        },
+        {
+            "type": "block",
+            "taille": [
+                850,
+                50,
+                50
+            ],
+            "coor": [
+                -50,
+                -100,
+                200
+            ],
+            "color": [
+                125,
+                125,
+                125
+            ],
+            "texture": null
+        },
+        {
+            "type": "block",
+            "taille": [
+                850,
+                50,
+                50
+            ],
+            "coor": [
+                -50,
+                100,
+                200
+            ],
+            "color": [
+                125,
+                125,
+                125
+            ],
+            "texture": null
+        },
+        {
+            "type": "block",
+            "taille": [
+                50,
+                250,
+                300
+            ],
+            "coor": [
+                800,
+                -100,
+                0
+            ],
+            "color": [
+                125,
+                125,
+                125
+            ],
+            "texture": null
+        },
+        {
+            "type": "block",
+            "taille": [
+                50,
+                250,
+                20
+            ],
+            "coor": [
+                250,
+                -100,
+                230
+            ],
+            "color": [
+                125,
+                125,
+                125
+            ],
+            "texture": null
+        },
+        {
+            "type": "block",
+            "taille": [
+                50,
+                250,
+                170
+            ],
+            "coor": [
+                250,
+                -100,
+                50
+            ],
+            "color": [
+                125,
+                125,
+                125
+            ],
+            "texture": null
+        },
+        {
+            "type": "core",
+            "taille": [
+                50,
+                50,
+                50
+            ],
+            "coor": [
+                350,
+                0,
+                200
+            ],
+            "color": [
+                0,
+                0,
+                0
+            ],
+            "texture": [
+                "texture/the core atente v4.png",
+                "texture/the core demare v4.png",
+                "texture/the core charger v4.png"
+            ],
+            "id": 2,
+            "tick": 60,
+            "change face": {
+                "1": "0",
+                "0": "1"
+            }
+        },
+        {
+            "type": "block",
+            "taille": [
+                50,
+                120,
+                300
+            ],
+            "coor": [
+                400,
+                -100,
+                0
+            ],
+            "color": [
+                125,
+                125,
+                125
+            ],
+            "texture": null
+        },
+        {
+            "type": "interupteur",
+            "taille": [
+                50,
+                70,
+                300
+            ],
+            "coor": [
+                400,
+                30,
+                0
+            ],
+            "color": [
+                0,
+                255,
+                255
+            ],
+            "texture": null,
+            "id": 2,
+            "mode": "bouton"
+        },
+        {
+            "type": "zone",
+            "taille": [
+                50,
+                150,
+                200
+            ],
+            "coor": [
+                750,
+                -50,
+                50
+            ],
+            "color": [
+                255,
+                255,
+                0,
+                200
+            ],
+            "texture": null,
+            "id": 10,
+            "mode": "bouton"
+        },
+        {
+            "type": "texte",
+            "taille": [
+                250,
+                50,
+                150
+            ],
+            "coor": [
+                0,
+                0,
+                50
+            ],
+            "color": [
+                200,
+                200,
+                200,
+                0
+            ],
+            "texture": null,
+            "texte": "Et si on changeait\nde face pour\npasser dans\ncette fissure ?",
+            "texte_color": [
+                255,
+                255,
+                255
+            ],
+            "police_name": "monospace",
+            "police_taille": 23
+        }
+    ]
+]
