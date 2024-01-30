@@ -1,7 +1,8 @@
 import numpy
 from graphique import *
-import traceback
-from IPython import embed
+
+# import traceback
+# from IPython import embed
 
 
 class Vec:

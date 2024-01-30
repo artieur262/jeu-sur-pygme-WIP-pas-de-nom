@@ -1,4 +1,4 @@
-from class_obj import *
+from block.class_obj import *
 
 # pygame.mixer.init()
 # pyga

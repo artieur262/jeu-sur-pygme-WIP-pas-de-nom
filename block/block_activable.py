@@ -1,4 +1,4 @@
-from class_block import Block, ObjetGraphique, pygame, gener_texture
+from .class_block import Block, ObjetGraphique, pygame, gener_texture
 
 
 class PlateformeMouvante(Block):

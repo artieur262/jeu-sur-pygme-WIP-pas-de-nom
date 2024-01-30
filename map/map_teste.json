@@ -468,7 +468,7 @@
             ]
         },
         {
-            "type": "interupteur",
+            "type": "zone",
             "taille": [
                 50,
                 50,

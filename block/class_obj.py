@@ -6,15 +6,15 @@ from typing import Any
 # import traceback
 
 
-from class_block import *
-from block_activable import (
+from .class_block import *
+from .block_activable import (
     PlateformeMouvante,
     Block_lumiere,
     Block_core,
     Tunel_dimensionel_Brigitte,
 )
-from block_logique import Logique_not, Logique, Logique_Timer, Logique_chagement
-from block_activateur import Interupteur, Zone_acitve
+from .block_logique import Logique_not, Logique, Logique_Timer, Logique_chagement
+from .block_activateur import Interupteur, Zone_acitve
 
 # traceback.print_stack()
 

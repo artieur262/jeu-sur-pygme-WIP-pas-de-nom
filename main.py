@@ -1,5 +1,5 @@
 import time
-from class_obj import *
+from block.class_obj import *
 from class_clavier import Clavier
 
 monospace = pygame.font.SysFont("monospace", 15)

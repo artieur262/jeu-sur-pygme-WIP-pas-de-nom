@@ -3,6 +3,7 @@
 # pylint: disable= no-member
 import pygame
 
+
 pygame.init()
 
 

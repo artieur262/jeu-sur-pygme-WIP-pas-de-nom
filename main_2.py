@@ -1,4 +1,4 @@
-from class_obj import *
+from block.class_obj import *
 import save
 import os
 from class_clavier import Clavier, Souris
