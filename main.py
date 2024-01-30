@@ -32,23 +32,23 @@ time_a = time.time()
 time_saut = time.time() - 5
 clavier = Clavier()
 deplacement = "rien"
-list_logique = [Logique([1], 3, "and"), Logique_Timer(20, 6, 7)]
-list_logique: list[Logique | Logique_not | Logique_Timer]
+list_logique = [Logique([1], 3, "and"), LogiqueTimer(20, 6, 7)]
+list_logique: list[Logique | LogiqueNot | LogiqueTimer]
 list_lumiere = [
-    Block_lumiere((0, 0, 0), (10, 10, 10), [(255, 0, 0), (0, 255, 0)], [1]),
-    Block_lumiere(
+    BlockLumiere((0, 0, 0), (10, 10, 10), [(255, 0, 0), (0, 255, 0)], [1]),
+    BlockLumiere(
         (10, 0, 0), (10, 10, 10), [(255, 0, 0), (0, 255, 0), (0, 0, 255)], [1, 5]
     ),
-    Block_lumiere(
+    BlockLumiere(
         (20, 0, 0),
         (10, 10, 10),
         [(255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 0)],
         [1, 5, 6, 7],
     ),
-    Block_lumiere((175, 0, 50), (10, 10, 10), [(255, 0, 0), (0, 255, 0)], [5]),
+    BlockLumiere((175, 0, 50), (10, 10, 10), [(255, 0, 0), (0, 255, 0)], [5]),
 ]
 list_texte = [
-    Block_texte(
+    BlockTexte(
         [0, 0, 100],
         (250, 50, 50),
         (255, 255, 255, 0),

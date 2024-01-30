@@ -2,6 +2,8 @@
 
 
 class Logique:
+    """ce block logique permet de faire des opération logique"""
+
     def __init__(self, id_activation: list[int], id_sorti: int, type_: str):
         self.id_activation = set(id_activation)
         self.id_sorti = id_sorti
@@ -37,6 +39,7 @@ class Logique:
         self.active = False
 
     def convert_save(self) -> dict:
+        """conveti sous un forma on il pourra entre rucupérer"""
         sorti = {
             "type": "logique",
             "entre": list(self.id_activation),
@@ -48,10 +51,13 @@ class Logique:
 
     @staticmethod
     def convert_load(dic: dict):
+        """permet de convertir un dictionaire en objet"""
         return Logique(dic["entre"], dic["sorti"], dic["mode"])
 
 
-class Logique_not:
+class LogiqueNot:
+    """ce block logique permet de faire une opération logique not"""
+
     def __init__(self, id_activation: int, id_sorti: int):
         self.id_activation = id_activation
         self.id_sorti = id_sorti
@@ -79,10 +85,11 @@ class Logique_not:
 
     @staticmethod
     def convert_load(dic: dict):
-        return Logique_not(dic["entre"], dic["sorti"])
+        """permet de convertir un dictionaire en objet"""
+        return LogiqueNot(dic["entre"], dic["sorti"])
 
 
-class Logique_Timer:
+class LogiqueTimer:
     """ce block logique permet de faire un timer"""
 
     def __init__(self, crono, id_activation, id_sorti) -> None:
@@ -123,10 +130,13 @@ class Logique_Timer:
 
     @staticmethod
     def convert_load(dic: dict):
-        return Logique_Timer(dic["crono"], dic["entre"], dic["sorti"])
+        """permet de convertir un dictionaire en objet"""
+        return LogiqueTimer(dic["crono"], dic["entre"], dic["sorti"])
 
 
-class Logique_chagement:
+class LogiqueChangement:
+    """ce block logique permet de faire un check de changement"""
+
     def __init__(self, id_activation, id_sorti) -> None:
         self.dernier_etat = None
         self.active = False
@@ -134,6 +144,7 @@ class Logique_chagement:
         self.id_sorti = id_sorti
 
     def actualise(self):
+        """actualise la derniere activation"""
         self.active = False
 
     def activation(self, set_activation: set):
@@ -162,4 +173,5 @@ class Logique_chagement:
 
     @staticmethod
     def convert_load(obj: dict):
-        return Logique_chagement(obj["entre"], obj["sorti"])
+        """permet de convertir un dictionaire en objet"""
+        return LogiqueChangement(obj["entre"], obj["sorti"])

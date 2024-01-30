@@ -1,3 +1,6 @@
+"""
+ce module contien des fonction pour sauvegarder ou charger des fichiers json
+"""
 import os
 import json
 
@@ -26,7 +29,7 @@ def save_json(lien: str, contenu):
     """
     with open(lien, "w", encoding="utf8") as file:
         json.dump(contenu, file, indent=1)
-        file.close()
+        # file.close()
 
 
 def force_input_y_or_n(texte: str):

@@ -1,5 +1,6 @@
+"""est le module qui contient les classes de block"""
 # pylint : missing-module-docstring
-from graphique import *  # pylint: disable=unused-wildcard-import
+from graphique import *  # pylint: disable=unused-wildcard-import wildcard-import
 
 # import traceback
 # from IPython import embed
@@ -140,15 +141,13 @@ class Block:
         """return les coordonees ou coordonees[index]"""
         if index is None:
             return self._coordonnee
-        else:
-            return self._coordonnee[index]
+        return self._coordonnee[index]
 
     def get_taille(self, index: int = None):
         """return la taille ou taille[index]"""
         if index is None:
             return self._taille
-        else:
-            return self._taille[index]
+        return self._taille[index]
 
     def get_centre_objet(self):
         """return le centre de l'objet"""
@@ -360,4 +359,5 @@ class Block:
 
     @staticmethod
     def convert_load(dic: dict):
+        """pemet de convetir un dic en un block"""
         return Block(dic["coor"], dic["taille"], dic["color"], texture=dic["texture"])

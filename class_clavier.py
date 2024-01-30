@@ -1,7 +1,10 @@
+"""ce module contien les class pour la souris et le clavier"""
 from graphique import pygame
 
 
 class Clavier:
+    """cette class permet de gérer le clavier"""
+
     def __init__(self) -> None:
         self.alphabet_clee = {
             "\x08": 8,
@@ -94,8 +97,7 @@ class Clavier:
         # print([clee])
         if isinstance(clee, str):  # c'est équivalen de type(clee)==str
             return self.dict_touches[self.convert_touche_key(clee)]
-        else:
-            return self.dict_touches[clee]
+        return self.dict_touches[clee]
 
     def convert_touche_key(self, touche: str) -> int:
         """converti une touche en key
@@ -112,6 +114,8 @@ class Clavier:
 
 
 class Souris:
+    """cette class permet de gérer la souris"""
+
     def __init__(self):
         self.actualise_position()
         self.clique_clee = {"clique_gauche": 1, "clique_droit": 3}
@@ -124,6 +128,7 @@ class Souris:
         self.dict_clique[clee] = value
 
     def get_pos(self):
+        """get la position de la souris"""
         return self.pos
 
     def get_pression(self, clee: str | int):
@@ -131,10 +136,10 @@ class Souris:
         # print([clee])
         if isinstance(clee, str):  # c'est équivalen de type(clee)==str
             return self.dict_clique[self.convert_clique_key(clee)]
-        else:
-            return self.dict_clique[clee]
+        return self.dict_clique[clee]
 
     def actualise_position(self):
+        """actualise la position de la souris"""
         self.pos = pygame.mouse.get_pos()
 
     def convert_clique_key(self, touche: str) -> int:

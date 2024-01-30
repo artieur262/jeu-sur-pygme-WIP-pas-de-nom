@@ -9,12 +9,12 @@
 from .class_block import *
 from .block_activable import (
     PlateformeMouvante,
-    Block_lumiere,
-    Block_core,
-    Tunel_dimensionel_Brigitte,
+    BlockLumiere,
+    BlockCore,
+    TunelDimensionelBrigitte,
 )
-from .block_logique import Logique_not, Logique, Logique_Timer, Logique_chagement
-from .block_activateur import Interupteur, Zone_acitve
+from .block_logique import LogiqueNot, Logique, LogiqueTimer, LogiqueChangement
+from .block_activateur import Interupteur, ZoneActive
 
 # traceback.print_stack()
 
@@ -40,6 +40,7 @@ class Playeur(Block):
         super().__init__(coordonnee, (taille, taille, taille), color, texture=texture)
 
     def actualise_taille_playeur(self, face: str):
+        """actualise la taille du joueur en fonction de la face"""
         if face == 0:
             self._taille = [self._taille_int, self._taille_int, 1]
         elif face == 1:
@@ -48,9 +49,6 @@ class Playeur(Block):
             self._taille = [1, self._taille_int, self._taille_int]
         else:
             raise ValueError(f"la face n'est pas reconnu : face = {face}")
-
-    def depace_vecteur(self, list_collision: list[Block], vecteur: Vec):
-        pass
 
     def deplace(self, list_block: list, axe: int, distance: int):
         deplacemment = super().deplace(list_block, axe, distance)
@@ -75,7 +73,9 @@ class Playeur(Block):
         return Playeur(dic["coor"], dic["taille"], dic["color"], texture=dic["texture"])
 
 
-class Block_texte(Block):
+class BlockTexte(Block):
+    """est un block qui affiche du texte"""
+
     def __init__(
         self,
         coordonnee: tuple[int, int, int],
@@ -102,8 +102,8 @@ class Block_texte(Block):
 
     def genere_graphique(self):
         super().genere_graphique()
-        for x in self.graphique:
-            for image in x.images:
+        for face_graphique in self.graphique:
+            for image in face_graphique.images:
                 place_texte_in_texture(
                     image, self._texte, self._police, self._texte_color
                 )
@@ -119,7 +119,7 @@ class Block_texte(Block):
 
     @staticmethod
     def convert_load(dic: dict):
-        return Block_texte(
+        return BlockTexte(
             dic["coor"],
             dic["taille"],
             dic["color"],
@@ -131,7 +131,27 @@ class Block_texte(Block):
         )
 
 
-def genere_obj(liste: list[dict]) -> dict[str, list]:
+def genere_obj(
+    liste: list[dict],
+) -> dict[
+    str,
+    list[
+        Block
+        | PlateformeMouvante
+        | Playeur
+        | Interupteur
+        | ZoneActive
+        | BlockLumiere
+        | BlockTexte
+        | BlockCore
+        | TunelDimensionelBrigitte
+        | Logique
+        | LogiqueNot
+        | LogiqueTimer
+        | LogiqueChangement
+    ],
+]:
+    """genere les objets à partir d'une liste de dictionaire"""
     sorti = {
         "interupteur": [],
         "playeur": [],
@@ -149,32 +169,32 @@ def genere_obj(liste: list[dict]) -> dict[str, list]:
         if obj["type"] == "block":
             sorti["block"].append(Block.convert_load(obj))
         elif obj["type"] == "texte":
-            sorti["texte"].append(Block_texte.convert_load(obj))
+            sorti["texte"].append(BlockTexte.convert_load(obj))
         elif obj["type"] == "player":
             sorti["playeur"].append(Playeur.convert_load(obj))
 
         elif obj["type"] == "interupteur":
             sorti["interupteur"].append(Interupteur.convert_load(obj))
         elif obj["type"] == "zone":
-            sorti["zone_acitve"].append(Zone_acitve.convert_load(obj))
+            sorti["zone_acitve"].append(ZoneActive.convert_load(obj))
 
         elif obj["type"] == "lumière":
-            sorti["lumière"].append(Block_lumiere.convert_load(obj))
+            sorti["lumière"].append(BlockLumiere.convert_load(obj))
         elif obj["type"] == "plaforme":
             sorti["plaforme"].append(PlateformeMouvante.convert_load(obj))
         elif obj["type"] == "core":
-            sorti["core"].append(Block_core.convert_load(obj))
+            sorti["core"].append(BlockCore.convert_load(obj))
         elif obj["type"] == "tunel_dimensionel":
             sorti["tunel_dimensionel"].append(
-                Tunel_dimensionel_Brigitte.convert_load(obj)
+                TunelDimensionelBrigitte.convert_load(obj)
             )
 
         elif obj["type"] == "logique":
             sorti["logique"].append(Logique.convert_load(obj))
         elif obj["type"] == "not":
-            sorti["logique"].append(Logique_not.convert_load(obj))
+            sorti["logique"].append(LogiqueNot.convert_load(obj))
         elif obj["type"] == "timer":
-            sorti["logique"].append(Logique_Timer.convert_load(obj))
+            sorti["logique"].append(LogiqueTimer.convert_load(obj))
         elif obj["type"] == "changement":
-            sorti["logique"].append(Logique_chagement.convert_load(obj))
+            sorti["logique"].append(LogiqueChangement.convert_load(obj))
     return sorti

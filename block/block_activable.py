@@ -1,7 +1,10 @@
+"""contient les block activable"""
 from .class_block import Block, ObjetGraphique, pygame, gener_texture
 
 
 class PlateformeMouvante(Block):
+    """class d'une plateforme mouvante"""
+
     def __init__(
         self,
         coordonnee: tuple[int, int, int],
@@ -44,7 +47,7 @@ class PlateformeMouvante(Block):
         if self._id in set_activation:
             self.active = True
 
-    def deplace(self, list_obj):
+    def deplace_chemain(self, list_obj):
         """depace le block"""
         if self.active:
             action = self.get_nex_action()
@@ -93,7 +96,9 @@ class PlateformeMouvante(Block):
         )
 
 
-class Block_lumiere(Block):
+class BlockLumiere(Block):
+    """class d'un block lumiere"""
+
     def __init__(
         self,
         coordonnee: tuple[int, int, int],
@@ -185,7 +190,7 @@ class Block_lumiere(Block):
 
     @staticmethod
     def convert_load(dic: dict):
-        return Block_lumiere(
+        return BlockLumiere(
             dic["coor"],
             dic["taille"],
             dic["color"],
@@ -194,7 +199,9 @@ class Block_lumiere(Block):
         )
 
 
-class Block_core(Block):
+class BlockCore(Block):
+    """class d'un block core"""
+
     def __init__(
         self,
         coordonnee: tuple[int, int, int],
@@ -293,6 +300,7 @@ class Block_core(Block):
             self.actualise_graphique_animation()
 
     def activate_core(self, face: str, list_playeur: list[Block]):
+        """permet d'activer le core"""
         if self.etat == "en fonction":
             # print("cat 260", face, self.change_face)
             if str(face) in self.change_face.keys():
@@ -332,7 +340,7 @@ class Block_core(Block):
 
     @staticmethod
     def convert_load(dic: dict):
-        return Block_core(
+        return BlockCore(
             dic["coor"],
             dic["taille"],
             dic["id"],
@@ -342,16 +350,18 @@ class Block_core(Block):
         )
 
 
-class Tunel_dimensionel_Brigitte(Block):
-    def __init__(
-        self,
-        coordonnee: tuple[int, int, int],
-        taille: tuple[int, int, int],
-        color: tuple[int, int, int] = None,
-        animation: int = 0,
-        texture: list[str] = None,
-    ):
-        super().__init__(coordonnee, taille, color, animation, texture)
+class TunelDimensionelBrigitte(Block):
+    """class d'un tunel dimensionel"""
+
+    # def __init__(
+    #     self,
+    #     coordonnee: tuple[int, int, int],
+    #     taille: tuple[int, int, int],
+    #     color: tuple[int, int, int] = None,
+    #     animation: int = 0,
+    #     texture: list[str] = None,
+    # ):
+    #     super().__init__(coordonnee, taille, color, animation, texture)
 
     def convert_save(self) -> dict:
         sorti = super().convert_save()
@@ -360,7 +370,7 @@ class Tunel_dimensionel_Brigitte(Block):
 
     @staticmethod
     def convert_load(dic: dict):
-        return Tunel_dimensionel_Brigitte(
+        return TunelDimensionelBrigitte(
             dic["coor"],
             dic["taille"],
             dic["color"],

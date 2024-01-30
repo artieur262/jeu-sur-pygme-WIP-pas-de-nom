@@ -1,7 +1,10 @@
+"""contient les class de block activateur"""
 from .class_block import Block  # , ObjetGraphique, pygame, gener_texture
 
 
 class Interupteur(Block):
+    """class d'un interupteur"""
+
     def __init__(
         self,
         valeur_activation: int,
@@ -47,9 +50,6 @@ class Interupteur(Block):
         # sorti["collision"] = self._collision
         return sorti
 
-    def __str__(self) -> str:
-        return super().__str__()
-
     @staticmethod
     def convert_load(dic: dict):
         return Interupteur(
@@ -62,7 +62,9 @@ class Interupteur(Block):
         )
 
 
-class Zone_acitve(Block):
+class ZoneActive(Block):
+    """class d'une zone activation"""
+
     def __init__(
         self,
         valeur_activation: int,
@@ -110,12 +112,9 @@ class Zone_acitve(Block):
         sorti["mode"] = self.type
         return sorti
 
-    def __str__(self) -> str:
-        return super().__str__()
-
     @staticmethod
     def convert_load(dic: dict):
-        return Zone_acitve(
+        return ZoneActive(
             dic["id"],
             dic["coor"],
             dic["taille"],

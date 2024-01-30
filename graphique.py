@@ -143,6 +143,7 @@ def gener_texture(taille: tuple[int], color: tuple[int] = False) -> pygame.Surfa
 
 
 def gener_texture_arc_ciel(taille: list[int], decalage: int = 0):
+    """génere une texture arc en ciel"""
     couleur = [
         (255, 0, 0),
         (255, 125, 0),
