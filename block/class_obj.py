@@ -1,6 +1,6 @@
 """est module de class"""
 # pylint: disable=unused-import wildcard-import unused-wildcard-import
-from typing import Any
+# from typing import Any
 
 # # from typing
 # import traceback
@@ -17,24 +17,6 @@ from .block_logique import Logique_not, Logique, Logique_Timer, Logique_chagemen
 from .block_activateur import Interupteur, Zone_acitve
 
 # traceback.print_stack()
-
-
-class Vec:
-    def __init__(self):
-        self.vec = numpy.array((0, 0, 0), dtype=self.DVEC)
-
-    def __tick__(self):
-        self()["v"] += self()["a"]
-        self()["pos"] += self()["v"]
-
-    def __call__(self):
-        return self.vec
-
-    def stop(self):
-        self()["v"] = 0
-        self()["a"] = 0
-
-    DVEC = numpy.dtype([("pos", float, 3), ("v", float, 3), ("a", float, 3)])
 
 
 # class BlocGlissant(Pave):

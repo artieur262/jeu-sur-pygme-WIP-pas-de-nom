@@ -1,11 +1,15 @@
-from block.class_obj import *
+# pylint: disable=no-member disable=no-name-in-module
+from block.class_obj import *  # pylint: disable=unused-wildcard-import
 import save
 import os
 from class_clavier import Clavier, Souris
-import time
+
+# import time
 
 
 class game:
+    """est le jeu"""
+
     def __init__(
         self,
         dict_obj: dict[
@@ -39,6 +43,7 @@ class game:
         self.actualise_camera()
 
     def actualise_camera(self):
+        """actualise la camera"""
         self.hauteur = self.dict_obj["playeur"][0].get_centre_objet()[2 - self.face]
 
         camera = self.dict_obj["playeur"][0].get_centre_objet()
@@ -48,6 +53,7 @@ class game:
         # print(self.camera)
 
     def affiche_obj(self):
+        """affiche les objets"""
         # print(self.dict_obj["playeur"][0]._taille)
         for clee_affichable in (
             "block",
@@ -68,6 +74,7 @@ class game:
                 )
 
     def actualise_obj(self):
+        """actualise les objets"""
         for clee_actualisable in ("lumière",):
             for obj in self.dict_obj[clee_actualisable]:
                 obj.actualise()
@@ -76,6 +83,7 @@ class game:
             obj.deplace(obj_colision)
 
     def activate(self):
+        """active les objets"""
         self.set_activation = set()
         for obj in self.dict_obj["zone_acitve"]:
             # print("cat", obj.collision(self.dict_obj["playeur"][0]))
@@ -102,6 +110,7 @@ class game:
             self.etat = "victoire"
 
     def depacle_playeur(self):
+        """déplace le playeur"""
         obj_colision = (
             self.dict_obj["block"]
             + self.dict_obj["plaforme"]
@@ -164,6 +173,7 @@ class game:
                     playeur.deplace(obj_colision, 0, -3)
 
     def acvite_block(self):
+        """active les block"""
         if self.clavier.get_pression(self.controle["interagir"]) == "vien_presser":
             for joueur in self.dict_obj["playeur"]:
                 list_interupteur = self.dict_obj["interupteur"]
@@ -193,7 +203,9 @@ class game:
                 # print(list_interupteur[0].get_active())
 
 
-class Menu_pause:
+class MenuPause:
+    """est le menu pause"""
+
     def __init__(
         self,
         contexte: str = "nul",
@@ -286,7 +298,7 @@ class fichier_dossier:
         self,
         name: str,
         coordonnee: list[int, int],
-        type: str,
+        type_: str,
         couleur1: tuple[int, int, int],
         couleur2: tuple[int, int, int],
         couleur3: tuple[int, int, int],
@@ -296,7 +308,7 @@ class fichier_dossier:
         arc_enciel = name in ("cat", "chaton", "chat", "charançon")
         self.visible = True
         self.police = pygame.font.SysFont(police, taille_police)
-        self.type = type
+        self.type = type_
         self.name = name
         self._coordonnee = coordonnee
         self.taille = [125, 50]
@@ -492,21 +504,23 @@ class choisir_level:
         )
         if self.page >= self.page_max:
             self.page = self.page_max
-        for i, fichier_dossier in enumerate(self.fichier_dossier):
+        if self.page < 0:
+            self.page = 0
+        for i, level_dossier in enumerate(self.fichier_dossier):
             if (
                 self.page * limite[1] * limite[0]
                 <= i
                 < limite[1] * limite[0] + limite[1] * limite[0] * self.page
             ):
-                fichier_dossier.set_coordonnee(
+                level_dossier.set_coordonnee(
                     [
                         100 + (i % limite[0]) * 150,
                         150 + ((i % (limite[1] * limite[0])) // limite[0]) * 100,
                     ]
                 )
-                fichier_dossier.visible = True
+                level_dossier.visible = True
             else:
-                fichier_dossier.visible = False
+                level_dossier.visible = False
             # print(fichier_dossier.get_coordonnee())
         self.graf_page.images[0].blit(
             place_texte_in_texture(
@@ -546,15 +560,15 @@ class choisir_level:
 
     def actualise_animation(self, souris: Souris):
         pos_sour = souris.get_pos()
-        for i, fichier_dossier in enumerate(self.fichier_dossier):
+        for i, level_dossier in enumerate(self.fichier_dossier):
             # print(fichier_dossier)
             # print(
             #     fichier_dossier.x_y_dans_objet(pos_sour[0], pos_sour[1]),
             #     fichier_dossier.visible,
             # )
             if (
-                fichier_dossier.x_y_dans_objet(pos_sour[0], pos_sour[1])
-                and fichier_dossier.visible
+                level_dossier.x_y_dans_objet(pos_sour[0], pos_sour[1])
+                and level_dossier.visible
             ):
                 self.fichier_dossier[i].graphique.animation = 1
                 # print("cat")
@@ -567,9 +581,9 @@ class choisir_level:
         self.graf_page.afficher()
         self.precedent.afficher()
         self.suivant.afficher()
-        for fichier_dossier in self.fichier_dossier:
-            if fichier_dossier.visible:
-                fichier_dossier.affiche()
+        for level_dossier in self.fichier_dossier:
+            if level_dossier.visible:
+                level_dossier.affiche()
 
     def clique_sur_chose(self, souris: Souris):
         pos_sour = [souris.get_pos()[0], souris.get_pos()[1]]
@@ -588,14 +602,14 @@ class choisir_level:
             if self.home.x_y_dans_objet(pos_sour[0], pos_sour[1]):
                 self.etat = "home"
 
-            for fichier_dossier in self.fichier_dossier:
-                if fichier_dossier.x_y_dans_objet(pos_sour[0], pos_sour[1]):
-                    if fichier_dossier.visible and fichier_dossier.type == "dossier":
-                        self.suite_lien.append(fichier_dossier.name + "/")
+            for level_dossier in self.fichier_dossier:
+                if level_dossier.x_y_dans_objet(pos_sour[0], pos_sour[1]):
+                    if level_dossier.visible and level_dossier.type == "dossier":
+                        self.suite_lien.append(level_dossier.name + "/")
                         self.actualise_element_dossier()
-                    elif fichier_dossier.visible and fichier_dossier.type == "level":
+                    elif level_dossier.visible and level_dossier.type == "level":
                         self.etat = "fini"
-                        self.suite_lien.append(fichier_dossier.name + ".json")
+                        self.suite_lien.append(level_dossier.name + ".json")
                         # print("484cat")
 
 
@@ -614,23 +628,28 @@ def actualise_event(clavier: Clavier, souris: Souris):
             # print(event)
             if event.key in clavier.dict_touches:
                 clavier.change_pression(event.key, "vien_presser")
-        elif event.type == pygame.MOUSEBUTTONDOWN:
+        elif event.type == pygame.MOUSEBUTTONDOWN:  # pylint: disable=no-member
             if event.button in souris.dict_clique:
                 souris.change_pression(event.button, "vien_presser")
 
-        elif event.type == pygame.MOUSEBUTTONUP:
+        elif event.type == pygame.MOUSEBUTTONUP:  # pylint: disable=no-member
             if event.button in souris.dict_clique:
                 souris.change_pression(event.button, "vien_lacher")
 
 
 def active_f11(touche_f11: str):
-    global screen
+    """active le mode plein écran"""
+    global screen  # pylint: disable=global-statement
     if touche_f11 == "vien_presser":
-        if screen.get_flags() & pygame.FULLSCREEN:
-            screen = pygame.display.set_mode((1200, 600), pygame.RESIZABLE)
+        if screen.get_flags() & pygame.FULLSCREEN:  # pylint: disable=no-member
+            screen = pygame.display.set_mode(
+                (1200, 600), pygame.RESIZABLE
+            )  # pylint: disable=no-member
             screen = pygame.display.set_mode((1200, 600), pygame.RESIZABLE)
         else:
-            screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+            screen = pygame.display.set_mode(
+                (0, 0), pygame.FULLSCREEN  # pylint: disable=no-member
+            )
         # pygame.display.update()
 
 
@@ -647,7 +666,7 @@ def main():
     clavier = Clavier()
     souris = Souris()
     # jeu = game(map_, rule["face"], rule["valeur_de_fin"], controle, clavier)
-    menu_pause = Menu_pause()
+    menu_pause = MenuPause()
     selection_level = choisir_level()
 
     clock = pygame.time.Clock()

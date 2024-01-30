@@ -1,53 +1,40 @@
-import numpy
-from graphique import *
+# pylint : missing-module-docstring
+from graphique import *  # pylint: disable=unused-wildcard-import
 
 # import traceback
 # from IPython import embed
 
 
 class Vec:
-    def __init__(self, pos=None, vitesse=None, acceleration=None):
-        if pos is None:
-            pos = (0, 0, 0)
-        if vitesse is None:
-            vitesse = (0, 0, 0)
-        if acceleration is None:
-            acceleration = (0, 0, 0)
+    """est un vecteur"""
 
-        initial = (pos, vitesse, acceleration)
-        for arg in initial:
-            if not isinstance(arg, tuple) or len(arg) != 3:
-                raise ValueError(
-                    f"Un argument avec la valeur {arg} a été donné."
-                    + " Sont uniquement accepté les tuples de longeur 3"
-                )
+    def __init__(
+        self,
+        vitesse: tuple[float, float, float],
+        aceleration: tuple[float, float, float],
+    ):
+        self._vitesse = vitesse
+        self._aceleration = aceleration
 
-        self.vec = numpy.array(initial, dtype=self.DVEC)
+    def get_vitesse(self) -> tuple[float, float, float]:
+        """renvoi la vitesse"""
+        return self._vitesse
 
-    def __tick__(self):
-        print("ticked")
-        self()["v"] += self()["a"]
-        print((numpy.rint(self()["v"])).astype(int))
-        self()["pos"] += (numpy.rint(self()["v"])).astype(int)
+    def set_vitesse(self, vitesse: tuple[float, float, float]):
+        """permet de definir la vitesse"""
+        self._vitesse = vitesse
 
-    def __call__(self):
-        return self.vec
+    def get_aceleration(self) -> tuple[float, float, float]:
+        """renvoi l'aceleration"""
+        return self._aceleration
 
-    # def __repl__(self):
-    #     return (
-    #         f"Vec({tuple(self()['pos'])}, {tuple(self()['v'])}, {tuple(self()['a'])})"
-    #     )
+    def set_aceleration(self, aceleration: tuple[float, float, float]):
+        """permet de definir l'aceleration"""
+        self._aceleration = aceleration
 
-    def stop(self):
-        """Arrete tous les mouvements d'un objet"""
-        self()["v"] = 0
-        self()["a"] = 0
-
-    def position_plan(self) -> tuple[tuple[float, float], ...]:
-        pos = self()["pos"]
-        return tuple((pos[:2]), (pos[0], pos[2]), tuple(pos[1:]))
-
-    DVEC = numpy.dtype([("pos", int, 3), ("v", float, 3), ("a", float, 3)])
+    def actualise_vitesse(self):
+        """actualise la vitesse en fonction de l'aceleration"""
+        self._vitesse = tuple(x + y for x, y in zip(self._vitesse, self._aceleration))
 
 
 class Block:
@@ -69,8 +56,7 @@ class Block:
             self._texure_active = False
         self._color = color  # color : (int,int,int)
         self._coordonnee = coordonnee  # coordonnee : (x,y,z)
-        self._position = Vec()
-        self._position()["pos"] = coordonnee
+        self.vecteur = Vec((0, 0, 0), (0, 0, 0))
         self._taille = taille  # taille : (x,y,z)
         self.animation = animation  # int correspond a quelle image sera afficher
         self._texure = texture
@@ -153,9 +139,9 @@ class Block:
     def get_coordonnee(self, index: int = None):
         """return les coordonees ou coordonees[index]"""
         if index is None:
-            return self._position()["pos"]
+            return self._coordonnee
         else:
-            return self._position()["pos"][index]
+            return self._coordonnee[index]
 
     def get_taille(self, index: int = None):
         """return la taille ou taille[index]"""
@@ -165,14 +151,23 @@ class Block:
             return self._taille[index]
 
     def get_centre_objet(self):
+        """return le centre de l'objet"""
         cord = self.get_coordonnee()
         tail = self.get_taille()
         return [cord[i] + tail[i] / 2 for i in range(3)]
 
     def set_coordonnee(self, valeur: list[int] | tuple[int, int, int]):
+        """permet de modifier les coordonnees"""
         self._coordonnee = tuple(valeur)
-        self._position()["pos"] = tuple(valeur)
         self.actualise_coord_graph()
+
+    def set_aceleration(self, valeur: list[float] | tuple[float, float, float]):
+        """permet de modifier l'aceleration"""
+        self.vecteur.set_aceleration(valeur)
+
+    def set_vitesse(self, valeur: list[float] | tuple[float, float, float]):
+        """permet de modifier la vitesse"""
+        self.vecteur.set_vitesse(valeur)
 
     def modif_coordonnee(
         self,
@@ -196,7 +191,6 @@ class Block:
                 )
             if mode == "=":
                 self._coordonnee = value
-                self._position()["pos"] = value
             else:
                 raise ValueError('error : index is None and mode != "=" ')
         else:
@@ -205,13 +199,13 @@ class Block:
             coordonnee = list(self._coordonnee)
             if mode == "=":
                 coordonnee[index] = value
-                self._position()["pos"][index] = value
+
             elif mode == "+":
                 coordonnee[index] += value
-                self._position()["pos"][index] += value
+
             elif mode == "-":
                 coordonnee[index] -= value
-                self._position()["pos"][index] -= value
+
             else:
                 raise ValueError("error : mode not in ('=','+','-')")
             self._coordonnee = tuple(coordonnee)
@@ -281,6 +275,7 @@ class Block:
         )
 
     def si_touche_obj(self, obj, axe: int):
+        """teste si un objet touche un autre objet sur un axe"""
         obj: Block
         sorti = True
         for i in range(3):
