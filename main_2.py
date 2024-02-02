@@ -1,4 +1,5 @@
 """est le main du jeu"""
+
 # pylint: disable=no-member disable=no-name-in-module
 import os
 
@@ -48,6 +49,7 @@ class Game:
         face: str,
         valeur_de_fin: int,
         controle: dict,
+        option: dict,
         clavier: Clavier = None,
     ):
         self.etat = "en cour"
@@ -56,7 +58,8 @@ class Game:
         self.hauteur = 251
         self.clavier = clavier
         self.set_activation = set()
-
+        self.camera = [0, 0]
+        self.option = option
         self.valeur_de_fin = valeur_de_fin
         self.controle = controle
         self.dict_obj["playeur"][0].actualise_taille_playeur(face)
@@ -810,7 +813,7 @@ class SelectOption:
         self.police = pygame.font.SysFont(police, police_taille)
         self.etat = "encour"
         # print(option)
-        self.indicateur_face = option["indicateur_face"]
+        self.option = option
         self.control = controle
         self.list_bouton = [
             [
@@ -831,6 +834,7 @@ class SelectOption:
                     "graphique",
                 ),
                 ("text", (475, 100), (150, 100), "indicateur_face_text", "graphique"),
+                ("activer", (325, 200), (150, 100), "plein_ecran", "graphique"),
                 ("graphique", (50, 0), (150, 50), "page_graphique", "all"),
                 ("controle", (200, 0), (150, 50), "page_controle", "all"),
                 ("anuler", (0, 0), (150, 50), "anuler", "all"),
@@ -853,7 +857,10 @@ class SelectOption:
                 ),
                 i[3],
             ]
-            for i in [[(25, 100), (300, 100), "indicateur de face", "graphique"]]
+            for i in [
+                [(25, 100), (300, 100), "indicateur de face", "graphique"],
+                [(25, 200), (300, 100), "plein écran", "graphique"],
+            ]
         ]
         self.list_bouton: list[list[str | ObjetGraphique]]
         for i, key_value in enumerate(self.control.items()):
@@ -911,8 +918,45 @@ class SelectOption:
                     [dimension[0] - bouton[1].dimension[0] - 150, 0]
                 )
 
-            if bouton[2] in {"indicateur_face_text", "indicateur_face_couleur"}:
-                if bouton[0] in self.indicateur_face:
+            if bouton[2] == "plein_ecran":
+                if self.option["plein_écran"]:
+                    bouton[1].images[0].blit(
+                        place_texte_in_texture(
+                            gener_texture(
+                                (
+                                    bouton[1].dimension[0] - 10,
+                                    bouton[1].dimension[1] - 10,
+                                ),
+                                (50, 200, 50),
+                            ),
+                            bouton[0],
+                            self.police,
+                            (255, 255, 255),
+                        ),
+                        (5, 5),
+                    )
+                else:
+                    bouton[1].images[0].blit(
+                        place_texte_in_texture(
+                            gener_texture(
+                                (
+                                    bouton[1].dimension[0] - 10,
+                                    bouton[1].dimension[1] - 10,
+                                ),
+                                (200, 50, 50),
+                            ),
+                            bouton[0],
+                            self.police,
+                            (255, 255, 255),
+                        ),
+                        (5, 5),
+                    )
+            if bouton[2] in {
+                "indicateur_face_text",
+                "indicateur_face_couleur",
+            }:
+
+                if bouton[0] in self.option["indicateur_face"]:
                     bouton[1].images[0].blit(
                         place_texte_in_texture(
                             gener_texture(
@@ -997,16 +1041,16 @@ class SelectOption:
                     pos_sour[0], pos_sour[1]
                 ):
                     if bouton[2] == "indicateur_face_couleur":
-                        if bouton[0] in self.indicateur_face:
-                            self.indicateur_face.remove(bouton[0])
+                        if bouton[0] in self.option["indicateur_face"]:
+                            self.option["indicateur_face"].remove(bouton[0])
                         else:
-                            self.indicateur_face.append(bouton[0])
+                            self.option["indicateur_face"].append(bouton[0])
 
                     elif bouton[2] == "indicateur_face_text":
-                        if bouton[0] in self.indicateur_face:
-                            self.indicateur_face.remove(bouton[0])
+                        if bouton[0] in self.option["indicateur_face"]:
+                            self.option["indicateur_face"].remove(bouton[0])
                         else:
-                            self.indicateur_face.append(bouton[0])
+                            self.option["indicateur_face"].append(bouton[0])
 
                     elif bouton[2] == "page_graphique":
                         self.page = "graphique"
@@ -1024,6 +1068,9 @@ class SelectOption:
                             self.control[self.touche_selectioner] = c_t.touche
                             bouton[0] = c_t.touche
                         c_t = None  # détruit la variable
+                    elif bouton[2] == "plein_ecran":
+                        active_f11("vien_presser", self.option)
+
                     elif bouton[2] == "anuler":
                         self.etat = "anuler"
                     elif bouton[2] == "valider":
@@ -1040,13 +1087,13 @@ class SelectOption:
             if objet_text[0].visible:
                 objet_text[0].afficher()
 
-    def set_indicateur_face(self, value: list[str]):
+    def set_option(self, value: list[str]):
         """set l'indicateur face"""
-        self.indicateur_face = value
+        self.option = value
 
-    def get_indicateur_face(self) -> list[str]:
+    def get_option(self) -> list[str]:
         """get l'indicateur face"""
-        return self.indicateur_face
+        return self.option
 
     def set_control(self, value: dict[str, str]):
         """set le control"""
@@ -1090,15 +1137,18 @@ def actualise_event(clavier: Clavier, souris: Souris):
                 souris.change_pression(event.button, "vien_lacher")
 
 
-def active_f11(touche_f11: str):
+def active_f11(touche_f11: str, option: dict):
     """active le mode plein écran"""
     global screen  # pylint: disable=global-statement
     if touche_f11 == "vien_presser":
         if screen.get_flags() & pygame.FULLSCREEN:
             screen = pygame.display.set_mode((1200, 600), pygame.RESIZABLE)
             screen = pygame.display.set_mode((1200, 600), pygame.RESIZABLE)
+            # pour une raison inconnue il faut le faire deux fois
+            option["plein_écran"] = False
         else:
             screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+            option["plein_écran"] = True
         # pygame.display.update()
 
 
@@ -1135,13 +1185,13 @@ def main():
         if action == "home":
             pass
         if action == "option_demare":
-            menu_option.set_indicateur_face(option["indicateur_face"])
+            menu_option.set_option(option)
             menu_option.set_control(controle)
             action = "option"
         if action == "option":
             screen.fill((175, 175, 175))
             actualise_event(clavier, souris)
-            active_f11(clavier.get_pression("f11"))
+            active_f11(clavier.get_pression("f11"), option)
             menu_option.clique_bouton()
             menu_option.actualise_bouton()
             menu_option.affiche()
@@ -1156,7 +1206,7 @@ def main():
                 menu_option.etat = "en cour"
             elif menu_option.etat == "valider":
                 # print("cat")
-                option["indicateur_face"] = menu_option.get_indicateur_face()
+                option = menu_option.get_option()
                 controle = menu_option.get_control()
                 save.save_json(lien_option, option)
                 save.save_json(lien_controle, controle)
@@ -1168,7 +1218,7 @@ def main():
             elif menu_option.etat == "reset":
                 if menu_option.page == "graphique":
                     option = save.open_json(lien_option_default)
-                    menu_option.set_indicateur_face(option["indicateur_face"])
+                    menu_option.set_option(option["indicateur_face"])
                 elif menu_option.page == "controle":
                     controle = save.open_json(lien_control_default)
                     menu_option.set_control(controle)
@@ -1177,7 +1227,7 @@ def main():
 
         if action == "choix_level":
             actualise_event(clavier, souris)
-            active_f11(clavier.get_pression("f11"))
+            active_f11(clavier.get_pression("f11"), option)
             screen.fill((0, 0, 0))
             selection_level.actualise_possition()
             selection_level.actualise_animation(souris)
@@ -1195,7 +1245,9 @@ def main():
         elif action == "chargement_map":
             rule, map_ = save.open_json(lien_fichier_map + lien_map)
             map_ = genere_obj(map_)
-            jeu = Game(map_, rule["face"], rule["valeur_de_fin"], controle, clavier)
+            jeu = Game(
+                map_, rule["face"], rule["valeur_de_fin"], controle, option, clavier
+            )
             action = "enjeu"
         elif action == "enjeu":
             pygame.display.update()
@@ -1211,7 +1263,7 @@ def main():
             jeu.activate()
             if clavier.get_pression(jeu.controle["debug1"]) == "vien_presser":
                 print(jeu.dict_obj["playeur"][0].get_coordonnee())
-            active_f11(clavier.get_pression("f11"))
+            active_f11(clavier.get_pression("f11"), option)
             # print(jeu.set_activation)
             # print(jeu.etat, jeu.set_activation, jeu.valeur_de_fin)
 
@@ -1240,7 +1292,7 @@ def main():
             # print("cat")
 
             actualise_event(clavier, souris)
-            active_f11(clavier.get_pression("f11"))
+            active_f11(clavier.get_pression("f11"), option)
             menu_pause.clique_bouton(souris)
             screen.fill((0, 0, 0))
             jeu.affiche_obj()
