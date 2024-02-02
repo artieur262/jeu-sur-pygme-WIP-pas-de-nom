@@ -10,7 +10,7 @@ pygame.init()
 screen = pygame.display.set_mode((1200, 600), pygame.RESIZABLE)
 pygame.display.set_caption("jeu 2D dans monde 3D")
 screen.fill((200, 200, 200))
-deplace_map = [0, 0]
+# deplace_map = [0, 0]
 
 
 class ObjetGraphique:
@@ -52,7 +52,7 @@ class ObjetGraphique:
             self.images[self.animation].get_width(),
             self.images[self.animation].get_height(),
         )
-        self.dimension: tuple[int]
+        self.dimension: tuple[int, int]
 
     def x_y_dans_objet(self, x: int, y: int):
         """pour savoir si un point est dans l'objet

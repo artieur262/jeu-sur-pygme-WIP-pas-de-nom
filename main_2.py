@@ -279,7 +279,7 @@ class MenuPause:
                 ),
             ]
             for i, j in enumerate(
-                ("reprendre", "level", "redémarrer", "option (WIP)", "quitter")
+                ("reprendre", "level", "redémarrer", "option", "quitter")
             )
         ]
 
@@ -648,6 +648,423 @@ class ChoisirLevel:
                         # print("484cat")
 
 
+class ChoixTouche:
+    """est le menu pour choisir les touches"""
+
+    def __init__(
+        self,
+        souris: Souris,
+        clavier: Clavier,
+        touche: str | None = None,
+        police: str = "monospace",
+        police_taille_1: int = 20,
+        police_taille_2: int = 35,
+    ):
+        self.etat = "en cour"
+        self.touche = touche
+        self.police_1 = pygame.font.SysFont(police, police_taille_1)
+        self.police_2 = pygame.font.SysFont(police, police_taille_2)
+        self.souris = souris
+        self.clavier = clavier
+        self.fond = ObjetGraphique((0, 0), [gener_texture((450, 350), (200, 200, 200))])
+        self.list_bouton: list[str | ObjetGraphique] = [
+            [i[0], ObjetGraphique(i[1], [gener_texture(i[2], (100, 100, 100))])]
+            for i in [
+                ("anuler", (0, 300), (150, 50)),
+                ("valider", (300, 300), (150, 50)),
+                ("changer", (150, 300), (150, 50)),
+            ]
+        ]
+        self.graf_touche = ObjetGraphique(
+            (0, 0), [gener_texture((450, 200), (100, 100, 100))]
+        )
+        self.avetissement_changement = ObjetGraphique(
+            (0, 0),
+            [
+                place_texte_in_texture(
+                    gener_texture((450, 75), (100, 100, 100, 0)),
+                    "appuyer sur une touche\npour la changer la touche",
+                    self.police_1,
+                    (255, 0, 0),
+                )
+            ],
+        )
+        self.actualise_graphique()
+
+    def actualise_graphique(self):
+        """actualise les boutons"""
+        centrage = [
+            screen.get_size()[i] // 2
+            - self.fond.dimension[i]
+            + self.fond.dimension[i] // 2
+            for i in range(2)
+        ]
+        self.souris.get_pos()
+        pos_sour = self.souris.get_pos()
+        pos_sour_decale = [pos_sour[i] - centrage[i] for i in range(2)]
+
+        self.graf_touche.images[0] = place_texte_in_texture(
+            gener_texture((450, 300), (100, 100, 100, 0)),
+            str(self.touche),
+            self.police_2,
+            (0, 0, 0),
+        )
+        # self.graf_touche.set_coordonnee(centrage)
+        for bouton in self.list_bouton:
+            if bouton[1].x_y_dans_objet(pos_sour_decale[0], pos_sour_decale[1]):
+                bouton[1].images[0].blit(
+                    place_texte_in_texture(
+                        gener_texture(
+                            (bouton[1].dimension[0] - 10, bouton[1].dimension[1] - 10),
+                            (75, 75, 75),
+                        ),
+                        bouton[0],
+                        self.police_1,
+                        (255, 255, 255),
+                    ),
+                    (5, 5),
+                )
+            else:
+                bouton[1].images[0].blit(
+                    place_texte_in_texture(
+                        gener_texture(
+                            (bouton[1].dimension[0] - 10, bouton[1].dimension[1] - 10),
+                            (50, 50, 50),
+                        ),
+                        bouton[0],
+                        self.police_1,
+                        (255, 255, 255),
+                    ),
+                    (5, 5),
+                )
+
+    def afficher(self):
+        """affiche les objets"""
+        centrage = [
+            -screen.get_size()[i] // 2 + self.fond.dimension[i] // 2 for i in range(2)
+        ]
+        self.fond.afficher(centrage)
+        self.graf_touche.afficher(centrage)
+        if self.etat == "changer":
+            self.avetissement_changement.afficher(centrage)
+        for bouton in self.list_bouton:
+            bouton[1].afficher(centrage)
+
+    def clique_bouton(self):
+        """actuatise les actions quand on clique sur un truc"""
+        if self.souris.get_pression("clique_gauche") == "vien_presser":
+            pos_sour = self.souris.get_pos()
+            pos_sour_decale = [
+                pos_sour[i] - screen.get_size()[i] // 2 + self.fond.dimension[i] // 2
+                for i in range(2)
+            ]
+            for bouton in self.list_bouton:
+                if bouton[1].x_y_dans_objet(pos_sour_decale[0], pos_sour_decale[1]):
+                    if bouton[0] == "anuler":
+                        self.etat = "anuler"
+                    elif bouton[0] == "valider":
+                        self.etat = "valider"
+                    elif bouton[0] == "changer":
+                        self.etat = "changer"
+
+
+def selection_touche(c_t: ChoixTouche):
+    """permet de choisir une touche"""
+    while c_t.etat in ("en cour", "changer"):
+        if c_t.etat == "changer":
+            for event in pygame.event.get(pygame.KEYDOWN):
+                if event.key in c_t.clavier.alphabet_clee.values():
+                    inver_alphabet_clee = {
+                        value: key for key, value in c_t.clavier.alphabet_clee.items()
+                    }
+                    c_t.touche = inver_alphabet_clee[event.key]
+                else:
+                    c_t.touche = event.key
+                c_t.etat = "en cour"
+                # cat is so cute
+        actualise_event(c_t.clavier, c_t.souris)
+        c_t.afficher()
+        c_t.actualise_graphique()
+        c_t.clique_bouton()
+        pygame.display.update()
+
+
+class SelectOption:
+    """est le menu pour choisir les options"""
+
+    def __init__(
+        self,
+        controle: dict[str, str],
+        option: dict,
+        souris: Souris,
+        clavier: Clavier,
+        contexte: set[str],
+        police: str = "monospace",
+        police_taille: int = 20,
+    ):
+        self.touche_selectioner = None
+        self.clavier = clavier
+        self.souris = souris
+        self.contexte = contexte
+        self.page = "graphique"  # "graphique", "controle"
+        self.police = pygame.font.SysFont(police, police_taille)
+        self.etat = "encour"
+        # print(option)
+        self.indicateur_face = option["indicateur_face"]
+        self.control = controle
+        self.list_bouton = [
+            [
+                i[0],
+                ObjetGraphique(
+                    i[1],
+                    [gener_texture(i[2], (125, 125, 125))],
+                ),
+                i[3],
+                i[4],
+            ]
+            for i in [
+                (
+                    "couleur",
+                    (325, 100),
+                    (150, 100),
+                    "indicateur_face_couleur",
+                    "graphique",
+                ),
+                ("text", (475, 100), (150, 100), "indicateur_face_text", "graphique"),
+                ("graphique", (50, 0), (150, 50), "page_graphique", "all"),
+                ("controle", (200, 0), (150, 50), "page_controle", "all"),
+                ("anuler", (0, 0), (150, 50), "anuler", "all"),
+                ("valider", (0, 0), (150, 50), "valider", "all"),
+                ("reset", (0, 0), (150, 50), "reset", "all"),
+            ]
+        ]
+        self.objet_texts: list[str | ObjetGraphique] = [
+            [
+                ObjetGraphique(
+                    i[0],
+                    [
+                        place_texte_in_texture(
+                            gener_texture(i[1], (125, 125, 125)),
+                            i[2],
+                            self.police,
+                            (255, 255, 255),
+                        ),
+                    ],
+                ),
+                i[3],
+            ]
+            for i in [[(25, 100), (300, 100), "indicateur de face", "graphique"]]
+        ]
+        self.list_bouton: list[list[str | ObjetGraphique]]
+        for i, key_value in enumerate(self.control.items()):
+            self.list_bouton.append(
+                [
+                    key_value[1],
+                    ObjetGraphique(
+                        (175 + 275 * (i % 2), 100 + (i // 2) * 100),
+                        [gener_texture((125, 100), (125, 125, 125))],
+                    ),
+                    "control" + key_value[0],
+                    "controle",
+                ]
+            )
+            self.objet_texts.append(
+                [
+                    ObjetGraphique(
+                        (25 + 275 * (i % 2), 100 + (i // 2) * 100),
+                        [
+                            place_texte_in_texture(
+                                gener_texture((150, 100), (125, 125, 125)),
+                                key_value[0],
+                                self.police,
+                                (255, 255, 255),
+                            ),
+                        ],
+                    ),
+                    "controle",
+                ]
+            )
+        self.actualise_bouton()
+
+    def actualise_control(self):
+        for bouton in self.list_bouton:
+            if bouton[2][0:7] == "control":
+                bouton[0] = self.control[bouton[2][7:]]
+
+    def actualise_bouton(self):
+        """actualise les boutons"""
+        dimension = screen.get_size()
+        pos_sour = self.souris.get_pos()
+        for bouton in self.list_bouton:
+            if bouton[3] == self.page or bouton[3] == "all":
+                bouton[1].visible = True
+            else:
+                bouton[1].visible = False
+            if bouton[2] == "valider":
+                bouton[1].set_coordonnee([dimension[0] - bouton[1].dimension[0], 0])
+            elif bouton[2] == "anuler":
+                bouton[1].set_coordonnee(
+                    [dimension[0] - bouton[1].dimension[0] - 300, 0]
+                )
+            elif bouton[2] == "reset":
+                bouton[1].set_coordonnee(
+                    [dimension[0] - bouton[1].dimension[0] - 150, 0]
+                )
+
+            if bouton[2] in {"indicateur_face_text", "indicateur_face_couleur"}:
+                if bouton[0] in self.indicateur_face:
+                    bouton[1].images[0].blit(
+                        place_texte_in_texture(
+                            gener_texture(
+                                (
+                                    bouton[1].dimension[0] - 10,
+                                    bouton[1].dimension[1] - 10,
+                                ),
+                                (50, 200, 50),
+                            ),
+                            bouton[0],
+                            self.police,
+                            (255, 255, 255),
+                        ),
+                        (5, 5),
+                    )
+                else:
+                    bouton[1].images[0].blit(
+                        place_texte_in_texture(
+                            gener_texture(
+                                (
+                                    bouton[1].dimension[0] - 10,
+                                    bouton[1].dimension[1] - 10,
+                                ),
+                                (200, 50, 50),
+                            ),
+                            bouton[0],
+                            self.police,
+                            (255, 255, 255),
+                        ),
+                        (5, 5),
+                    )
+            elif (
+                bouton[2]
+                in {"page_graphique", "page_controle", "anuler", "valider", "reset"}
+                or bouton[2][0:7] == "control"
+            ):
+                if bouton[1].x_y_dans_objet(pos_sour[0], pos_sour[1]):
+                    bouton[1].images[0].blit(
+                        place_texte_in_texture(
+                            gener_texture(
+                                (
+                                    bouton[1].dimension[0] - 10,
+                                    bouton[1].dimension[1] - 10,
+                                ),
+                                (50, 50, 50),
+                            ),
+                            bouton[0],
+                            self.police,
+                            (255, 255, 255),
+                        ),
+                        (5, 5),
+                    )
+                else:
+                    bouton[1].images[0].blit(
+                        place_texte_in_texture(
+                            gener_texture(
+                                (
+                                    bouton[1].dimension[0] - 10,
+                                    bouton[1].dimension[1] - 10,
+                                ),
+                                (100, 100, 100),
+                            ),
+                            bouton[0],
+                            self.police,
+                            (255, 255, 255),
+                        ),
+                        (5, 5),
+                    )
+
+        for objet_text in self.objet_texts:
+            if objet_text[1] == self.page or objet_text[1] == "all":
+                objet_text[0].visible = True
+            else:
+                objet_text[0].visible = False
+
+    def clique_bouton(self):
+        """teste si un bouton est presser et exécute sont action"""
+        pos_sour = self.souris.get_pos()
+        if self.souris.get_pression("clique_gauche") == "vien_presser":
+            for bouton in self.list_bouton:
+                if bouton[1].visible and bouton[1].x_y_dans_objet(
+                    pos_sour[0], pos_sour[1]
+                ):
+                    if bouton[2] == "indicateur_face_couleur":
+                        if bouton[0] in self.indicateur_face:
+                            self.indicateur_face.remove(bouton[0])
+                        else:
+                            self.indicateur_face.append(bouton[0])
+
+                    elif bouton[2] == "indicateur_face_text":
+                        if bouton[0] in self.indicateur_face:
+                            self.indicateur_face.remove(bouton[0])
+                        else:
+                            self.indicateur_face.append(bouton[0])
+
+                    elif bouton[2] == "page_graphique":
+                        self.page = "graphique"
+                    elif bouton[2] == "page_controle":
+                        self.page = "controle"
+                    elif bouton[2][0:7] == "control":
+                        self.touche_selectioner = bouton[2][7:]
+                        c_t = ChoixTouche(
+                            self.souris,
+                            self.clavier,
+                            self.control[self.touche_selectioner],
+                        )
+                        selection_touche(c_t)
+                        if c_t.etat == "valider" and c_t.touche is not None:
+                            self.control[self.touche_selectioner] = c_t.touche
+                            bouton[0] = c_t.touche
+                        c_t = None  # détruit la variable
+                    elif bouton[2] == "anuler":
+                        self.etat = "anuler"
+                    elif bouton[2] == "valider":
+                        self.etat = "valider"
+                    elif bouton[2] == "reset":
+                        self.etat = "reset"
+
+    def affiche(self):
+        """affiche l'interface graphique"""
+        for bouton in self.list_bouton:
+            if bouton[1].visible:
+                bouton[1].afficher()
+        for objet_text in self.objet_texts:
+            if objet_text[0].visible:
+                objet_text[0].afficher()
+
+    def set_indicateur_face(self, value: list[str]):
+        """set l'indicateur face"""
+        self.indicateur_face = value
+
+    def get_indicateur_face(self) -> list[str]:
+        """get l'indicateur face"""
+        return self.indicateur_face
+
+    def set_control(self, value: dict[str, str]):
+        """set le control"""
+        self.control = value
+
+    def get_control(self) -> dict[str, str]:
+        """get le control"""
+        return self.control
+
+    def set_contexte(self, value: set[str]):
+        """set le contexte"""
+        self.contexte = value
+
+    def get_contexte(self) -> set[str]:
+        """get le contexte"""
+        return self.contexte
+
+
 def actualise_event(clavier: Clavier, souris: Souris):
     """actualise les événement"""
     souris.actualise_position()
@@ -689,8 +1106,13 @@ def main():
     """est le main"""
     lien_fichier_map = "map/"
     lien_map = "tuto_5.json"  # "tuto_1_troll.json"  # "map_teste.json"  # "tuto_1.json"
-    lien_controle = "control.json"
+    lien_controle = "option/control.json"
+    lien_control_default = "option/control_default.json"
+    lien_option = "option/option.json"
+    lien_option_default = "option/option_default.json"
 
+    controle = save.open_json(lien_controle)
+    option = save.open_json(lien_option)
     # rule, map_ = save.open_json(LIEN_FICHIER_MAP + lien_map)
     # controle = save.open_json(lien_controle)
     # map_ = genere_obj(map_)
@@ -698,15 +1120,61 @@ def main():
     clavier = Clavier()
     souris = Souris()
     # jeu = game(map_, rule["face"], rule["valeur_de_fin"], controle, clavier)
+
     menu_pause = MenuPause()
     selection_level = ChoisirLevel()
-
+    menu_option = SelectOption(controle, option, souris, clavier, {})
     clock = pygame.time.Clock()
-    action = "choix_level"  # "choix_level"  # "chargement_map"  # "pause"
+    action = (
+        "choix_level"  # "choix_level"  # "chargement_map"  # "pause" # "option_demare"
+    )
     # monospace = pygame.font.SysFont("monospace", 30)
     pygame.display.set_gamma(200, 200, 200)
     # pygame.display.se
     while action != "fin":
+        if action == "home":
+            pass
+        if action == "option_demare":
+            menu_option.set_indicateur_face(option["indicateur_face"])
+            menu_option.set_control(controle)
+            action = "option"
+        if action == "option":
+            screen.fill((175, 175, 175))
+            actualise_event(clavier, souris)
+            active_f11(clavier.get_pression("f11"))
+            menu_option.clique_bouton()
+            menu_option.actualise_bouton()
+            menu_option.affiche()
+            # print(menu_option.indicateur_face)
+            pygame.display.update()
+            clock.tick(30)
+            if menu_option.etat == "anuler":
+                if "menu" in menu_option.contexte:
+                    action = "menu"
+                elif "pause" in menu_option.contexte:
+                    action = "pause"
+                menu_option.etat = "en cour"
+            elif menu_option.etat == "valider":
+                # print("cat")
+                option["indicateur_face"] = menu_option.get_indicateur_face()
+                controle = menu_option.get_control()
+                save.save_json(lien_option, option)
+                save.save_json(lien_controle, controle)
+                menu_option.etat = "en cour"
+                if "menu" in menu_option.contexte:
+                    action = "menu"
+                elif "pause" in menu_option.contexte:
+                    action = "pause"
+            elif menu_option.etat == "reset":
+                if menu_option.page == "graphique":
+                    option = save.open_json(lien_option_default)
+                    menu_option.set_indicateur_face(option["indicateur_face"])
+                elif menu_option.page == "controle":
+                    controle = save.open_json(lien_control_default)
+                    menu_option.set_control(controle)
+                    menu_option.actualise_control()
+                menu_option.etat = "en cour"
+
         if action == "choix_level":
             actualise_event(clavier, souris)
             active_f11(clavier.get_pression("f11"))
@@ -726,7 +1194,6 @@ def main():
                 selection_level.suite_lien.pop()
         elif action == "chargement_map":
             rule, map_ = save.open_json(lien_fichier_map + lien_map)
-            controle = save.open_json(lien_controle)
             map_ = genere_obj(map_)
             jeu = Game(map_, rule["face"], rule["valeur_de_fin"], controle, clavier)
             action = "enjeu"
@@ -775,6 +1242,8 @@ def main():
             actualise_event(clavier, souris)
             active_f11(clavier.get_pression("f11"))
             menu_pause.clique_bouton(souris)
+            screen.fill((0, 0, 0))
+            jeu.affiche_obj()
             menu_pause.affiche()
             pygame.display.update()
             clock.tick(20)
@@ -783,10 +1252,14 @@ def main():
                 # "\x1b" = la touche échape
                 action = "enjeu"
             # print(menu_pause.etat)
+
             if menu_pause.etat == "quitter":
                 quit()
             elif menu_pause.etat == "reprendre":
                 action = "enjeu"
+            if menu_pause.etat == "option":
+                action = "option_demare"
+                menu_option.set_contexte({"pause"})
             elif menu_pause.etat == "redémarrer":
                 action = "chargement_map"
             elif menu_pause.etat == "level":

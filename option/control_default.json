@@ -1,0 +1,10 @@
+{
+ "droite": "d",
+ "gauche": "q",
+ "haut": "z",
+ "bas": "s",
+ "interagir": "f",
+ "avancer": "a",
+ "reculer": "e",
+ "debug1": "k"
+}

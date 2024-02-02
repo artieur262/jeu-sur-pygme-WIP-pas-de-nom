@@ -1,4 +1,5 @@
-from block.class_obj import *
+"est un test pour voir des evenement de pygame"
+from block.class_obj import pygame
 
 # pygame.mixer.init()
 # pyga
