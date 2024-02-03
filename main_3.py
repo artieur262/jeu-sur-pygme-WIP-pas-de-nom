@@ -2,18 +2,19 @@
 
 import save
 from block.class_obj import genere_obj, vider_affichage
-from interface import (
-    pygame,
-    screen,
-    MenuPause,
-    ChoisirLevel,
+from interface.option import (
     SelectOption,
     active_f11,
     actualise_event,
+    pygame,
+    screen,
     ObjetGraphique,
     place_texte_in_texture,
     gener_texture,
 )
+
+from interface.choix_level import ChoisirLevel
+from interface.pause import MenuPause
 from game import Game
 from class_clavier import Clavier, Souris
 
