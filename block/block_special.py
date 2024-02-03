@@ -240,16 +240,28 @@ class Graviteur(Block):
         self,
         coordonnee: tuple[int, int, int],
         taille: tuple[int, int, int],
+        convert_graviter: dict[str(tuple[int, int, int]), tuple[int, int, int]],
+        id_activation: int,
         color: tuple[int, int, int] = None,
         animation: int = 0,
         texture: list[str] = None,
     ):
+        self._id = id_activation
+        self.active = False
+        self.convert_graviter = convert_graviter
         super().__init__(coordonnee, taille, color, animation, texture)
+
+    def activation(self, set_activation: set):
+        """permet d'activer le block si l'id correspode à l'une du block"""
+        if self._id in set_activation:
+            self.active = True
 
     def convert_save(self) -> dict:
         """convertie le block en dictionnaire"""
         sorti = super().convert_save()
         sorti["type"] = "graviteur"
+        sorti["convert_graviter"] = self.convert_graviter
+        sorti["id_activation"] = self._id
         return sorti
 
     @staticmethod
@@ -258,6 +270,8 @@ class Graviteur(Block):
         return Graviteur(
             dic["coor"],
             dic["taille"],
+            dic["convert_graviter"],
+            dic["id_activation"],
             dic["color"],
             texture=dic["texture"],
         )
