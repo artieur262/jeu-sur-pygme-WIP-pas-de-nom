@@ -894,6 +894,7 @@ class SelectOption:
         self.actualise_bouton()
 
     def actualise_control(self):
+        """actualise les controles et les touches"""
         for bouton in self.list_bouton:
             if bouton[2][0:7] == "control":
                 bouton[0] = self.control[bouton[2][7:]]
