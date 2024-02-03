@@ -1,5 +1,7 @@
+"""est un trop vieux main pour le jeu"""
+
 import time
-from block.class_obj import *
+from block.class_obj import *  # pylint: disable=unused-wildcard-import disable=wildcard-import
 from class_clavier import Clavier
 
 monospace = pygame.font.SysFont("monospace", 15)
@@ -14,7 +16,7 @@ monospace = pygame.font.SysFont("monospace", 15)
 vider_affichage()
 joueur = Playeur((0, 0, 0), 20, (255, 255, 255))
 list_block: list[Block] = []
-face = 1
+face = 1  # pylint: disable=invalid-name
 clock = pygame.time.Clock()
 for i in ((50, 0, 0), (100, 0, 0), (0, 50, 0), (0, 0, 50), [50, 0, 75], [125, 0, 50]):
     list_block.append(Block(i, (50, 50, 25), (125, 125, 125)))
@@ -164,7 +166,7 @@ while True:
         joueur.deplace(list_block + list_platforme_mouvente + list_interupteur, 0, -1)
 
     for platf in list_platforme_mouvente:
-        platf.deplace([joueur])
+        platf.deplace_chemain([joueur])
 
     # print(joueur.etat)
     time_a = time.time()

@@ -8,13 +8,23 @@ from block.class_obj import (
     screen,
     # for the typing
     Block,
-    BlockLumiere,
-    BlockCore,
+    BlockTexte,
+    Playeur,
+    #
     Interupteur,
     ZoneActive,
-    Playeur,
+    BlockLumiere,
+    PlateformeMouvante,
+    #
+    BlockCore,
+    TunelDimensionelBrigitte,
+    RedimentioneurPlayer,
+    Graviteur,
+    #
     Logique,
+    LogiqueNot,
     LogiqueTimer,
+    LogiqueChangement,
 )
 
 from class_clavier import Clavier  # for typing only
@@ -30,14 +40,24 @@ class Game:
         dict_obj: dict[
             str,
             list[
-                Logique
-                | LogiqueTimer
-                | Block
-                | Interupteur
-                | BlockLumiere
+                Block
+                | BlockTexte
                 | Playeur
-                | BlockCore
+                #
+                | Interupteur
                 | ZoneActive
+                | BlockLumiere
+                | PlateformeMouvante
+                #
+                | BlockCore
+                | TunelDimensionelBrigitte
+                | RedimentioneurPlayer
+                | Graviteur
+                #
+                | Logique
+                | LogiqueNot
+                | LogiqueTimer
+                | LogiqueChangement
             ],
         ],
         face: str,
@@ -78,6 +98,7 @@ class Game:
             "plaforme",
             "lumière",
             "core",
+            "redimentioneur",
             "tunel_dimensionel",
             "texte",
             "playeur",
@@ -115,14 +136,22 @@ class Game:
                 obj.activate(self.set_activation)
                 obj.actualise()
 
-        for clee_activateur in ("plaforme", "logique", "lumière", "core"):
+        for clee_activateur in (
+            "plaforme",
+            "logique",
+            "lumière",
+            "core",
+            "redimentioneur",
+        ):
             for obj in self.dict_obj[clee_activateur]:
                 obj.activation(self.set_activation)
 
         for core in self.dict_obj["core"]:
             core.actualise()
             self.face = core.activate_core(self.face, self.dict_obj["playeur"])
-
+        for redimentioneur in self.dict_obj["redimentioneur"]:
+            redimentioneur.activate_redimentioneur(self.dict_obj["playeur"], self.face)
+            redimentioneur.actualise()
         if self.valeur_de_fin in self.set_activation:
             self.etat = "victoire"
 

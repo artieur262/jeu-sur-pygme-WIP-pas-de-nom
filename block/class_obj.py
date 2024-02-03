@@ -50,16 +50,21 @@ def genere_obj(
 ]:
     """genere les objets à partir d'une liste de dictionaire"""
     sorti = {
-        "interupteur": [],
+        "block": [],
         "playeur": [],
+        "texte": [],
+        #
+        "interupteur": [],
+        "zone_acitve": [],
         "plaforme": [],
         "lumière": [],
-        "block": [],
-        "logique": [],
-        "texte": [],
+        #
         "core": [],
         "tunel_dimensionel": [],
-        "zone_acitve": [],
+        "redimentioneur": [],
+        "graviteur": [],
+        #
+        "logique": [],
     }
     for obj in liste:
         # print(obj)

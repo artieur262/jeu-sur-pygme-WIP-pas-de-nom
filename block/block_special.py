@@ -201,12 +201,16 @@ class RedimentioneurPlayer(Block):
         self.dict_taille = dict_taille
         super().__init__(coordonnee, taille, color, animation, texture)
 
+    def actualise(self):
+        """actualise le block"""
+        self.active = False
+
     def activation(self, set_activation: set):
         """permet d'activer le block si l'id correspode à l'une du block"""
         if self._id in set_activation:
             self.active = True
 
-    def change_taille_playeur(self, playeur: Playeur, face: int):
+    def activate_redimentioneur(self, playeur: Playeur, face: int):
         """permet de changer la taille du playeur"""
         if self.active:
             playeur.set_taille_int(self.dict_taille[face], face)
