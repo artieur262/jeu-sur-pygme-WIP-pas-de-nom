@@ -7,7 +7,6 @@ from block.class_obj import (
     pygame,
     ObjetGraphique,
     gener_texture,
-    gener_texture_arc_ciel,
     place_texte_in_texture,
 )
 from class_clavier import Clavier, Souris
