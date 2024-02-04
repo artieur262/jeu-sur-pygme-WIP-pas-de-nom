@@ -30,11 +30,12 @@ class Playeur(Block):
     def actualise_taille_playeur(self, face: str):
         """actualise la taille du joueur en fonction de la face"""
         if face == 0:
-            self._taille = [self._taille_int, self._taille_int, 1]
+            self._taille = [1, self._taille_int, self._taille_int]
         elif face == 1:
             self._taille = [self._taille_int, 1, self._taille_int]
         elif face == 2:
-            self._taille = [1, self._taille_int, self._taille_int]
+            self._taille = [self._taille_int, self._taille_int, 1]
+
         else:
             raise ValueError(f"la face n'est pas reconnu : face = {face}")
 

@@ -69,7 +69,7 @@ class BlockCore(Block):
         if self._texure_active:
             self.graphique = (
                 ObjetGraphique(
-                    (self._coordonnee[:2]),  # xy
+                    (self._coordonnee[1:]),  # xy
                     self._texure,
                     self.animation,
                 ),
@@ -79,14 +79,14 @@ class BlockCore(Block):
                     self.animation,
                 ),
                 ObjetGraphique(
-                    (self._coordonnee[1:]),  # yz
+                    (self._coordonnee[:2]),  # yz
                     self._texure,
                     self.animation,
                 ),
             )
             for i, image in enumerate(self.graphique[0].images):
                 self.graphique[0].images[i] = pygame.transform.scale(
-                    image, self._taille[:2]
+                    image, self._taille[1:]
                 )
             for i, image in enumerate(self.graphique[1].images):
                 self.graphique[1].images[i] = pygame.transform.scale(
@@ -94,7 +94,7 @@ class BlockCore(Block):
                 )
             for i, image in enumerate(self.graphique[2].images):
                 self.graphique[2].images[i] = pygame.transform.scale(
-                    image, self._taille[1:]
+                    image, self._taille[:2]
                 )
 
     def activation(self, set_activation: set):

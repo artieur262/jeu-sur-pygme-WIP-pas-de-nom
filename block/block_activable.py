@@ -129,7 +129,7 @@ class BlockLumiere(Block):
         if self._texure_active:
             self.graphique = (
                 ObjetGraphique(
-                    (self._coordonnee[:2]),  # xy
+                    (self._coordonnee[1:]),  # xy
                     self._texure,
                     self.animation,
                 ),
@@ -139,7 +139,7 @@ class BlockLumiere(Block):
                     self.animation,
                 ),
                 ObjetGraphique(
-                    (self._coordonnee[1:]),  # yz
+                    (self._coordonnee[:2]),  # yz
                     self._texure,
                     self.animation,
                 ),
@@ -147,7 +147,7 @@ class BlockLumiere(Block):
         else:
             self.graphique = (
                 ObjetGraphique(
-                    (self._coordonnee[:2]),  # xy
+                    (self._coordonnee[1:]),  # xy
                     [
                         gener_texture(self._taille[:2], color)
                         for color in self._list_color
@@ -163,7 +163,7 @@ class BlockLumiere(Block):
                     self.animation,
                 ),
                 ObjetGraphique(
-                    (self._coordonnee[1:]),  # yz
+                    (self._coordonnee[:2]),  # yz
                     [
                         gener_texture(self._taille[1:], color)
                         for color in self._list_color

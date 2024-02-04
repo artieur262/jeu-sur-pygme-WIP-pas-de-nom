@@ -1,4 +1,5 @@
 """est le module qui contient les classes de block"""
+
 # pylint : missing-module-docstring
 from graphique import *  # pylint: disable=unused-wildcard-import wildcard-import
 
@@ -68,7 +69,7 @@ class Block:
         if self._texure_active:
             self.graphique = (
                 ObjetGraphique(
-                    (self._coordonnee[:2]),  # xy
+                    (self._coordonnee[1:]),  # yz
                     self._texure,
                     self.animation,
                 ),
@@ -78,29 +79,30 @@ class Block:
                     self.animation,
                 ),
                 ObjetGraphique(
-                    (self._coordonnee[1:]),  # yz
+                    (self._coordonnee[:2]),  # xy
                     self._texure,
                     self.animation,
                 ),
             )  # graphique les façaces sont les plans  : ([x,y],[x,z],[y,z])
-            for i, image in enumerate(self.graphique[0].images):
+            for i, image in enumerate(self.graphique[2].images):
                 self.graphique[0].images[i] = pygame.transform.scale(
-                    image, self._taille[:2]
+                    image, self._taille[1:]
                 )
             for i, image in enumerate(self.graphique[1].images):
                 self.graphique[1].images[i] = pygame.transform.scale(
                     image, (self._taille[0], self._taille[2])
                 )
-            for i, image in enumerate(self.graphique[2].images):
+            for i, image in enumerate(self.graphique[0].images):
                 self.graphique[2].images[i] = pygame.transform.scale(
-                    image, self._taille[1:]
+                    image, self._taille[:2]
                 )
+
             # print("cat")
         else:
             self.graphique = (
                 ObjetGraphique(
-                    (self._coordonnee[:2]),  # xy
-                    [gener_texture(self._taille[:2], self._color)],
+                    (self._coordonnee[1:]),  # yz
+                    [gener_texture(self._taille[1:], self._color)],
                     self.animation,
                 ),
                 ObjetGraphique(
@@ -109,8 +111,8 @@ class Block:
                     self.animation,
                 ),
                 ObjetGraphique(
-                    (self._coordonnee[1:]),  # yz
-                    [gener_texture(self._taille[1:], self._color)],
+                    (self._coordonnee[:2]),  # xy
+                    [gener_texture(self._taille[:2], self._color)],
                     self.animation,
                 ),
             )  # graphique les façaces sont les plans  : ([x,y],[x,z],[y,z])
@@ -129,9 +131,9 @@ class Block:
 
     def actualise_coord_graph(self):
         """actualise la position des objet graphique"""
-        self.graphique[0].coordonnee = self._coordonnee[:2]
+        self.graphique[0].coordonnee = self._coordonnee[1:]
         self.graphique[1].coordonnee = (self._coordonnee[0], self._coordonnee[2])
-        self.graphique[2].coordonnee = self._coordonnee[1:]
+        self.graphique[2].coordonnee = self._coordonnee[:2]
 
     def get_color(self) -> tuple[int]:
         """renvoi la couleur"""
@@ -227,7 +229,7 @@ class Block:
             taille (tuple, optional): _description_. Defaults to None.
         """
 
-        if self.in_axe(cord_face, 2 - face):
+        if self.in_axe(cord_face, face):
             self.graphique[face].afficher(decalage, taille)
 
     def in_axe(self, point, axe):

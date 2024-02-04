@@ -68,7 +68,7 @@ class Game:
     ):
         self.etat = "en cour"
         self.dict_obj = dict_obj
-        self.face = face  # 0:xy ; 1:xz ; 2:yz
+        self.face = face  # 0:yz ; 1:xz ; 2:xy
         self.hauteur = 251
         self.clavier = clavier
         self.set_activation = set()
@@ -82,19 +82,19 @@ class Game:
         largeur_contour = 15
         self.contour: list[ObjetGraphique] = []
         for i in [
-            ((255, 0, 0), (0, 255, 0), (dimentions[0], largeur_contour), (0, 0)),
+            ((255, 0, 0), (0, 0, 255), (largeur_contour, dimentions[1]), (0, 0)),
             (
                 (255, 0, 0),
-                (0, 255, 0),
-                (dimentions[0], largeur_contour),
-                (0, dimentions[1] - largeur_contour),
-            ),
-            ((0, 255, 0), (0, 0, 255), (largeur_contour, dimentions[1]), (0, 0)),
-            (
-                (0, 255, 0),
                 (0, 0, 255),
                 (largeur_contour, dimentions[1]),
                 (dimentions[0] - largeur_contour, 0),
+            ),
+            ((0, 0, 255), (0, 255, 0), (dimentions[0], largeur_contour), (0, 0)),
+            (
+                (0, 0, 255),
+                (0, 255, 0),
+                (dimentions[0], largeur_contour),
+                (0, dimentions[1] - largeur_contour),
             ),
         ]:
             self.contour.append(
@@ -126,15 +126,15 @@ class Game:
             self.contour,
             (
                 (0, 0),
-                (0, dimentions[1] - largeur_contour),
-                (0, 0),
                 (dimentions[0] - largeur_contour, 0),
+                (0, 0),
+                (0, dimentions[1] - largeur_contour),
             ),
             (
-                (dimentions[0], largeur_contour),
-                (dimentions[0], largeur_contour),
                 (largeur_contour, dimentions[1]),
                 (largeur_contour, dimentions[1]),
+                (dimentions[0], largeur_contour),
+                (dimentions[0], largeur_contour),
             ),
         ):
             obj[0].coordonnee = obj[1]
@@ -153,7 +153,7 @@ class Game:
 
     def actualise_face(self):
         """actualise la face"""
-        if 2 - self.face == 0:
+        if self.face == 0:
             self.contour[0].animation = 1
             self.contour[1].animation = 1
             self.contour[2].animation = 1
@@ -161,20 +161,20 @@ class Game:
         elif self.face == 1:
             self.contour[0].animation = 0
             self.contour[1].animation = 0
-            self.contour[2].animation = 0
-            self.contour[3].animation = 0
+            self.contour[2].animation = 1
+            self.contour[3].animation = 1
         else:
             self.contour[0].animation = 0
             self.contour[1].animation = 0
-            self.contour[2].animation = 1
-            self.contour[3].animation = 1
+            self.contour[2].animation = 0
+            self.contour[3].animation = 0
 
     def actualise_camera(self):
         """actualise la camera"""
-        self.hauteur = self.dict_obj["playeur"][0].get_centre_objet()[2 - self.face]
+        self.hauteur = self.dict_obj["playeur"][0].get_centre_objet()[self.face]
 
         camera = self.dict_obj["playeur"][0].get_centre_objet()
-        camera.pop(2 - self.face)
+        camera.pop(self.face)
         taille = screen.get_size()
         self.camera = [int(camera[i] - taille[i] // 2) for i in range(2)]
         # print(self.camera)
@@ -259,21 +259,6 @@ class Game:
             + self.dict_obj["interupteur"]
         )
         if self.face == 0:
-            if self.clavier.get_pression(self.controle["haut"]) == "presser":
-                for playeur in self.dict_obj["playeur"]:
-                    playeur.deplace(obj_colision, 1, -3)
-            if self.clavier.get_pression(self.controle["bas"]) == "presser":
-                for playeur in self.dict_obj["playeur"]:
-                    playeur.deplace(obj_colision, 1, 3)
-        else:
-            if self.clavier.get_pression(self.controle["bas"]) == "presser":
-                for playeur in self.dict_obj["playeur"]:
-                    playeur.deplace(obj_colision, 2, 3)
-            if self.clavier.get_pression(self.controle["haut"]) == "presser":
-                for playeur in self.dict_obj["playeur"]:
-                    playeur.deplace(obj_colision, 2, -3)
-
-        if self.face == 2:
             if self.clavier.get_pression(self.controle["droite"]) == "presser":
                 for playeur in self.dict_obj["playeur"]:
                     playeur.deplace(obj_colision, 1, 3)
@@ -287,32 +272,49 @@ class Game:
             if self.clavier.get_pression(self.controle["gauche"]) == "presser":
                 for playeur in self.dict_obj["playeur"]:
                     playeur.deplace(obj_colision, 0, -3)
+
+        if self.face == 2:
+            if self.clavier.get_pression(self.controle["haut"]) == "presser":
+                for playeur in self.dict_obj["playeur"]:
+                    playeur.deplace(obj_colision, 1, -3)
+            if self.clavier.get_pression(self.controle["bas"]) == "presser":
+                for playeur in self.dict_obj["playeur"]:
+                    playeur.deplace(obj_colision, 1, 3)
+        else:
+            if self.clavier.get_pression(self.controle["bas"]) == "presser":
+                for playeur in self.dict_obj["playeur"]:
+                    playeur.deplace(obj_colision, 2, 3)
+            if self.clavier.get_pression(self.controle["haut"]) == "presser":
+                for playeur in self.dict_obj["playeur"]:
+                    playeur.deplace(obj_colision, 2, -3)
 
         if any(
             obj.collision(self.dict_obj["playeur"][0])
             for obj in self.dict_obj["tunel_dimensionel"]
         ):
+
             if self.face == 0:
-                if self.clavier.get_pression(self.controle["avancer"]) == "presser":
-                    playeur = self.dict_obj["playeur"][0]
-                    playeur.deplace(obj_colision, 2, -3)
-                if self.clavier.get_pression(self.controle["reculer"]) == "presser":
-                    playeur = self.dict_obj["playeur"][0]
-                    playeur.deplace(obj_colision, 2, 3)
-            if self.face == 1:
-                if self.clavier.get_pression(self.controle["avancer"]) == "presser":
-                    playeur = self.dict_obj["playeur"][0]
-                    playeur.deplace(obj_colision, 1, -3)
-                if self.clavier.get_pression(self.controle["reculer"]) == "presser":
-                    playeur = self.dict_obj["playeur"][0]
-                    playeur.deplace(obj_colision, 1, 3)
-            if self.face == 2:
                 if self.clavier.get_pression(self.controle["avancer"]) == "presser":
                     playeur = self.dict_obj["playeur"][0]
                     playeur.deplace(obj_colision, 0, 3)
                 if self.clavier.get_pression(self.controle["reculer"]) == "presser":
                     playeur = self.dict_obj["playeur"][0]
                     playeur.deplace(obj_colision, 0, -3)
+            elif self.face == 1:
+                if self.clavier.get_pression(self.controle["avancer"]) == "presser":
+                    playeur = self.dict_obj["playeur"][0]
+                    playeur.deplace(obj_colision, 1, -3)
+                if self.clavier.get_pression(self.controle["reculer"]) == "presser":
+                    playeur = self.dict_obj["playeur"][0]
+                    playeur.deplace(obj_colision, 1, 3)
+
+            elif self.face == 2:
+                if self.clavier.get_pression(self.controle["avancer"]) == "presser":
+                    playeur = self.dict_obj["playeur"][0]
+                    playeur.deplace(obj_colision, 2, -3)
+                if self.clavier.get_pression(self.controle["reculer"]) == "presser":
+                    playeur = self.dict_obj["playeur"][0]
+                    playeur.deplace(obj_colision, 2, 3)
 
     def acvite_block(self):
         """active les block"""
@@ -327,7 +329,7 @@ class Game:
                     if list_interupteur[i].type in (
                         "levier",
                         "impulsif",
-                    ) and list_interupteur[i].in_axe(self.hauteur, 2 - self.face):
+                    ) and list_interupteur[i].in_axe(self.hauteur, self.face):
                         list_interupteur[i].activation()
                 # print(list_interupteur[0].get_active())
 
@@ -340,6 +342,6 @@ class Game:
                 for i in tac:
                     if list_interupteur[i].type == "bouton" and list_interupteur[
                         i
-                    ].in_axe(self.hauteur, 2 - self.face):
+                    ].in_axe(self.hauteur, self.face):
                         list_interupteur[i].activation()
                 # print(list_interupteur[0].get_active())
