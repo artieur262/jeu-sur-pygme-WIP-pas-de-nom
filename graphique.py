@@ -1,5 +1,6 @@
 """parti grapfique de mon jeu
 """
+
 # pylint: disable= no-member
 import pygame
 
@@ -45,6 +46,12 @@ class ObjetGraphique:
     def image_actuel(self) -> pygame.Surface:
         """donne l'image actuel"""
         return self.images[self.animation]
+
+    def redimentione_all_image(self, taille: tuple[int]):
+        """redimentionne toute les images"""
+        for i, image in enumerate(self.images):
+            self.images[i] = pygame.transform.scale(image, taille)
+        self.actualise_dimension()
 
     def actualise_dimension(self):
         """actualise les dimensions"""

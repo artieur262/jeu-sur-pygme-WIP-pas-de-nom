@@ -122,6 +122,8 @@ def main():
 
             actualise_event(clavier, souris)
             clock.tick(60)
+            jeu.actualise_face()
+            jeu.actualise_fenetre()
             jeu.affiche_obj()
             jeu.depacle_playeur()
             jeu.actualise_obj()

@@ -4,8 +4,8 @@
 
 
 # import save
+from graphique import screen, gener_texture, ObjetGraphique
 from block.class_obj import (
-    screen,
     # for the typing
     Block,
     BlockTexte,
@@ -78,6 +78,96 @@ class Game:
         self.controle = controle
         self.dict_obj["playeur"][0].actualise_taille_playeur(face)
         self.actualise_camera()
+        dimentions = screen.get_size()
+        largeur_contour = 15
+        self.contour: list[ObjetGraphique] = []
+        for i in [
+            ((255, 0, 0), (0, 255, 0), (dimentions[0], largeur_contour), (0, 0)),
+            (
+                (255, 0, 0),
+                (0, 255, 0),
+                (dimentions[0], largeur_contour),
+                (0, dimentions[1] - largeur_contour),
+            ),
+            ((0, 255, 0), (0, 0, 255), (largeur_contour, dimentions[1]), (0, 0)),
+            (
+                (0, 255, 0),
+                (0, 0, 255),
+                (largeur_contour, dimentions[1]),
+                (dimentions[0] - largeur_contour, 0),
+            ),
+        ]:
+            self.contour.append(
+                ObjetGraphique(
+                    i[3],
+                    [
+                        gener_texture(i[2], i[0]),
+                        gener_texture(i[2], i[1]),
+                    ],
+                )
+            )
+        self.coin = [
+            ObjetGraphique(
+                i, [gener_texture((largeur_contour, largeur_contour), (255, 255, 255))]
+            )
+            for i in (
+                (0, 0),
+                (dimentions[0] - largeur_contour, 0),
+                (0, dimentions[1] - largeur_contour),
+                (dimentions[0] - largeur_contour, dimentions[1] - largeur_contour),
+            )
+        ]
+
+    def actualise_fenetre(self):
+        """actualise les contours"""
+        largeur_contour = 15
+        dimentions = screen.get_size()
+        for obj in zip(
+            self.contour,
+            (
+                (0, 0),
+                (0, dimentions[1] - largeur_contour),
+                (0, 0),
+                (dimentions[0] - largeur_contour, 0),
+            ),
+            (
+                (dimentions[0], largeur_contour),
+                (dimentions[0], largeur_contour),
+                (largeur_contour, dimentions[1]),
+                (largeur_contour, dimentions[1]),
+            ),
+        ):
+            obj[0].coordonnee = obj[1]
+            obj[0].redimentione_all_image(obj[2])
+
+        for coin in zip(
+            self.coin,
+            (
+                (0, 0),
+                (dimentions[0] - largeur_contour, 0),
+                (0, dimentions[1] - largeur_contour),
+                (dimentions[0] - largeur_contour, dimentions[1] - largeur_contour),
+            ),
+        ):
+            coin[0].coordonnee = coin[1]
+
+    def actualise_face(self):
+        """actualise la face"""
+        if 2 - self.face == 0:
+            self.contour[0].animation = 1
+            self.contour[1].animation = 1
+            self.contour[2].animation = 1
+            self.contour[3].animation = 1
+        elif self.face == 1:
+            self.contour[0].animation = 0
+            self.contour[1].animation = 0
+            self.contour[2].animation = 0
+            self.contour[3].animation = 0
+        else:
+            self.contour[0].animation = 0
+            self.contour[1].animation = 0
+            self.contour[2].animation = 1
+            self.contour[3].animation = 1
 
     def actualise_camera(self):
         """actualise la camera"""
@@ -92,6 +182,7 @@ class Game:
     def affiche_obj(self):
         """affiche les objets"""
         # print(self.dict_obj["playeur"][0]._taille)
+
         for clee_affichable in (
             "block",
             "interupteur",
@@ -110,6 +201,11 @@ class Game:
                     self.hauteur,
                     self.camera,
                 )
+        if "couleur" in self.option["indicateur_face"]:
+            for obj in self.contour:
+                obj.afficher()
+            for obj in self.coin:
+                obj.afficher()
 
     def actualise_obj(self):
         """actualise les objets"""
