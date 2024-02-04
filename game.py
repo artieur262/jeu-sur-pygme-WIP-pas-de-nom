@@ -89,8 +89,25 @@ class Game:
         self.actualise_camera()
         dimentions = screen.get_size()
         self.face_texte = ObjetGraphique(
-            (0, 0), [gener_texture((150, 50), (125, 125, 125))]
+            (0, 0), [gener_texture((150, 50), (125, 125, 125)) for _ in range(3)]
         )
+        for i, text in enumerate(("face:yz", "face:xz", "face:xy")):
+            self.face_texte.images[i].blit(
+                place_texte_in_texture(
+                    gener_texture(
+                        (
+                            self.face_texte.dimension[0] - 10,
+                            self.face_texte.dimension[1] - 10,
+                        ),
+                        (50, 50, 50),
+                    ),
+                    text,
+                    self.police,
+                    (255, 255, 255),
+                ),
+                (5, 5),
+            )
+
         largeur_contour = 15
         self.contour: list[ObjetGraphique] = []
         for i in [
@@ -171,62 +188,20 @@ class Game:
 
     def actualise_face(self):
         """actualise la face"""
+        self.face_texte.animation = self.face
         if self.face == 0:
-            self.face_texte.images[0].blit(
-                place_texte_in_texture(
-                    gener_texture(
-                        (
-                            self.face_texte.dimension[0] - 10,
-                            self.face_texte.dimension[1] - 10,
-                        ),
-                        (50, 50, 50),
-                    ),
-                    "face:yz",
-                    self.police,
-                    (255, 255, 255),
-                ),
-                (5, 5),
-            )
             self.contour[0].animation = 1
             self.contour[1].animation = 1
             self.contour[2].animation = 1
             self.contour[3].animation = 1
         elif self.face == 1:
-            self.face_texte.images[0].blit(
-                place_texte_in_texture(
-                    gener_texture(
-                        (
-                            self.face_texte.dimension[0] - 10,
-                            self.face_texte.dimension[1] - 10,
-                        ),
-                        (50, 50, 50),
-                    ),
-                    "face:xz",
-                    self.police,
-                    (255, 255, 255),
-                ),
-                (5, 5),
-            )
+
             self.contour[0].animation = 0
             self.contour[1].animation = 0
             self.contour[2].animation = 1
             self.contour[3].animation = 1
         else:
-            self.face_texte.images[0].blit(
-                place_texte_in_texture(
-                    gener_texture(
-                        (
-                            self.face_texte.dimension[0] - 10,
-                            self.face_texte.dimension[1] - 10,
-                        ),
-                        (50, 50, 50),
-                    ),
-                    "face:xy",
-                    self.police,
-                    (255, 255, 255),
-                ),
-                (5, 5),
-            )
+
             self.contour[0].animation = 0
             self.contour[1].animation = 0
             self.contour[2].animation = 0
