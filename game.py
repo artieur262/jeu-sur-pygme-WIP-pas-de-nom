@@ -4,7 +4,13 @@
 
 
 # import save
-from graphique import screen, gener_texture, ObjetGraphique
+from graphique import (
+    screen,
+    gener_texture,
+    place_texte_in_texture,
+    ObjetGraphique,
+    pygame,
+)
 from block.class_obj import (
     # for the typing
     Block,
@@ -65,6 +71,8 @@ class Game:
         controle: dict,
         option: dict,
         clavier: Clavier = None,
+        police: str = "monospace",
+        taille_police: int = 30,
     ):
         self.etat = "en cour"
         self.dict_obj = dict_obj
@@ -75,10 +83,14 @@ class Game:
         self.camera = [0, 0]
         self.option = option
         self.valeur_de_fin = valeur_de_fin
+        self.police = pygame.font.SysFont(police, taille_police)
         self.controle = controle
         self.dict_obj["playeur"][0].actualise_taille_playeur(face)
         self.actualise_camera()
         dimentions = screen.get_size()
+        self.face_texte = ObjetGraphique(
+            (0, 0), [gener_texture((150, 50), (125, 125, 125))]
+        )
         largeur_contour = 15
         self.contour: list[ObjetGraphique] = []
         for i in [
@@ -117,6 +129,8 @@ class Game:
                 (dimentions[0] - largeur_contour, dimentions[1] - largeur_contour),
             )
         ]
+        self.actualise_fenetre()
+        self.actualise_face()
 
     def actualise_fenetre(self):
         """actualise les contours"""
@@ -150,20 +164,69 @@ class Game:
             ),
         ):
             coin[0].coordonnee = coin[1]
+        self.face_texte.coordonnee = (
+            dimentions[0] // 2 - self.face_texte.dimension[0] // 2,
+            0,
+        )
 
     def actualise_face(self):
         """actualise la face"""
         if self.face == 0:
+            self.face_texte.images[0].blit(
+                place_texte_in_texture(
+                    gener_texture(
+                        (
+                            self.face_texte.dimension[0] - 10,
+                            self.face_texte.dimension[1] - 10,
+                        ),
+                        (50, 50, 50),
+                    ),
+                    "face:yz",
+                    self.police,
+                    (255, 255, 255),
+                ),
+                (5, 5),
+            )
             self.contour[0].animation = 1
             self.contour[1].animation = 1
             self.contour[2].animation = 1
             self.contour[3].animation = 1
         elif self.face == 1:
+            self.face_texte.images[0].blit(
+                place_texte_in_texture(
+                    gener_texture(
+                        (
+                            self.face_texte.dimension[0] - 10,
+                            self.face_texte.dimension[1] - 10,
+                        ),
+                        (50, 50, 50),
+                    ),
+                    "face:xz",
+                    self.police,
+                    (255, 255, 255),
+                ),
+                (5, 5),
+            )
             self.contour[0].animation = 0
             self.contour[1].animation = 0
             self.contour[2].animation = 1
             self.contour[3].animation = 1
         else:
+            self.face_texte.images[0].blit(
+                place_texte_in_texture(
+                    gener_texture(
+                        (
+                            self.face_texte.dimension[0] - 10,
+                            self.face_texte.dimension[1] - 10,
+                        ),
+                        (50, 50, 50),
+                    ),
+                    "face:xy",
+                    self.police,
+                    (255, 255, 255),
+                ),
+                (5, 5),
+            )
             self.contour[0].animation = 0
             self.contour[1].animation = 0
             self.contour[2].animation = 0
@@ -206,6 +269,8 @@ class Game:
                 obj.afficher()
             for obj in self.coin:
                 obj.afficher()
+        if "text" in self.option["indicateur_face"]:
+            self.face_texte.afficher()
 
     def actualise_obj(self):
         """actualise les objets"""

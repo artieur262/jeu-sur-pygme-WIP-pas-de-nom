@@ -1,15 +1,19 @@
-from block.class_obj import *
+"""genere une map"""
+
+from block.class_obj import *  # pylint: disable=unused-wildcard-import disable=wildcard-import
 import save
 
 
-def convert_map(map_: list[Block | Logique]):
-    return [x.convert_save() for x in map_]
+def convert_map(map__: list[Block | Logique]):
+    """convertie une liste de block en liste de dictionaire"""
+
+    return [x.convert_save() for x in map__]
 
 
 LIEN_FICHIER_MAP = "map/"
 LIEN = "tuto_6.json"
 rule = {"face": 1, "valeur_de_fin": 10, "gravite": (0, 0, 0)}
-map = [
+map_ = [
     Playeur((0, 25, 220), 30, (255, 255, 255)),
     Block((-50, -100, 0), (50, 250, 300), (125, 125, 125)),
     Block((0, 0, 0), (800, 50, 50), (125, 125, 125)),
@@ -62,6 +66,6 @@ map = [
     ),
 ]
 
-contenu = [rule, convert_map(map)]
+contenu = [rule, convert_map(map_)]
 # print(contenu)
 save.save_json(LIEN_FICHIER_MAP + LIEN, contenu)
