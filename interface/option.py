@@ -32,13 +32,45 @@ class ChoixTouche:
         self.clavier = clavier
         self.fond = ObjetGraphique((0, 0), [gener_texture((450, 350), (200, 200, 200))])
         self.list_bouton: list[str | ObjetGraphique] = [
-            [i[0], ObjetGraphique(i[1], [gener_texture(i[2], (100, 100, 100))])]
+            [
+                i[0],
+                ObjetGraphique(
+                    i[1], [gener_texture(i[2], (100, 100, 100)) for _ in range(2)]
+                ),
+            ]
             for i in [
                 ("anuler", (0, 300), (150, 50)),
                 ("valider", (300, 300), (150, 50)),
                 ("changer", (150, 300), (150, 50)),
             ]
         ]
+        for bouton in self.list_bouton:
+            bouton[1].images[0].blit(
+                place_texte_in_texture(
+                    gener_texture(
+                        (bouton[1].dimension[0] - 10, bouton[1].dimension[1] - 10),
+                        (75, 75, 75),
+                    ),
+                    bouton[0],
+                    self.police_1,
+                    (255, 255, 255),
+                ),
+                (5, 5),
+            )
+
+            bouton[1].images[1].blit(
+                place_texte_in_texture(
+                    gener_texture(
+                        (bouton[1].dimension[0] - 10, bouton[1].dimension[1] - 10),
+                        (50, 50, 50),
+                    ),
+                    bouton[0],
+                    self.police_1,
+                    (255, 255, 255),
+                ),
+                (5, 5),
+            )
+
         self.graf_touche = ObjetGraphique(
             (0, 0), [gener_texture((450, 200), (100, 100, 100))]
         )
@@ -76,31 +108,9 @@ class ChoixTouche:
         # self.graf_touche.set_coordonnee(centrage)
         for bouton in self.list_bouton:
             if bouton[1].x_y_dans_objet(pos_sour_decale[0], pos_sour_decale[1]):
-                bouton[1].images[0].blit(
-                    place_texte_in_texture(
-                        gener_texture(
-                            (bouton[1].dimension[0] - 10, bouton[1].dimension[1] - 10),
-                            (75, 75, 75),
-                        ),
-                        bouton[0],
-                        self.police_1,
-                        (255, 255, 255),
-                    ),
-                    (5, 5),
-                )
+                bouton[1].animation = 1
             else:
-                bouton[1].images[0].blit(
-                    place_texte_in_texture(
-                        gener_texture(
-                            (bouton[1].dimension[0] - 10, bouton[1].dimension[1] - 10),
-                            (50, 50, 50),
-                        ),
-                        bouton[0],
-                        self.police_1,
-                        (255, 255, 255),
-                    ),
-                    (5, 5),
-                )
+                bouton[1].animation = 0
 
     def afficher(self):
         """affiche les objets"""

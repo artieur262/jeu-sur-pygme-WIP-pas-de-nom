@@ -50,12 +50,8 @@ class MenuPause:
                         75 + i * 100,
                     ],
                     [
-                        place_texte_in_texture(
-                            gener_texture(dimension_bouton, (100, 100, 100)),
-                            j,
-                            self.police_bouton,
-                            (255, 255, 255),
-                        )
+                        gener_texture(dimension_bouton, (100, 100, 100))
+                        for _ in range(2)
                     ],
                 ),
             ]
@@ -77,12 +73,33 @@ class MenuPause:
                 ),
                 (5, 5),
             )
+            bouton[1].images[1].blit(
+                place_texte_in_texture(
+                    gener_texture(
+                        (dimension_bouton[0] - 10, dimension_bouton[1] - 10),
+                        (25, 25, 25),
+                    ),
+                    bouton[0],
+                    self.police_bouton,
+                    (255, 255, 255),
+                ),
+                (5, 5),
+            )
 
     def affiche(self):
         """affiche les objets"""
         self.image_fond.afficher()
         for bouton in self.bouton:
             bouton[1].afficher()
+
+    def actualise_bouton(self, souris: Souris):
+        """actualise les bouton"""
+        pos_sour = souris.get_pos()
+        for bouton in self.bouton:
+            if bouton[1].x_y_dans_objet(pos_sour[0], pos_sour[1]):
+                bouton[1].animation = 1
+            else:
+                bouton[1].animation = 0
 
     def clique_bouton(self, souris: Souris):
         """actualise les actions quand on clique sur un truc"""

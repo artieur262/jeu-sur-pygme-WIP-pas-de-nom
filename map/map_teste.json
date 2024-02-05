@@ -405,9 +405,9 @@
                 0
             ],
             "texture": [
-                "texture/the core/the core atente v4.svg",
-                "texture/the core/the core demare v4.svg",
-                "texture/the core/the core charger v4.svg"
+                "texture/the core/the core atente v4.png",
+                "texture/the core/the core demare v4.png",
+                "texture/the core/the core charger v4.png"
             ],
             "id": 2,
             "tick": 60,

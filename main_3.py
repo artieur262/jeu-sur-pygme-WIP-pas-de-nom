@@ -192,8 +192,9 @@ def main():
             screen.fill((0, 0, 0))
             jeu.affiche_obj()
             menu_pause.affiche()
+            menu_pause.actualise_bouton(souris)
             pygame.display.update()
-            clock.tick(20)
+            clock.tick(30)
 
             if clavier.get_pression("\x1b") == "vien_presser":
                 # "\x1b" = la touche échape
