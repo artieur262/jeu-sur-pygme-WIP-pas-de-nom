@@ -68,6 +68,7 @@ class Game:
         ],
         face: str,
         valeur_de_fin: int,
+        valeur_mort: int,
         controle: dict,
         option: dict,
         clavier: Clavier = None,
@@ -83,6 +84,7 @@ class Game:
         self.camera = [0, 0]
         self.option = option
         self.valeur_de_fin = valeur_de_fin
+        self.valeur_mort = valeur_mort
         self.police = pygame.font.SysFont(police, taille_police)
         self.controle = controle
         self.dict_obj["playeur"][0].actualise_taille_playeur(face)
@@ -148,6 +150,10 @@ class Game:
         ]
         self.actualise_fenetre()
         self.actualise_face()
+
+    def set_controle(self, controle: dict):
+        """change les controle"""
+        self.controle = controle
 
     def actualise_fenetre(self):
         """actualise les contours"""

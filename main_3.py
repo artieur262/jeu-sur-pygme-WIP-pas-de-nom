@@ -25,7 +25,9 @@ def main():
     """est le main"""
     global screen  # pylint: disable=global-statement
     lien_fichier_map = "map/"
-    lien_map = "tuto_5.json"  # "tuto_1_troll.json"  # "map_teste.json"  # "tuto_1.json"
+    lien_map = (
+        "tuto/tuto_5.json"  # "tuto_1_troll.json"  # "map_teste.json"  # "tuto_1.json"
+    )
     lien_controle = "option/control.json"
     lien_control_default = "option/control_default.json"
     lien_option = "option/option.json"
@@ -33,7 +35,6 @@ def main():
 
     controle = save.open_json(lien_controle)
     option = save.open_json(lien_option)
-
     if option["plein_écran"]:
         screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
     # rule, map_ = save.open_json(LIEN_FICHIER_MAP + lien_map)
@@ -42,7 +43,9 @@ def main():
 
     clavier = Clavier()
     souris = Souris()
-    # jeu = game(map_, rule["face"], rule["valeur_de_fin"], controle, clavier)
+    rule, map_ = save.open_json(lien_fichier_map + lien_map)
+    map_ = genere_obj(map_)
+    jeu = Game(map_, rule["face"], rule["valeur_de_fin"],rule["valeur_mort"], controle, option, clavier)
     home = MenuPrincipale(souris)
     menu_pause = MenuPause()
     selection_level = ChoisirLevel()
@@ -100,15 +103,17 @@ def main():
                 controle = menu_option.get_control()
                 save.save_json(lien_option, option)
                 save.save_json(lien_controle, controle)
+
                 menu_option.etat = "en cour"
-                if "menu" in menu_option.contexte:
-                    action = "menu"
+                if "home" in menu_option.contexte:
+                    action = "home"
                 elif "pause" in menu_option.contexte:
                     action = "pause"
+                    jeu.set_controle(controle)  # pylint: disable=undefined-variable
             elif menu_option.etat == "reset":
                 if menu_option.page == "graphique":
                     option = save.open_json(lien_option_default)
-                    menu_option.set_option(option["indicateur_face"])
+                    menu_option.set_option(option)
                 elif menu_option.page == "controle":
                     controle = save.open_json(lien_control_default)
                     menu_option.set_control(controle)
@@ -139,7 +144,13 @@ def main():
             rule, map_ = save.open_json(lien_fichier_map + lien_map)
             map_ = genere_obj(map_)
             jeu = Game(
-                map_, rule["face"], rule["valeur_de_fin"], controle, option, clavier
+                map_,
+                rule["face"],
+                rule["valeur_de_fin"],
+                rule["valeur_mort"],
+                controle,
+                option,
+                clavier,
             )
             action = "enjeu"
         elif action == "enjeu":

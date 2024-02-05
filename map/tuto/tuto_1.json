@@ -2,6 +2,7 @@
     {
         "face": 1,
         "valeur_de_fin": 10,
+        "valeur_mort": -1,
         "gravite": [
             0,
             0,
