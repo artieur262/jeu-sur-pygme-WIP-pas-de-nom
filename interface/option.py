@@ -316,6 +316,22 @@ class SelectOption:
         for bouton in self.list_bouton:
             if bouton[2][0:7] == "control":
                 bouton[0] = self.control[bouton[2][7:]]
+                for i, couleur in enumerate([(100, 100, 100), (50, 50, 50)]):
+                    bouton[1].images[i].blit(
+                        place_texte_in_texture(
+                            gener_texture(
+                                (
+                                    bouton[1].dimension[0] - 10,
+                                    bouton[1].dimension[1] - 10,
+                                ),
+                                couleur,
+                            ),
+                            bouton[0],
+                            self.police,
+                            (255, 255, 255),
+                        ),
+                        (5, 5),
+                    )
 
     def actualise_bouton(self):
         """actualise les boutons"""

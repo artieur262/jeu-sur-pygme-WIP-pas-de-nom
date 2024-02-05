@@ -1,12 +1,13 @@
 """
 ce module contien des fonction pour sauvegarder ou charger des fichiers json
 """
+
 import os
 import json
 
 
 def indent_map(lien, indentation: int):
-    """indete un json"""
+    """indente un json"""
     with open(lien, encoding="utf8") as file:
         contenu = json.load(file)
         file = open(lien, "w", encoding="utf8")
@@ -44,7 +45,7 @@ def force_input_y_or_n(texte: str):
     """
     repondu = False
     while not repondu:
-        reponse = input(texte)
+        reponse = input(texte).lower().strip()
         if reponse == "y":
             repondu = True
             sortie = True
@@ -58,9 +59,8 @@ def force_input_y_or_n(texte: str):
 
 def choisir_ficher(chemin: str):
     """permet de choisir un fichier dans un dosier
-    si l'utilisateur anule l'action il va revoier anulation
-    sinon il revoi le nom de fichier choisi
-    cette fonction est home machine
+    si l'utilisateur annule l'action il renvoie l'information
+    sinon il revoie le nom de fichier choisi
 
     Args:
         chemin (str): est le chemin du dossier
@@ -79,14 +79,14 @@ def choisir_ficher(chemin: str):
         for index, ficher in enumerate(dossier):
             print(str(index) + ":", ficher)
 
-        reponce = input("marque le nombre pour selectioner fichier ")
-        if reponce in list_str_index and force_input_y_or_n(
-            f"voulez vous la save {reponce} qui correpond à "
-            + f"{dossier[int(reponce)]} y/n "
+        reponse = input("marque le nombre pour selectioner fichier ")
+        if reponse in list_str_index and force_input_y_or_n(
+            f"voulez vous la save {reponse} qui correpond à "
+            + f"{dossier[int(reponse)]} y/n "
         ):
-            sortie = dossier[int(reponce)]
+            sortie = dossier[int(reponse)]
             stop = True
-        elif reponce in ("stop", "fin"):
+        elif reponse in ("stop", "fin"):
             sortie = "anulation"
             stop = True
     return sortie

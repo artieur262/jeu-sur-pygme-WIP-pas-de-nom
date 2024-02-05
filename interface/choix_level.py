@@ -52,24 +52,18 @@ class FichierDossier:
                     gener_texture(self.taille, couleur1),
                 ],
             )
-            self.graphique.images[0].blit(
-                place_texte_in_texture(
-                    gener_texture([self.taille[0] - 10, self.taille[1] - 10], couleur2),
-                    name,
-                    self.police,
-                    [255, 255, 255],
-                ),
-                (5, 5),
-            )
-            self.graphique.images[1].blit(
-                place_texte_in_texture(
-                    gener_texture([self.taille[0] - 10, self.taille[1] - 10], couleur3),
-                    name,
-                    self.police,
-                    [255, 255, 255],
-                ),
-                (5, 5),
-            )
+            for i, couleur_ in enumerate((couleur2, couleur3)):
+                self.graphique.images[i].blit(
+                    place_texte_in_texture(
+                        gener_texture(
+                            [self.taille[0] - 10, self.taille[1] - 10], couleur_
+                        ),
+                        name,
+                        self.police,
+                        [255, 255, 255],
+                    ),
+                    (5, 5),
+                )
 
     def get_coordonnee(self):
         """get la coordonnée"""
@@ -102,68 +96,35 @@ class ChoisirLevel:
         self.page = 0
         self.page_max = 0
         self.police = pygame.font.SysFont(police, police_taille)
-        taille_retour = (90, 110)
-        self.retour = ObjetGraphique(
-            (0, 0), [gener_texture(taille_retour, (100, 100, 100))]
-        )
+        # taille_retour = (90, 110)
+        self.bouton: dict[str, ObjetGraphique] = {
+            i[0]: ObjetGraphique(
+                (0, 0), [gener_texture(i[1], (100, 100, 100)) for _ in range(2)]
+            )
+            for i in (
+                ("retour", (90, 110)),
+                ("home", (90, 110)),
+                ("-", (60, 80)),
+                ("+", (60, 80)),
+            )
+        }
 
-        self.retour.images: list[pygame.Surface]
-        self.retour.images[0].blit(
-            place_texte_in_texture(
-                gener_texture(
-                    (taille_retour[0] - 10, taille_retour[1] - 10), (50, 50, 50)
-                ),
-                "retour",
-                self.police,
-                (255, 255, 255),
-            ),
-            (5, 5),
-        )
-        taille_home = (90, 110)
-        self.home = ObjetGraphique(
-            (0, 0), [gener_texture(taille_home, (100, 100, 100))]
-        )
-        self.home.images[0].blit(
-            place_texte_in_texture(
-                gener_texture((taille_home[0] - 10, taille_home[1] - 10), (50, 50, 50)),
-                "home",
-                self.police,
-                (255, 255, 255),
-            ),
-            (5, 5),
-        )
-        taille_precedent = (60, 80)
-        self.precedent = ObjetGraphique(
-            (0, 0), [gener_texture(taille_precedent, (100, 100, 100))]
-        )
-        self.precedent.images: list[pygame.Surface]
-        self.precedent.images[0].blit(
-            place_texte_in_texture(
-                gener_texture(
-                    (taille_precedent[0] - 10, taille_precedent[1] - 10), (50, 50, 50)
-                ),
-                "-",
-                self.police,
-                (255, 255, 255),
-            ),
-            (5, 5),
-        )
-        taille_suivant = (60, 80)
-        self.suivant = ObjetGraphique(
-            (0, 0), [gener_texture(taille_suivant, (100, 100, 100))]
-        )
-        self.suivant.images: list[pygame.Surface]
-        self.suivant.images[0].blit(
-            place_texte_in_texture(
-                gener_texture(
-                    (taille_suivant[0] - 10, taille_suivant[1] - 10), (50, 50, 50)
-                ),
-                "+",
-                self.police,
-                (255, 255, 255),
-            ),
-            (5, 5),
-        )
+        # self.bouton: list[tuple[str, ObjetGraphique]]
+        for texte, bouton in self.bouton.items():
+            for i, couleur in enumerate(((50, 50, 50), (25, 25, 25))):
+                bouton.images[i].blit(
+                    place_texte_in_texture(
+                        gener_texture(
+                            (bouton.dimension[0] - 10, bouton.dimension[1] - 10),
+                            couleur,
+                        ),
+                        texte,
+                        self.police,
+                        (255, 255, 255),
+                    ),
+                    (5, 5),
+                )
+
         taille_graf = (80, 80)
         self.graf_page = ObjetGraphique(
             (0, 0), [gener_texture(taille_graf, (100, 100, 100))]
@@ -266,23 +227,26 @@ class ChoisirLevel:
             ),
             (15, 15),
         )
-        self.home.set_coordonnee([size_screen[0] - self.home.dimension[0], 0])
         self.graf_page.set_coordonnee(
             [size_screen[0] // 2 - self.graf_page.dimension[0] // 2, 0]
         )
-        self.precedent.set_coordonnee(
+
+        self.bouton["home"].set_coordonnee(
+            [size_screen[0] - self.bouton["home"].dimension[0], 0]
+        )
+
+        self.bouton["-"].set_coordonnee(
             [
                 size_screen[0] // 2
-                - self.precedent.dimension[0]
+                - self.bouton["-"].dimension[0]
                 - self.graf_page.dimension[0] // 2,
                 0,
             ]
         )
-        self.suivant.set_coordonnee(
+
+        self.bouton["+"].set_coordonnee(
             [
-                size_screen[0] // 2
-                # + self.suivant.dimension[0]
-                + self.graf_page.dimension[0] // 2,
+                size_screen[0] // 2 + self.graf_page.dimension[0] // 2,
                 0,
             ]
         )
@@ -307,11 +271,9 @@ class ChoisirLevel:
 
     def affiche(self):
         """affiche les objets"""
-        self.retour.afficher()
-        self.home.afficher()
+        for bouton in self.bouton.values():
+            bouton.afficher()
         self.graf_page.afficher()
-        self.precedent.afficher()
-        self.suivant.afficher()
         for level_dossier in self.fichier_dossier:
             if level_dossier.visible:
                 level_dossier.affiche()
@@ -320,18 +282,17 @@ class ChoisirLevel:
         """actualise les actions quand on clique sur un truc"""
         pos_sour = [souris.get_pos()[0], souris.get_pos()[1]]
         if souris.get_pression("clique_gauche") == "vien_presser":
-            if self.retour.x_y_dans_objet(pos_sour[0], pos_sour[1]):
+            if self.bouton["-"].x_y_dans_objet(pos_sour[0], pos_sour[1]):
+                if self.page > 0:
+                    self.page -= 1
+            if self.bouton["+"].x_y_dans_objet(pos_sour[0], pos_sour[1]):
+                if self.page < self.page_max:
+                    self.page += 1
+            if self.bouton["retour"].x_y_dans_objet(pos_sour[0], pos_sour[1]):
                 if len(self.suite_lien) > 0:
                     self.suite_lien.pop()
                     self.actualise_element_dossier()
-            if self.precedent.x_y_dans_objet(pos_sour[0], pos_sour[1]):
-                if self.page > 0:
-                    self.page -= 1
-
-            if self.suivant.x_y_dans_objet(pos_sour[0], pos_sour[1]):
-                if self.page < self.page_max:
-                    self.page += 1
-            if self.home.x_y_dans_objet(pos_sour[0], pos_sour[1]):
+            if self.bouton["home"].x_y_dans_objet(pos_sour[0], pos_sour[1]):
                 self.etat = "home"
 
             for level_dossier in self.fichier_dossier:

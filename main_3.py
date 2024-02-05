@@ -1,6 +1,7 @@
 """est le main"""
 
 # pylint: disable=no-member
+import copy
 import save
 from block.class_obj import genere_obj, vider_affichage
 from interface.option import (
@@ -82,8 +83,9 @@ def main():
                 home.etat = "en cour"
                 selection_level.etat = True
         elif action == "option_demare":
-            menu_option.set_option(option)
-            menu_option.set_control(controle)
+            menu_option.set_option(copy.deepcopy(option))
+            menu_option.set_control(copy.deepcopy(controle.copy()))
+            menu_option.actualise_control()
             action = "option"
         elif action == "option":
             screen.fill((175, 175, 175))
@@ -117,11 +119,13 @@ def main():
                     jeu.set_controle(controle)  # pylint: disable=undefined-variable
             elif menu_option.etat == "reset":
                 if menu_option.page == "graphique":
-                    option = save.open_json(lien_option_default)
-                    menu_option.set_option(option)
+
+                    menu_option.set_option(
+                        copy.deepcopy(save.open_json(lien_option_default))
+                    )
                 elif menu_option.page == "controle":
-                    controle = save.open_json(lien_control_default)
-                    menu_option.set_control(controle)
+
+                    menu_option.set_control(save.open_json(lien_control_default))
                     menu_option.actualise_control()
                 menu_option.etat = "en cour"
 
