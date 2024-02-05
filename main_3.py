@@ -5,7 +5,7 @@ import save
 from block.class_obj import genere_obj, vider_affichage
 from interface.option import (
     SelectOption,
-    active_f11,
+    change_fullscreen,
     actualise_event,
     pygame,
     screen,
@@ -37,15 +37,20 @@ def main():
     option = save.open_json(lien_option)
     if option["plein_écran"]:
         screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-    # rule, map_ = save.open_json(LIEN_FICHIER_MAP + lien_map)
-    # controle = save.open_json(lien_controle)
-    # map_ = genere_obj(map_)
 
     clavier = Clavier()
     souris = Souris()
     rule, map_ = save.open_json(lien_fichier_map + lien_map)
     map_ = genere_obj(map_)
-    jeu = Game(map_, rule["face"], rule["valeur_de_fin"],rule["valeur_mort"], controle, option, clavier)
+    jeu = Game(
+        map_,
+        rule["face"],
+        rule["valeur_de_fin"],
+        rule["valeur_mort"],
+        controle,
+        option,
+        clavier,
+    )
     home = MenuPrincipale(souris)
     menu_pause = MenuPause()
     selection_level = ChoisirLevel()
@@ -83,7 +88,7 @@ def main():
         elif action == "option":
             screen.fill((175, 175, 175))
             actualise_event(clavier, souris)
-            active_f11(clavier.get_pression("f11"), option)
+            change_fullscreen(clavier.get_pression("f11"))
             menu_option.clique_bouton()
             menu_option.actualise_bouton()
             menu_option.affiche()
@@ -122,7 +127,7 @@ def main():
 
         elif action == "choix_level":
             actualise_event(clavier, souris)
-            active_f11(clavier.get_pression("f11"), option)
+            change_fullscreen(clavier.get_pression("f11"))
             screen.fill((0, 0, 0))
             selection_level.actualise_possition()
             selection_level.actualise_animation(souris)
@@ -169,7 +174,7 @@ def main():
             jeu.activate()
             if clavier.get_pression(jeu.controle["debug1"]) == "vien_presser":
                 print(jeu.dict_obj["playeur"][0].get_coordonnee())
-            active_f11(clavier.get_pression("f11"), option)
+            change_fullscreen(clavier.get_pression("f11"))
             # print(jeu.set_activation)
             # print(jeu.etat, jeu.set_activation, jeu.valeur_de_fin)
 
@@ -198,7 +203,7 @@ def main():
             # print("cat")
 
             actualise_event(clavier, souris)
-            active_f11(clavier.get_pression("f11"), option)
+            change_fullscreen(clavier.get_pression("f11"))
             menu_pause.clique_bouton(souris)
             screen.fill((0, 0, 0))
             jeu.affiche_obj()
