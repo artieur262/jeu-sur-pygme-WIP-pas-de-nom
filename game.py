@@ -194,14 +194,14 @@ class Game:
             self.contour[1].animation = 1
             self.contour[2].animation = 1
             self.contour[3].animation = 1
-        elif self.face == 1:
 
+        elif self.face == 1:
             self.contour[0].animation = 0
             self.contour[1].animation = 0
             self.contour[2].animation = 1
             self.contour[3].animation = 1
-        else:
 
+        else:
             self.contour[0].animation = 0
             self.contour[1].animation = 0
             self.contour[2].animation = 0

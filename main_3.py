@@ -1,5 +1,6 @@
 """est le main"""
 
+# pylint: disable=no-member
 import save
 from block.class_obj import genere_obj, vider_affichage
 from interface.option import (
@@ -15,12 +16,14 @@ from interface.option import (
 
 from interface.choix_level import ChoisirLevel
 from interface.pause import MenuPause
+from interface.menu_pricipale import MenuPrincipale
 from game import Game
 from class_clavier import Clavier, Souris
 
 
 def main():
     """est le main"""
+    global screen  # pylint: disable=global-statement
     lien_fichier_map = "map/"
     lien_map = "tuto_5.json"  # "tuto_1_troll.json"  # "map_teste.json"  # "tuto_1.json"
     lien_controle = "option/control.json"
@@ -30,6 +33,9 @@ def main():
 
     controle = save.open_json(lien_controle)
     option = save.open_json(lien_option)
+
+    if option["plein_écran"]:
+        screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
     # rule, map_ = save.open_json(LIEN_FICHIER_MAP + lien_map)
     # controle = save.open_json(lien_controle)
     # map_ = genere_obj(map_)
@@ -37,25 +43,41 @@ def main():
     clavier = Clavier()
     souris = Souris()
     # jeu = game(map_, rule["face"], rule["valeur_de_fin"], controle, clavier)
-
+    home = MenuPrincipale(souris)
     menu_pause = MenuPause()
     selection_level = ChoisirLevel()
     menu_option = SelectOption(controle, option, souris, clavier, {})
     clock = pygame.time.Clock()
-    action = (
-        "choix_level"  # "choix_level"  # "chargement_map"  # "pause" # "option_demare"
-    )
+    action = "home"  # "home" # "choix_level"  # "chargement_map"  # "pause" # "option_demare"
     # monospace = pygame.font.SysFont("monospace", 30)
     pygame.display.set_gamma(200, 200, 200)
+
     # pygame.display.se
     while action != "fin":
         if action == "home":
-            pass
-        if action == "option_demare":
+            home.actualise_bouton()
+            home.clique_bouton()
+            screen.fill((0, 0, 0))
+            home.affiche()
+            home.actualise_fenetre()
+            pygame.display.update()
+            actualise_event(clavier, souris)
+            if home.etat == "quitter":
+                action = "fin"
+                home.etat = "en cour"
+            elif home.etat == "option":
+                action = "option_demare"
+                home.etat = "en cour"
+                menu_option.set_contexte({"home"})
+            elif home.etat == "commencer":
+                action = "choix_level"
+                home.etat = "en cour"
+                selection_level.etat = True
+        elif action == "option_demare":
             menu_option.set_option(option)
             menu_option.set_control(controle)
             action = "option"
-        if action == "option":
+        elif action == "option":
             screen.fill((175, 175, 175))
             actualise_event(clavier, souris)
             active_f11(clavier.get_pression("f11"), option)
@@ -66,8 +88,9 @@ def main():
             pygame.display.update()
             clock.tick(30)
             if menu_option.etat == "anuler":
-                if "menu" in menu_option.contexte:
-                    action = "menu"
+                if "home" in menu_option.contexte:
+                    action = "home"
+
                 elif "pause" in menu_option.contexte:
                     action = "pause"
                 menu_option.etat = "en cour"
@@ -92,7 +115,7 @@ def main():
                     menu_option.actualise_control()
                 menu_option.etat = "en cour"
 
-        if action == "choix_level":
+        elif action == "choix_level":
             actualise_event(clavier, souris)
             active_f11(clavier.get_pression("f11"), option)
             screen.fill((0, 0, 0))
@@ -109,6 +132,9 @@ def main():
                     lien_map += i
                 action = "chargement_map"
                 selection_level.suite_lien.pop()
+            elif selection_level.etat == "home":
+                action = "home"
+
         elif action == "chargement_map":
             rule, map_ = save.open_json(lien_fichier_map + lien_map)
             map_ = genere_obj(map_)
