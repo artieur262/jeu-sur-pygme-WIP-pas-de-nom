@@ -526,7 +526,7 @@ def change_fullscreen(
     if touche_f11 == "vien_presser":
         if get_fullscreen():
             screen = pygame.display.set_mode((1200, 600), pygame.RESIZABLE)
-            screen = pygame.display.set_mode((1200, 600), pygame.RESIZABLE)
+            # screen = pygame.display.set_mode((1200, 600), pygame.RESIZABLE)
             # pour une raison inconnue il faut le faire deux fois
 
         else:

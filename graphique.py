@@ -7,7 +7,6 @@ import pygame
 
 pygame.init()
 
-
 screen = pygame.display.set_mode((1200, 600), pygame.RESIZABLE)
 pygame.display.set_caption("jeu 2D dans monde 3D")
 screen.fill((200, 200, 200))

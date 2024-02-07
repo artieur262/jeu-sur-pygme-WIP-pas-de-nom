@@ -59,7 +59,6 @@ def main():
     clock = pygame.time.Clock()
     action = "home"  # "home" # "choix_level"  # "chargement_map"  # "pause" # "option_demare"
     # monospace = pygame.font.SysFont("monospace", 30)
-    pygame.display.set_gamma(200, 200, 200)
 
     # pygame.display.se
     while action != "fin":
