@@ -122,25 +122,28 @@ class ObjetGraphique:
             debut = (0, 0)
         if decalage_camera is not None:
             if self.objet_dans_zone(
-                (decalage_camera[0] + debut[0], decalage_camera[0] + taille[0]),
-                (decalage_camera[1] + debut[1], decalage_camera[1] + taille[1]),
+                (decalage_camera[0], decalage_camera[0] + taille[0]),
+                (decalage_camera[1], decalage_camera[1] + taille[1]),
             ):
                 screen.blit(
                     self.image_actuel(),
                     (
-                        self.coordonnee[0] - decalage_camera[0],
-                        self.coordonnee[1] - decalage_camera[1],
+                        self.coordonnee[0] - decalage_camera[0] + debut[0],
+                        self.coordonnee[1] - decalage_camera[1] + debut[1],
                     ),
                 )
                 return True
             else:
                 return False
         elif self.objet_dans_zone(
-            (debut[0], taille[0]),
-            (debut[1], taille[1]),
+            (0, taille[0]),
+            (0, taille[1]),
         ):
             # print("chaton")
-            screen.blit(self.image_actuel(), self.coordonnee)
+            screen.blit(
+                self.image_actuel(),
+                (self.coordonnee[0] + debut[0], self.coordonnee[1] + debut[1]),
+            )
             return True
         else:
             return False
