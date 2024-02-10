@@ -70,6 +70,7 @@ def main():
             home.actualise_fenetre()
             pygame.display.update()
             actualise_event(clavier, souris)
+            clock.tick(30)
             if home.etat == "quitter":
                 action = "fin"
                 home.etat = "en cour"
