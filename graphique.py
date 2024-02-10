@@ -102,29 +102,48 @@ class ObjetGraphique:
         #     and axe_y[0] <= self.coordonnee[1] <= axe_y[1] + self.dimension[1]
         # )
 
-    def afficher(self, decalage=None, taille=None):
-        """permet de l'affiché sur la fenêtre"""
+    def afficher(
+        self,
+        decalage_camera: tuple[int, int] = None,
+        debut: tuple[int, int] = None,
+        taille: tuple[int, int] = None,
+    ) -> bool:
+        """permet de l'affiché sur la fenêtre et de savoir si il est affiché
+
+        Args:
+            decalage_camera (optional): permet de décaler l'objet par rapport à la camera
+            debut (optional): permet de définir le début de la zone d'affichage
+            taille (optional): permet de définir la taille de la zone d'affichage
+        """
         # print("tac")
         if taille is None:
             taille = screen.get_size()
-        if decalage is not None:
+        if debut is None:
+            debut = (0, 0)
+        if decalage_camera is not None:
             if self.objet_dans_zone(
-                (decalage[0], decalage[0] + taille[0]),
-                (decalage[1], decalage[1] + taille[1]),
+                (decalage_camera[0] + debut[0], decalage_camera[0] + taille[0]),
+                (decalage_camera[1] + debut[1], decalage_camera[1] + taille[1]),
             ):
                 screen.blit(
                     self.image_actuel(),
                     (
-                        self.coordonnee[0] - decalage[0],
-                        self.coordonnee[1] - decalage[1],
+                        self.coordonnee[0] - decalage_camera[0],
+                        self.coordonnee[1] - decalage_camera[1],
                     ),
                 )
+                return True
+            else:
+                return False
         elif self.objet_dans_zone(
-            (0, taille[0]),
-            (0, taille[1]),
+            (debut[0], taille[0]),
+            (debut[1], taille[1]),
         ):
             # print("chaton")
             screen.blit(self.image_actuel(), self.coordonnee)
+            return True
+        else:
+            return False
 
 
 def gener_texture(taille: tuple[int], color: tuple[int] = False) -> pygame.Surface:
