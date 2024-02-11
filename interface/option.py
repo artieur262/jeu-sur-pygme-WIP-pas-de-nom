@@ -196,6 +196,8 @@ class SelectOption:
         for i in [
             ("démarage", (325, 100), (150, 100), "plein_ecran", "graphique"),
             ("activer", (475, 100), (150, 100), "plein_ecran", "graphique"),
+            ("couleur", (325, 200), (150, 100), "indicateur_face", "graphique"),
+            ("text", (475, 200), (150, 100), "indicateur_face", "graphique"),
         ]:
             self.list_bouton.append(
                 Bouton(
@@ -226,7 +228,8 @@ class SelectOption:
                 i[3],
             ]
             for i in [
-                [(25, 100), (300, 100), "plein écran", "graphique"]
+                [(25, 100), (300, 100), "plein écran", "graphique"],
+                [(25, 200), (300, 100), "indicateur de face", "graphique"]
             ]  # est la liste pour les textes
         ]
 
@@ -299,6 +302,11 @@ class SelectOption:
                     bouton.set_animation(1)
                 else:
                     bouton.set_animation(0)
+            elif bouton.donnee[0] == "indicateur_face":
+                if bouton.get_text() in self.option["indicateur_face"]:
+                    bouton.set_animation(1)
+                else:
+                    bouton.set_animation(0)
 
             # actualise l'overlay des boutons
             if (
@@ -353,6 +361,13 @@ class SelectOption:
                         and bouton.get_text() == "démarage"
                     ):
                         self.option["plein_écran"] = not self.option["plein_écran"]
+                    elif bouton.donnee[0] == "indicateur_face":
+
+                        if bouton.get_text() in self.option["indicateur_face"]:
+                            self.option["indicateur_face"].remove(bouton.get_text())
+                        else:
+                            self.option["indicateur_face"].append(bouton.get_text())
+
                     elif bouton.donnee[0] == "anuler":
                         self.etat = "anuler"
                     elif bouton.donnee[0] == "valider":

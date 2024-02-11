@@ -1,6 +1,7 @@
 {
  "indicateur_face": [
-  "couleur"
+  "couleur",
+  "text"
  ],
  "plein_\u00e9cran": false
 }
