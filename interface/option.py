@@ -1,7 +1,7 @@
 """est le module pour les interfaces graphiques"""
 
 # pylint: disable=no-member disable=no-name-in-module
-
+from classbouton import Bouton
 from graphique import (
     screen,
     pygame,
@@ -10,6 +10,11 @@ from graphique import (
     place_texte_in_texture,
 )
 from class_clavier import Clavier, Souris
+from interface.actualisation_pygame import (
+    actualise_event,
+    get_fullscreen,
+    change_fullscreen,
+)
 
 
 class ChoixTouche:
@@ -31,45 +36,23 @@ class ChoixTouche:
         self.souris = souris
         self.clavier = clavier
         self.fond = ObjetGraphique((0, 0), [gener_texture((450, 350), (200, 200, 200))])
-        self.list_bouton: list[str | ObjetGraphique] = [
-            [
+
+        self.list_bouton: list[Bouton] = [
+            Bouton(
                 i[0],
-                ObjetGraphique(
-                    i[1], [gener_texture(i[2], (100, 100, 100)) for _ in range(2)]
-                ),
-            ]
+                i[1],
+                i[2],
+                [gener_texture(i[2], (100, 100, 100)) for _ in range(2)],
+                [(100, 100, 100), (50, 50, 50)],
+                self.police_1,
+                (255, 255, 255),
+            )
             for i in [
                 ("anuler", (0, 300), (150, 50)),
                 ("valider", (300, 300), (150, 50)),
                 ("changer", (150, 300), (150, 50)),
             ]
         ]
-        for bouton in self.list_bouton:
-            bouton[1].images[0].blit(
-                place_texte_in_texture(
-                    gener_texture(
-                        (bouton[1].dimension[0] - 10, bouton[1].dimension[1] - 10),
-                        (75, 75, 75),
-                    ),
-                    bouton[0],
-                    self.police_1,
-                    (255, 255, 255),
-                ),
-                (5, 5),
-            )
-
-            bouton[1].images[1].blit(
-                place_texte_in_texture(
-                    gener_texture(
-                        (bouton[1].dimension[0] - 10, bouton[1].dimension[1] - 10),
-                        (50, 50, 50),
-                    ),
-                    bouton[0],
-                    self.police_1,
-                    (255, 255, 255),
-                ),
-                (5, 5),
-            )
 
         self.graf_touche = ObjetGraphique(
             (0, 0), [gener_texture((450, 200), (100, 100, 100))]
@@ -88,7 +71,7 @@ class ChoixTouche:
         self.actualise_graphique()
 
     def actualise_graphique(self):
-        """actualise les boutons"""
+        """actualise l'overlay des boutons et des images"""
         centrage = [
             screen.get_size()[i] // 2
             - self.fond.dimension[i]
@@ -107,10 +90,10 @@ class ChoixTouche:
         )
         # self.graf_touche.set_coordonnee(centrage)
         for bouton in self.list_bouton:
-            if bouton[1].x_y_dans_objet(pos_sour_decale[0], pos_sour_decale[1]):
-                bouton[1].animation = 1
+            if bouton.x_y_dans_objet(pos_sour_decale[0], pos_sour_decale[1]):
+                bouton.set_animation(1)
             else:
-                bouton[1].animation = 0
+                bouton.set_animation(0)
 
     def afficher(self):
         """affiche les objets"""
@@ -122,7 +105,7 @@ class ChoixTouche:
         if self.etat == "changer":
             self.avetissement_changement.afficher(centrage)
         for bouton in self.list_bouton:
-            bouton[1].afficher(centrage)
+            bouton.afficher(centrage)
 
     def clique_bouton(self):
         """actuatise les actions quand on clique sur un truc"""
@@ -133,17 +116,18 @@ class ChoixTouche:
                 for i in range(2)
             ]
             for bouton in self.list_bouton:
-                if bouton[1].x_y_dans_objet(pos_sour_decale[0], pos_sour_decale[1]):
-                    if bouton[0] == "anuler":
+                if bouton.x_y_dans_objet(pos_sour_decale[0], pos_sour_decale[1]):
+                    if bouton.get_text() == "anuler":
                         self.etat = "anuler"
-                    elif bouton[0] == "valider":
+                    elif bouton.get_text() == "valider":
                         self.etat = "valider"
-                    elif bouton[0] == "changer":
+                    elif bouton.get_text() == "changer":
                         self.etat = "changer"
 
 
 def selection_touche(c_t: ChoixTouche):
-    """permet de choisir une touche"""
+    """permet de choisir une touche
+    et le main de l'interface graphique pour choisir une touche"""
     while c_t.etat in ("en cour", "changer"):
         if c_t.etat == "changer":
             for event in pygame.event.get(pygame.KEYDOWN):
@@ -172,48 +156,60 @@ class SelectOption:
         option: dict,
         souris: Souris,
         clavier: Clavier,
-        contexte: set[str],
+        contexte: set[str] = None,
         police: str = "monospace",
         police_taille: int = 20,
     ):
-        self.touche_selectioner = None
-        self.clavier = clavier
+        if contexte is None:
+            contexte = set()
+
+        self.control = controle
+        self.option = option
         self.souris = souris
+        self.clavier = clavier
+        self.police = pygame.font.SysFont(police, police_taille)
+
+        self.touche_selectioner = None
         self.contexte = contexte
         self.page = "graphique"  # "graphique", "controle"
-        self.police = pygame.font.SysFont(police, police_taille)
         self.etat = "encour"
-        # print(option)
-        self.option = option
-        self.control = controle
-        self.list_bouton = [
-            [
+
+        self.list_bouton: list[Bouton] = [
+            Bouton(
                 i[0],
-                ObjetGraphique(
-                    i[1],
-                    [gener_texture(i[2], (125, 125, 125)) for _ in range(2)],
-                ),
-                i[3],
-                i[4],
-            ]
+                i[1],
+                i[2],
+                [gener_texture(i[2], (125, 125, 125)) for _ in range(2)],
+                [(100, 100, 100), (50, 50, 50)],
+                self.police,
+                (255, 255, 255),
+                [i[3], i[4], False],  # [donnee, contexte, visible]
+            )
             for i in [
-                (
-                    "couleur",
-                    (325, 100),
-                    (150, 100),
-                    "indicateur_face_couleur",
-                    "graphique",
-                ),
-                ("text", (475, 100), (150, 100), "indicateur_face_text", "graphique"),
-                ("démarage", (325, 200), (150, 100), "plein_ecran", "graphique"),
-                ("activer", (475, 200), (150, 100), "plein_ecran", "graphique"),
                 ("graphique", (50, 0), (150, 50), "page_graphique", "all"),
                 ("controle", (200, 0), (150, 50), "page_controle", "all"),
                 ("anuler", (0, 0), (150, 50), "anuler", "all"),
                 ("valider", (0, 0), (150, 50), "valider", "all"),
                 ("reset", (0, 0), (150, 50), "reset", "all"),
-            ]
+            ]  # est la liste pour les boutons
         ]
+        for i in [
+            ("démarage", (325, 100), (150, 100), "plein_ecran", "graphique"),
+            ("activer", (475, 100), (150, 100), "plein_ecran", "graphique"),
+        ]:
+            self.list_bouton.append(
+                Bouton(
+                    i[0],
+                    i[1],
+                    i[2],
+                    [gener_texture(i[2], (125, 125, 125)) for _ in range(2)],
+                    [(200, 50, 50), (50, 200, 50)],
+                    self.police,
+                    (255, 255, 255),
+                    [i[3], i[4], False],  # [donnee, contexte, visible]
+                )
+            )
+
         self.objet_texts: list[str | ObjetGraphique] = [
             [
                 ObjetGraphique(
@@ -230,22 +226,23 @@ class SelectOption:
                 i[3],
             ]
             for i in [
-                [(25, 100), (300, 100), "indicateur de face", "graphique"],
-                [(25, 200), (300, 100), "plein écran", "graphique"],
-            ]
+                [(25, 100), (300, 100), "plein écran", "graphique"]
+            ]  # est la liste pour les textes
         ]
-        self.list_bouton: list[list[str | ObjetGraphique]]
+
         for i, key_value in enumerate(self.control.items()):
             self.list_bouton.append(
-                [
+                Bouton(
                     key_value[1],
-                    ObjetGraphique(
-                        (175 + 275 * (i % 2), 100 + (i // 2) * 100),
-                        [gener_texture((125, 100), (125, 125, 125)) for _ in range(2)],
-                    ),
-                    "control" + key_value[0],
-                    "controle",
-                ]
+                    (175 + 275 * (i % 2), 100 + (i // 2) * 100),
+                    (125, 100),
+                    [(125, 125, 125), (125, 125, 125)],
+                    [(100, 100, 100), (50, 50, 50)],
+                    self.police,
+                    (255, 255, 255),
+                    ["control" + key_value[0], "controle", False],
+                    # [donnee, contexte, visible]
+                )
             )
             self.objet_texts.append(
                 [
@@ -263,126 +260,59 @@ class SelectOption:
                     "controle",
                 ]
             )
-        for bouton in self.list_bouton:
-            if bouton[2] in {
-                "plein_ecran",
-                "indicateur_face_text",
-                "indicateur_face_couleur",
-            }:
-                for i, couleur in enumerate([(200, 50, 50), (50, 200, 50)]):
-                    bouton[1].images[i].blit(
-                        place_texte_in_texture(
-                            gener_texture(
-                                (
-                                    bouton[1].dimension[0] - 10,
-                                    bouton[1].dimension[1] - 10,
-                                ),
-                                couleur,
-                            ),
-                            bouton[0],
-                            self.police,
-                            (255, 255, 255),
-                        ),
-                        (5, 5),
-                    )
-
-            elif (
-                bouton[2]
-                in {"page_graphique", "page_controle", "anuler", "valider", "reset"}
-                or bouton[2][0:7] == "control"
-            ):
-                for i, couleur in enumerate([(100, 100, 100), (50, 50, 50)]):
-
-                    bouton[1].images[i].blit(
-                        place_texte_in_texture(
-                            gener_texture(
-                                (
-                                    bouton[1].dimension[0] - 10,
-                                    bouton[1].dimension[1] - 10,
-                                ),
-                                couleur,
-                            ),
-                            bouton[0],
-                            self.police,
-                            (255, 255, 255),
-                        ),
-                        (5, 5),
-                    )
 
         self.actualise_bouton()
 
     def actualise_control(self):
-        """actualise les controles et les touches"""
+        """actualise les boutons du type controle"""
         for bouton in self.list_bouton:
-            if bouton[2][0:7] == "control":
-                bouton[0] = self.control[bouton[2][7:]]
-                for i, couleur in enumerate([(100, 100, 100), (50, 50, 50)]):
-                    bouton[1].images[i].blit(
-                        place_texte_in_texture(
-                            gener_texture(
-                                (
-                                    bouton[1].dimension[0] - 10,
-                                    bouton[1].dimension[1] - 10,
-                                ),
-                                couleur,
-                            ),
-                            bouton[0],
-                            self.police,
-                            (255, 255, 255),
-                        ),
-                        (5, 5),
-                    )
+            if bouton.donnee[0][:7] == "control":
+                bouton.set_text(self.control[bouton.donnee[0][7:]])
 
     def actualise_bouton(self):
-        """actualise les boutons"""
+        """actualise l'overlay, la position et la visiblilité des boutons"""
         dimension = screen.get_size()
         pos_sour = self.souris.get_pos()
         for bouton in self.list_bouton:
-            if bouton[3] == self.page or bouton[3] == "all":
-                bouton[1].visible = True
+            # actualise la visibilité des boutons
+            if bouton.donnee[1] == self.page or bouton.donnee[1] == "all":
+                bouton.donnee[2] = True
             else:
-                bouton[1].visible = False
-            if bouton[2] == "valider":
-                bouton[1].set_coordonnee([dimension[0] - bouton[1].dimension[0], 0])
-            elif bouton[2] == "anuler":
-                bouton[1].set_coordonnee(
-                    [dimension[0] - bouton[1].dimension[0] - 300, 0]
-                )
-            elif bouton[2] == "reset":
-                bouton[1].set_coordonnee(
-                    [dimension[0] - bouton[1].dimension[0] - 150, 0]
-                )
+                bouton.donnee[2] = False
 
-            elif bouton[2] == "plein_ecran" and bouton[0] == "activer":
+            # actualise la position des boutons
+            if bouton.donnee[0] == "valider":
+                bouton.set_pos([dimension[0] - bouton.get_taille(0), 0])
+            elif bouton.donnee[0] == "anuler":
+                bouton.set_pos([dimension[0] - bouton.get_taille(0) - 300, 0])
+            elif bouton.donnee[0] == "reset":
+                bouton.set_pos([dimension[0] - bouton.get_taille(0) - 150, 0])
+
+            # actualise l'animation d'activation des boutons
+            elif bouton.donnee[0] == "plein_ecran" and bouton.get_text() == "activer":
                 if get_fullscreen():
-                    bouton[1].animation = 1
+                    bouton.set_animation(1)
                 else:
-                    bouton[1].animation = 0
-            elif bouton[2] == "plein_ecran" and bouton[0] == "démarage":
+                    bouton.set_animation(0)
+            elif bouton.donnee[0] == "plein_ecran" and bouton.get_text() == "démarage":
                 if self.option["plein_écran"]:
-                    bouton[1].animation = 1
+                    bouton.set_animation(1)
                 else:
-                    bouton[1].animation = 0
-            if bouton[2] in {
-                "indicateur_face_text",
-                "indicateur_face_couleur",
-            }:
+                    bouton.set_animation(0)
 
-                if bouton[0] in self.option["indicateur_face"]:
-                    bouton[1].animation = 1
-                else:
-                    bouton[1].animation = 0
-            elif (
-                bouton[2]
+            # actualise l'overlay des boutons
+            if (
+                bouton.donnee[0]
                 in {"page_graphique", "page_controle", "anuler", "valider", "reset"}
-                or bouton[2][0:7] == "control"
+                or bouton.donnee[1][0:7] == "control"
             ):
-                if bouton[1].x_y_dans_objet(pos_sour[0], pos_sour[1]):
-                    bouton[1].animation = 1
+                if bouton.x_y_dans_objet(pos_sour[0], pos_sour[1]):
+                    bouton.set_animation(1)
                 else:
-                    bouton[1].animation = 0
+                    bouton.set_animation(0)
 
         for objet_text in self.objet_texts:
+            # actualise la visibilité des textes
             if objet_text[1] == self.page or objet_text[1] == "all":
                 objet_text[0].visible = True
             else:
@@ -393,27 +323,14 @@ class SelectOption:
         pos_sour = self.souris.get_pos()
         if self.souris.get_pression("clique_gauche") == "vien_presser":
             for bouton in self.list_bouton:
-                if bouton[1].visible and bouton[1].x_y_dans_objet(
-                    pos_sour[0], pos_sour[1]
-                ):
-                    if bouton[2] == "indicateur_face_couleur":
-                        if bouton[0] in self.option["indicateur_face"]:
-                            self.option["indicateur_face"].remove(bouton[0])
-                        else:
-                            self.option["indicateur_face"].append(bouton[0])
-
-                    elif bouton[2] == "indicateur_face_text":
-                        if bouton[0] in self.option["indicateur_face"]:
-                            self.option["indicateur_face"].remove(bouton[0])
-                        else:
-                            self.option["indicateur_face"].append(bouton[0])
-
-                    elif bouton[2] == "page_graphique":
+                if bouton.donnee[2] and bouton.x_y_dans_objet(pos_sour[0], pos_sour[1]):
+                    if bouton.donnee[0] == "page_graphique":
                         self.page = "graphique"
-                    elif bouton[2] == "page_controle":
+                    elif bouton.donnee[0] == "page_controle":
                         self.page = "controle"
-                    elif bouton[2][0:7] == "control":
-                        self.touche_selectioner = bouton[2][7:]
+                    elif bouton.donnee[0][:7] == "control":
+                        # active le menu pour changer la touche
+                        self.touche_selectioner = bouton.donnee[0][7:]
                         c_t = ChoixTouche(
                             self.souris,
                             self.clavier,
@@ -422,43 +339,32 @@ class SelectOption:
                         selection_touche(c_t)
                         if c_t.etat == "valider" and c_t.touche is not None:
                             self.control[self.touche_selectioner] = c_t.touche
-                            bouton[0] = c_t.touche
-                            for i, couleur in enumerate(
-                                [(100, 100, 100), (50, 50, 50)]
-                            ):
-                                bouton[1].images[i].blit(
-                                    place_texte_in_texture(
-                                        gener_texture(
-                                            (
-                                                bouton[1].dimension[0] - 10,
-                                                bouton[1].dimension[1] - 10,
-                                            ),
-                                            couleur,
-                                        ),
-                                        bouton[0],
-                                        self.police,
-                                        (255, 255, 255),
-                                    ),
-                                    (5, 5),
-                                )
+                            bouton.set_text(c_t.touche)
 
                         c_t = None  # détruit la variable
-                    elif bouton[2] == "plein_ecran" and bouton[0] == "activer":
+
+                    elif (
+                        bouton.donnee[0] == "plein_ecran"
+                        and bouton.get_text() == "activer"
+                    ):
                         change_fullscreen("vien_presser")
-                    elif bouton[2] == "plein_ecran" and bouton[0] == "démarage":
+                    elif (
+                        bouton.donnee[0] == "plein_ecran"
+                        and bouton.get_text() == "démarage"
+                    ):
                         self.option["plein_écran"] = not self.option["plein_écran"]
-                    elif bouton[2] == "anuler":
+                    elif bouton.donnee[0] == "anuler":
                         self.etat = "anuler"
-                    elif bouton[2] == "valider":
+                    elif bouton.donnee[0] == "valider":
                         self.etat = "valider"
-                    elif bouton[2] == "reset":
+                    elif bouton.donnee[0] == "reset":
                         self.etat = "reset"
 
     def affiche(self):
         """affiche l'interface graphique"""
         for bouton in self.list_bouton:
-            if bouton[1].visible:
-                bouton[1].afficher()
+            if bouton.donnee[2]:
+                bouton.afficher()
         for objet_text in self.objet_texts:
             if objet_text[0].visible:
                 objet_text[0].afficher()
@@ -486,50 +392,3 @@ class SelectOption:
     def get_contexte(self) -> set[str]:
         """get le contexte"""
         return self.contexte
-
-
-def actualise_event(clavier: Clavier, souris: Souris):
-    """actualise les événement"""
-    souris.actualise_position()
-    souris.actualise_all_clique()
-    clavier.actualise_all_touche()
-    for event in pygame.event.get():
-        if event.type == pygame.KEYUP:
-            # cat[event.unicode] = event.key
-            # print(event)
-            if event.key in clavier.dict_touches:
-                clavier.change_pression(event.key, "vien_lacher")
-
-        elif event.type == pygame.KEYDOWN:
-            # print(event)
-            if event.key in clavier.dict_touches:
-                clavier.change_pression(event.key, "vien_presser")
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button in souris.dict_clique:
-                souris.change_pression(event.button, "vien_presser")
-
-        elif event.type == pygame.MOUSEBUTTONUP:
-            if event.button in souris.dict_clique:
-                souris.change_pression(event.button, "vien_lacher")
-
-
-def get_fullscreen():
-    """retourne si on est en plein écran"""
-    return screen.get_flags() & pygame.FULLSCREEN
-
-
-def change_fullscreen(
-    touche_f11: str,
-):
-    """change le mode plein écran"""
-    global screen  # pylint: disable=global-statement
-    if touche_f11 == "vien_presser":
-        if get_fullscreen():
-            screen = pygame.display.set_mode((1200, 600), pygame.RESIZABLE)
-            # screen = pygame.display.set_mode((1200, 600), pygame.RESIZABLE)
-            # pour une raison inconnue il faut le faire deux fois
-
-        else:
-            screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-
-        # pygame.display.update()
