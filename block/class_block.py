@@ -333,8 +333,6 @@ class Block:
             for i in range(distance * (-1 if distance < 0 else 1)):  # anti-niggatif
                 self.modif_coordonnee(1 * (-1 if distance < 0 else 1), "+", axe)
                 if any(self.collision(x) for x in list_block):
-                    # self._coordonnee[2] -= chute
-                    # self.actualise_coord_graph()
                     self.modif_coordonnee(1 * (-1 if distance < 0 else 1), "-", axe)
                     self.actualise_coord_graph()
                     return distance - i * (-1 if distance < 0 else 1)

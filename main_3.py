@@ -110,13 +110,14 @@ def main():
                 controle = menu_option.get_control()
                 save.save_json(lien_option, option)
                 save.save_json(lien_controle, controle)
-
                 menu_option.etat = "en cour"
                 if "home" in menu_option.contexte:
                     action = "home"
                 elif "pause" in menu_option.contexte:
                     action = "pause"
-                    jeu.set_controle(controle)  # pylint: disable=undefined-variable
+                    jeu.set_option(option)
+                    jeu.set_controle(controle)
+
             elif menu_option.etat == "reset":
                 if menu_option.page == "graphique":
 

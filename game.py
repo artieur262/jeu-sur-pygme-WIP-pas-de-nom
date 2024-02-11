@@ -151,6 +151,10 @@ class Game:
         self.actualise_fenetre()
         self.actualise_face()
 
+    def set_option(self, option: dict):
+        """change les option"""
+        self.option = option
+
     def set_controle(self, controle: dict):
         """change les controle"""
         self.controle = controle
