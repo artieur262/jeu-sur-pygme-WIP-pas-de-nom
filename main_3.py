@@ -226,11 +226,14 @@ def main():
                 # time.sleep(1.5)
 
             # print(jeu.dict_obj nvhcfdtst["plaforme"][0].active)
-            if clavier.get_pression("echap") == "vien_presser" or "quitter" in event:
+            if clavier.get_pression("echap") == "vien_presser":
                 # "echap" = la touche échape
                 action = "pause"
                 # quit()
-
+            if "quitter" in event and selection_oui_non(
+                "Voulez-vous\nvraiment quitter ?", "entrer", "echap"
+            ):
+                action = "fin"
         elif action == "pause":
             # print("cat")
 
