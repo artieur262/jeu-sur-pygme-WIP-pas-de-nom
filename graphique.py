@@ -214,7 +214,7 @@ def place_texte_in_texture(
         image (pygame.Surface): est image avec son texte
     """
     dimention_image = image.get_size()
-    texte_img = police.render(texte, 2, color)
+    texte_img = police.render(str(texte), 2, color)
     dimention_texte = texte_img.get_size()
     # print(dimention_texte[1])
     if "\n" in texte:

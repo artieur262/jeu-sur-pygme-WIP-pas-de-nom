@@ -43,7 +43,7 @@ class Bouton:
                     gener_texture(
                         (self._taille[0] - 10, self._taille[1] - 10), couleur
                     ),
-                    self._texte,
+                    str(self._texte),
                     self.police,
                     self.couleur_texte,
                 ),

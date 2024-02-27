@@ -1,5 +1,6 @@
 """ce module contien les class pour la souris et le clavier"""
-from graphique import pygame
+
+import pygame
 
 
 class Clavier:
@@ -9,8 +10,8 @@ class Clavier:
         self.alphabet_clee = {
             "\x08": 8,
             "\t": 9,
-            "\r": 13,
-            "\x1b": 27,
+            "entrer": 13,
+            "echap": 27,
             "space": 32,
             ")": 41,
             "0": 48,
@@ -88,6 +89,10 @@ class Clavier:
             elif touche == "vien_lacher":
                 self.dict_touches[clee] = "lacher"
 
+    def ajoute_touche(self, clee: str):
+        """ajoute une touche"""
+        self.dict_touches[clee] = "lacher"
+
     def change_pression(self, clee: str, value: str):
         """change la pression d'une touche"""
         self.dict_touches[clee] = value
@@ -97,6 +102,7 @@ class Clavier:
         # print([clee])
         if isinstance(clee, str):  # c'est équivalen de type(clee)==str
             return self.dict_touches[self.convert_touche_key(clee)]
+
         return self.dict_touches[clee]
 
     def convert_touche_key(self, touche: str) -> int:

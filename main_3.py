@@ -14,7 +14,7 @@ from interface.option import (
     place_texte_in_texture,
     gener_texture,
 )
-
+from interface.menu_oui_non import selection_oui_non
 from interface.choix_level import ChoisirLevel
 from interface.pause import MenuPause
 from interface.menu_pricipale import MenuPrincipale
@@ -41,6 +41,9 @@ def main():
 
     clavier = Clavier()
     souris = Souris()
+    for i in controle.values():
+        if isinstance(i, int):
+            clavier.ajoute_touche(i)
     rule, map_ = save.open_json(lien_fichier_map + lien_map)
     map_ = genere_obj(map_)
     jeu = Game(
@@ -61,6 +64,7 @@ def main():
     # monospace = pygame.font.SysFont("monospace", 30)
 
     # pygame.display.se
+
     while action != "fin":
         if action == "home":
             home.actualise_bouton()
@@ -71,8 +75,16 @@ def main():
             pygame.display.update()
             actualise_event(clavier, souris)
             clock.tick(30)
-            if home.etat == "quitter":
+            change_fullscreen(clavier.get_pression("f11"))
+            if clavier.get_pression("echap") == "vien_presser" and selection_oui_non(
+                "Voulez-vous\nvraiment quitter ?", "entrer", "echap"
+            ):
                 action = "fin"
+            if home.etat == "quitter":
+                if selection_oui_non(
+                    "Voulez-vous\nvraiment quitter ?", "entrer", "echap"
+                ):
+                    action = "fin"
                 home.etat = "en cour"
             elif home.etat == "option":
                 action = "option_demare"
@@ -94,7 +106,6 @@ def main():
             menu_option.clique_bouton()
             menu_option.actualise_bouton()
             menu_option.affiche()
-            # print(menu_option.indicateur_face)
             pygame.display.update()
             clock.tick(30)
             if menu_option.etat == "anuler":
@@ -110,6 +121,9 @@ def main():
                 controle = menu_option.get_control()
                 save.save_json(lien_option, option)
                 save.save_json(lien_controle, controle)
+                for i in controle.values():
+                    if isinstance(i, int):
+                        clavier.change_pression(i, "lacher")
                 menu_option.etat = "en cour"
                 if "home" in menu_option.contexte:
                     action = "home"
@@ -128,11 +142,18 @@ def main():
 
                     menu_option.set_control(save.open_json(lien_control_default))
                     menu_option.actualise_control()
+                    for i in controle:
+                        if isinstance(controle[i], int):
+                            clavier.ajoute_touche(i)
                 menu_option.etat = "en cour"
 
         elif action == "choix_level":
             actualise_event(clavier, souris)
             change_fullscreen(clavier.get_pression("f11"))
+            if clavier.get_pression("echap") == "vien_presser" and selection_oui_non(
+                "Voulez-vous\nvraiment quitter ?", "entrer", "echap"
+            ):
+                action = "fin"
             screen.fill((0, 0, 0))
             selection_level.actualise_possition()
             selection_level.actualise_animation(souris)
@@ -180,6 +201,7 @@ def main():
             if clavier.get_pression(jeu.controle["debug1"]) == "vien_presser":
                 print(jeu.dict_obj["playeur"][0].get_coordonnee())
             change_fullscreen(clavier.get_pression("f11"))
+
             # print(jeu.set_activation)
             # print(jeu.etat, jeu.set_activation, jeu.valeur_de_fin)
 
@@ -200,8 +222,8 @@ def main():
                 # time.sleep(1.5)
 
             # print(jeu.dict_obj nvhcfdtst["plaforme"][0].active)
-            if clavier.get_pression("\x1b") == "vien_presser":
-                # "\x1b" = la touche échape
+            if clavier.get_pression("echap") == "vien_presser":
+                # "echap" = la touche échape
                 action = "pause"
                 # quit()
         elif action == "pause":
@@ -217,13 +239,17 @@ def main():
             pygame.display.update()
             clock.tick(30)
 
-            if clavier.get_pression("\x1b") == "vien_presser":
-                # "\x1b" = la touche échape
+            if clavier.get_pression("echap") == "vien_presser":
+                # "echap" = la touche échape
                 action = "enjeu"
             # print(menu_pause.etat)
 
             if menu_pause.etat == "quitter":
-                quit()
+                if selection_oui_non(
+                    "Voulez-vous\nvraiment quitter ?", "entrer", "echap"
+                ):
+                    action = "fin"
+                menu_pause.etat = "en cour"
             elif menu_pause.etat == "reprendre":
                 action = "enjeu"
             if menu_pause.etat == "option":
