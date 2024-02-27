@@ -78,7 +78,7 @@ def main():
             change_fullscreen(clavier.get_pression("f11"))
             if (
                 clavier.get_pression("echap") == "vien_presser" or "quitter" in event
-            ) == "vien_presser" and selection_oui_non(
+            )  and selection_oui_non(
                 "Voulez-vous\nvraiment quitter ?", "entrer", "echap"
             ):
                 action = "fin"
