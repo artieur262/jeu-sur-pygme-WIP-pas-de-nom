@@ -73,10 +73,12 @@ def main():
             home.affiche()
             home.actualise_fenetre()
             pygame.display.update()
-            actualise_event(clavier, souris)
+            event = actualise_event(clavier, souris)
             clock.tick(30)
             change_fullscreen(clavier.get_pression("f11"))
-            if clavier.get_pression("echap") == "vien_presser" and selection_oui_non(
+            if (
+                clavier.get_pression("echap") == "vien_presser" or "quitter" in event
+            ) == "vien_presser" and selection_oui_non(
                 "Voulez-vous\nvraiment quitter ?", "entrer", "echap"
             ):
                 action = "fin"
@@ -101,7 +103,7 @@ def main():
             action = "option"
         elif action == "option":
             screen.fill((175, 175, 175))
-            actualise_event(clavier, souris)
+            event = actualise_event(clavier, souris)
             change_fullscreen(clavier.get_pression("f11"))
             menu_option.clique_bouton()
             menu_option.actualise_bouton()
@@ -148,9 +150,11 @@ def main():
                 menu_option.etat = "en cour"
 
         elif action == "choix_level":
-            actualise_event(clavier, souris)
+            event = actualise_event(clavier, souris)
             change_fullscreen(clavier.get_pression("f11"))
-            if clavier.get_pression("echap") == "vien_presser" and selection_oui_non(
+            if (
+                clavier.get_pression("echap") == "vien_presser" or "quitter" in event
+            ) and selection_oui_non(
                 "Voulez-vous\nvraiment quitter ?", "entrer", "echap"
             ):
                 action = "fin"
@@ -188,7 +192,7 @@ def main():
             pygame.display.update()
             screen.fill((0, 0, 0))
 
-            actualise_event(clavier, souris)
+            event = actualise_event(clavier, souris)
             clock.tick(60)
             jeu.actualise_face()
             jeu.actualise_fenetre()
@@ -222,14 +226,15 @@ def main():
                 # time.sleep(1.5)
 
             # print(jeu.dict_obj nvhcfdtst["plaforme"][0].active)
-            if clavier.get_pression("echap") == "vien_presser":
+            if clavier.get_pression("echap") == "vien_presser" or "quitter" in event:
                 # "echap" = la touche échape
                 action = "pause"
                 # quit()
+
         elif action == "pause":
             # print("cat")
 
-            actualise_event(clavier, souris)
+            event = actualise_event(clavier, souris)
             change_fullscreen(clavier.get_pression("f11"))
             menu_pause.clique_bouton(souris)
             screen.fill((0, 0, 0))
@@ -243,7 +248,10 @@ def main():
                 # "echap" = la touche échape
                 action = "enjeu"
             # print(menu_pause.etat)
-
+            if "quitter" in event and selection_oui_non(
+                "Voulez-vous\nvraiment quitter ?", "entrer", "echap"
+            ):
+                action = "fin"
             if menu_pause.etat == "quitter":
                 if selection_oui_non(
                     "Voulez-vous\nvraiment quitter ?", "entrer", "echap"
