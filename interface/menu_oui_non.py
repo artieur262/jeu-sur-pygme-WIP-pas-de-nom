@@ -9,7 +9,6 @@ from graphique import (
     place_texte_in_texture,
     screen,
 )
-
 from class_clavier import Clavier, Souris
 from classbouton import Bouton
 
@@ -105,13 +104,18 @@ class YesOrNot:
 
 
 def selection_oui_non(
-    text: str, touche_oui: str | int = None, touche_non: str | int = None
+    souris,
+    clavier,
+    text: str,
+    touche_oui: str | int = None,
+    touche_non: str | int = None,
 ) -> bool:
     """permet de choisir une touche
     et le main de l'interface graphique pour choisir une touche"""
     clock = pygame.time.Clock()
-    y_or_n = YesOrNot(Souris(), Clavier(), text)
+    y_or_n = YesOrNot(souris, clavier, text)
     while y_or_n.etat in ("en cour"):
+        actualise_event(y_or_n.clavier, y_or_n.souris)
         if (
             touche_oui is not None
             and y_or_n.clavier.get_pression(touche_oui) == "vien_presser"
@@ -122,11 +126,10 @@ def selection_oui_non(
             and y_or_n.clavier.get_pression(touche_non) == "vien_presser"
         ):
             y_or_n.etat = "non"
-        actualise_event(y_or_n.clavier, y_or_n.souris)
+
         clock.tick(30)
         y_or_n.afficher()
         y_or_n.actualise_graphique()
         y_or_n.clique_bouton()
         pygame.display.update()
-
     return y_or_n.etat == "oui"

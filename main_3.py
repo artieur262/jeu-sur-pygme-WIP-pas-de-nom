@@ -78,13 +78,17 @@ def main():
             change_fullscreen(clavier.get_pression("f11"))
             if (
                 clavier.get_pression("echap") == "vien_presser" or "quitter" in event
-            )  and selection_oui_non(
-                "Voulez-vous\nvraiment quitter ?", "entrer", "echap"
+            ) and selection_oui_non(
+                souris, clavier, "Voulez-vous\nvraiment quitter ?", "entrer", "echap"
             ):
                 action = "fin"
             if home.etat == "quitter":
                 if selection_oui_non(
-                    "Voulez-vous\nvraiment quitter ?", "entrer", "echap"
+                    souris,
+                    clavier,
+                    "Voulez-vous\nvraiment quitter ?",
+                    "entrer",
+                    "echap",
                 ):
                     action = "fin"
                 home.etat = "en cour"
@@ -155,7 +159,7 @@ def main():
             if (
                 clavier.get_pression("echap") == "vien_presser" or "quitter" in event
             ) and selection_oui_non(
-                "Voulez-vous\nvraiment quitter ?", "entrer", "echap"
+                souris, clavier, "Voulez-vous\nvraiment quitter ?", "entrer", "echap"
             ):
                 action = "fin"
             screen.fill((0, 0, 0))
@@ -231,7 +235,7 @@ def main():
                 action = "pause"
                 # quit()
             if "quitter" in event and selection_oui_non(
-                "Voulez-vous\nvraiment quitter ?", "entrer", "echap"
+                souris, clavier, "Voulez-vous\nvraiment quitter ?", "entrer", "echap"
             ):
                 action = "fin"
         elif action == "pause":
@@ -252,12 +256,16 @@ def main():
                 action = "enjeu"
             # print(menu_pause.etat)
             if "quitter" in event and selection_oui_non(
-                "Voulez-vous\nvraiment quitter ?", "entrer", "echap"
+                souris, clavier, "Voulez-vous\nvraiment quitter ?", "entrer", "echap"
             ):
                 action = "fin"
             if menu_pause.etat == "quitter":
                 if selection_oui_non(
-                    "Voulez-vous\nvraiment quitter ?", "entrer", "echap"
+                    souris,
+                    clavier,
+                    "Voulez-vous\nvraiment quitter ?",
+                    "entrer",
+                    "echap",
                 ):
                     action = "fin"
                 menu_pause.etat = "en cour"
