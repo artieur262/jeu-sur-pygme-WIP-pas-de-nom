@@ -217,20 +217,23 @@ class Game:
             self.contour[2].animation = 0
             self.contour[3].animation = 0
 
-    def actualise_camera(self):
+    def actualise_camera(self, surface: pygame.Surface = None):
         """actualise la camera"""
-        self.hauteur = self.dict_obj["playeur"][0].get_centre_objet()[self.face]
+        if surface is None:
+            surface = screen
+        taille = surface.get_size()
 
+        self.hauteur = self.dict_obj["playeur"][0].get_centre_objet()[self.face]
         camera = self.dict_obj["playeur"][0].get_centre_objet()
         camera.pop(self.face)
-        taille = screen.get_size()
         self.camera = [int(camera[i] - taille[i] // 2) for i in range(2)]
         # print(self.camera)
 
-    def affiche_obj(self):
+    def affiche_obj(self, surface: pygame.Surface = None):
         """affiche les objets"""
         # print(self.dict_obj["playeur"][0]._taille)
-
+        if surface is None:
+            surface = screen
         for clee_affichable in (
             "block",
             "interupteur",
@@ -248,14 +251,15 @@ class Game:
                     self.face,
                     self.hauteur,
                     self.camera,
+                    surface=surface,
                 )
         if "couleur" in self.option["indicateur_face"]:
             for obj in self.contour:
-                obj.afficher()
+                obj.afficher(surface=surface)
             for obj in self.coin:
-                obj.afficher()
+                obj.afficher(surface=surface)
         if "text" in self.option["indicateur_face"]:
-            self.face_texte.afficher()
+            self.face_texte.afficher(surface=surface)
 
     def actualise_obj(self):
         """actualise les objets"""

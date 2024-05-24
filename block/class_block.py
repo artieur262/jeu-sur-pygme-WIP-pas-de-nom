@@ -219,6 +219,7 @@ class Block:
         cord_face: int,
         decalage: tuple = None,
         taille: tuple = None,
+        surface=None,
     ):
         """affiche l'objet sur la fenêtre
 
@@ -230,7 +231,7 @@ class Block:
         """
 
         if self.in_axe(cord_face, face):
-            self.graphique[face].afficher(decalage, taille)
+            self.graphique[face].afficher(decalage, taille, surface)
 
     def in_axe(self, point, axe):
         """verfie si un point est sur le même allignement de l'objet sur un axe"""

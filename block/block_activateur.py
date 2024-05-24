@@ -1,4 +1,5 @@
 """contient les class de block activateur"""
+
 from .class_block import Block  # , ObjetGraphique, pygame, gener_texture
 
 
@@ -16,7 +17,7 @@ class Interupteur(Block):
         # collision_: bool = True,
     ):
         super().__init__(coordonnee, taille, color, texture=texture)
-        self.type = type_
+        self.type = type_  #  bouton | impulsif | levier
         self._active = False
         self.valeur_activation = valeur_activation
         # self._collision = collision_

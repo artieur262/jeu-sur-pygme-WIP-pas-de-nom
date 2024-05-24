@@ -1,7 +1,7 @@
 """Module pour l'éditeur de niveau."""
 
 # Importation des modules
-
+# pylint: disable=unused-import
 from block.class_obj import (
     ObjetGraphique,
     gener_texture,
@@ -98,11 +98,10 @@ class MapMaker:
                 )
             )
 
-    def affiche(self):
+    def affiche(self, surface: pygame.Surface = None):
         """Affiche les objets de la map."""
-
         for obj in self.graf_obj:
-            obj[1].afficher((0, self.scrool))
+            obj[1].afficher((0, self.scrool), surface=surface)
 
     def nom_present(self, nom: str) -> bool:
         """Retourne True si le nom est déjà présent dans la map."""

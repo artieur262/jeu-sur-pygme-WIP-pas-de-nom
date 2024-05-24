@@ -106,7 +106,7 @@ class ObjetGraphique:
         self,
         decalage_camera: tuple[int, int] = None,
         debut: tuple[int, int] = None,
-        taille: tuple[int, int] = None,
+        surface: pygame.Surface = None,
     ) -> bool:
         """permet de l'affiché sur la fenêtre et de savoir si il est affiché
 
@@ -116,16 +116,18 @@ class ObjetGraphique:
             taille (optional): permet de définir la taille de la zone d'affichage
         """
         # print("tac")
-        if taille is None:
-            taille = screen.get_size()
+        if surface is None:
+            surface = screen
         if debut is None:
             debut = (0, 0)
+        # print(self.coordonnee, decalage_camera, debut)
+        taille = surface.get_size()
         if decalage_camera is not None:
             if self.objet_dans_zone(
                 (decalage_camera[0], decalage_camera[0] + taille[0]),
                 (decalage_camera[1], decalage_camera[1] + taille[1]),
             ):
-                screen.blit(
+                surface.blit(
                     self.image_actuel(),
                     (
                         self.coordonnee[0] - decalage_camera[0] + debut[0],
@@ -140,7 +142,7 @@ class ObjetGraphique:
             (0, taille[1]),
         ):
             # print("chaton")
-            screen.blit(
+            surface.blit(
                 self.image_actuel(),
                 (self.coordonnee[0] + debut[0], self.coordonnee[1] + debut[1]),
             )
