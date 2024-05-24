@@ -1,19 +1,30 @@
-"""ce module contien les class pour la souris et le clavier"""
+"""ce module contien les class pour la souris et le clavier
 
-import pygame
+il y a 2 class:
+    - Clavier : class pour gérer le clavier
+    - Souris : class pour gérer la souris
+"""
+
+from graphique import pygame
 
 
 class Clavier:
-    """cette class permet de gérer le clavier"""
+    """cette class permet de gérer le clavier
+    et de savoir si une touche est presser ou lacher
+    """
 
     def __init__(self) -> None:
         self.alphabet_clee = {
-            "\x08": 8,
-            "\t": 9,
+            "back_space": 8,
+            "tab": 9,
             "entrer": 13,
             "echap": 27,
             "space": 32,
+            "!": 33,
+            "$": 36,
             ")": 41,
+            "*": 42,
+            ",": 44,
             "0": 48,
             "1": 49,
             "2": 50,
@@ -24,6 +35,11 @@ class Clavier:
             "7": 55,
             "8": 56,
             "9": 57,
+            ":": 58,
+            ";": 59,
+            "<": 60,
+            "=": 61,
+            "^": 94,
             "a": 97,
             "b": 98,
             "c": 99,
@@ -50,7 +66,9 @@ class Clavier:
             "x": 120,
             "y": 121,
             "z": 122,
+            "suppr": 127,
             "²": 178,
+            "ù": 249,
             "ctrl": 1073742048,
             "maj gauche": 1073742049,
             "alt": 1073742050,
@@ -73,10 +91,10 @@ class Clavier:
             "fleche gauche": 1073741904,
             "fleche bas": 1073741905,
             "fleche haut": 1073741906,
+            "fin": 1073741901,
+            "inser": 1073741897,
         }
 
-        # lettre_alphabet = "abcdefghijklmnopqrstuvwxyz 0123456789"
-        # print(lettre_alphabet)
         self.dict_touches = {}
         for key in self.alphabet_clee.values():
             self.dict_touches[key] = "lacher"
@@ -89,21 +107,16 @@ class Clavier:
             elif touche == "vien_lacher":
                 self.dict_touches[clee] = "lacher"
 
-    def ajoute_touche(self, clee: str):
-        """ajoute une touche"""
-        self.dict_touches[clee] = "lacher"
-
-    def set_pression(self, clee: str, value: str):
-        """change la pression d'une touche"""
-        self.dict_touches[clee] = value
-
     def get_pression(self, clee: str | int):
         """get la pression d'une touche"""
         # print([clee])
         if isinstance(clee, str):  # c'est équivalen de type(clee)==str
             return self.dict_touches[self.convert_touche_key(clee)]
-
         return self.dict_touches[clee]
+
+    def set_pression(self, clee: str, value: str):
+        """change la pression d'une touche"""
+        self.dict_touches[clee] = value
 
     def convert_touche_key(self, touche: str) -> int:
         """converti une touche en key
@@ -120,7 +133,10 @@ class Clavier:
 
 
 class Souris:
-    """cette class permet de gérer la souris"""
+    """cette class permet de gérer la souris
+    peremet de savoir la position de la souris
+    et permet de savoir si un clique est presser ou lacher
+    """
 
     def __init__(self):
         self.actualise_position()
@@ -129,6 +145,20 @@ class Souris:
         for key in self.clique_clee.values():
             self.dict_clique[key] = "lacher"
 
+    def actualise_all_clique(self):
+        """actualise toute les touches"""
+        for clee, touche in self.dict_clique.items():
+            if touche == "vien_presser":
+                self.dict_clique[clee] = "presser"
+            elif touche == "vien_lacher":
+                self.dict_clique[clee] = "lacher"
+
+    def get_pression(self, clee: str | int):
+        """get la pression d'une touche"""
+        if isinstance(clee, str):  # c'est équivalen de type(clee)==str
+            return self.dict_clique[self.convert_clique_key(clee)]
+        return self.dict_clique[clee]
+
     def set_pression(self, clee: str, value: str):
         """change la pression d'une touche"""
         self.dict_clique[clee] = value
@@ -136,13 +166,6 @@ class Souris:
     def get_pos(self):
         """get la position de la souris"""
         return self.pos
-
-    def get_pression(self, clee: str | int):
-        """get la pression d'une touche"""
-        # print([clee])
-        if isinstance(clee, str):  # c'est équivalen de type(clee)==str
-            return self.dict_clique[self.convert_clique_key(clee)]
-        return self.dict_clique[clee]
 
     def actualise_position(self):
         """actualise la position de la souris"""
@@ -153,14 +176,6 @@ class Souris:
         exemple 't' -> 116
         """
         return self.clique_clee[touche]
-
-    def actualise_all_clique(self):
-        """actualise toute les touches"""
-        for clee, touche in self.dict_clique.items():
-            if touche == "vien_presser":
-                self.dict_clique[clee] = "presser"
-            elif touche == "vien_lacher":
-                self.dict_clique[clee] = "lacher"
 
     def __str__(self) -> str:
         res = "-{"
