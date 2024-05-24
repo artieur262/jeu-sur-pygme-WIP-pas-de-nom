@@ -1,46 +1,87 @@
-"""parti grapfique de mon jeu
+"""cette parti est la pour gérer l'interface graphique du jeu
+
+il y a une class:
+    ObjetGraphique : est un objet graphique qui a le but d'etre affiché
+
+il y a des fonctions:
+    - gener_texture : génere une texture rectangulaire
+    - gener_texture_arc_ciel : génere une texture arc en ciel
+    - decoupe_texte : découpe un texte en plusieur ligne
+    - place_texte_in_texture : ajoute du texte sur une image
+    - vider_affichage : permet de vider l'affichage
+    - quitter : permet de quitter
+
+
 """
 
-# pylint: disable= no-member
+# pylint: disable=no-member
 import pygame
 
 
 pygame.init()
 
+
 screen = pygame.display.set_mode((1200, 600), pygame.RESIZABLE)
-pygame.display.set_caption("jeu 2D dans monde 3D")
+pygame.display.set_caption("projet")
 screen.fill((200, 200, 200))
-# deplace_map = [0, 0]
 
 
 class ObjetGraphique:
-    """est Objet Graphique qui a le but d'etre affiché"""
+    """est Objet Graphique qui a le but d'etre affiché
 
-    def __init__(self, coordonnee: tuple[int] = None, images: list = None, animation=0):
-        if coordonnee is None:
-            coordonnee = (0, 0)
-            print("error (niveau 1): coordoonnee non prédéfini definition à [0,0]")
-        if images is None:
-            images = []
-            print("error (niveau 1): aucune image défini")
-        images_converti = []
+    agrs:
+        coordonnee : tuple[int, int] : coordonnée de l'objet
+        images : list[str | pygame.Surface] : liste des images de l'objet
+        animation : int : l'animation actuel de l'objet
+    """
+
+    def __init__(
+        self,
+        coordonnee: tuple[int],
+        images: list[str | pygame.Surface],
+        animation=0,
+    ):
+        images_converti: list[pygame.Surface] = []
         for image in images:  # converti les liens d'images en format Surface
             if isinstance(image, str):
                 image = pygame.image.load(image)
                 image.convert()
             images_converti.append(image)
-
+        self.visible = True
         self.coordonnee = coordonnee
         self.images = images_converti
         self.animation = animation
         self.actualise_dimension()
         self.coordonnee: tuple[int]
         self.animation: int
-        self.images: list
+        self.images: list[pygame.Surface]
+
+    def get_coordonnee(self, axe: int = None) -> tuple[int, int] | int:
+        """renvoi les coordonées de l'objet
+        Args:
+            axe (int, optional): {0= axe x, 1= axe y}. Defaults to None."""
+        if axe is None:
+            return self.coordonnee
+        else:
+            return self.coordonnee[axe]
 
     def set_coordonnee(self, valu):
-        """defini"""
+        """defini les coordonées de l'objet"""
         self.coordonnee = valu
+
+    def get_taille(self, axe: int = None) -> tuple[int, int] | int:
+        """renvoi la taille de l'objet"""
+        if axe is None:
+            return self.dimension
+        else:
+            return self.dimension[axe]
+
+    def get_center(self) -> tuple[float, float]:
+        """renvoi le centre de l'objet"""
+        return (
+            self.coordonnee[0] + self.dimension[0] / 2,
+            self.coordonnee[1] + self.dimension[1] / 2,
+        )
 
     def image_actuel(self) -> pygame.Surface:
         """donne l'image actuel"""
@@ -70,16 +111,47 @@ class ObjetGraphique:
         retun (bool) : si le point est dans l'objet
 
         """
-        return (self.coordonnee[0] <= x <= self.coordonnee[0] + self.dimension[0]) and (
-            self.coordonnee[1] <= y <= self.coordonnee[1] + self.dimension[1]
+        return (self.coordonnee[0] <= x < self.coordonnee[0] + self.dimension[0]) and (
+            self.coordonnee[1] <= y < self.coordonnee[1] + self.dimension[1]
         )
+
+    def collision_in_axe(self, obj_pos: int, obj_size: int, axe: int) -> bool:
+        """pemet de voir si un objet a une colisiont sur un plan
+
+        Args:
+            obj_pos (int): est la position de l'objet sur l'axe
+            obj_size (int): est la taille de l'objet sur l'axe
+            axe (int): {1= axe x, 2= axe y}
+
+        Returns: (bool)
+        """
+        coin_1_self = self.get_coordonnee(axe)
+        coin_2_self = self.get_coordonnee(axe) + self.get_taille(axe)
+
+        coin_1_obj = obj_pos
+        coin_2_obj = obj_pos + obj_size
+
+        return (
+            coin_1_obj <= coin_1_self < coin_2_obj
+            or coin_1_self <= coin_1_obj < coin_2_self
+        )
+
+    def collision(self, obj_pos: tuple[int], obj_size: tuple[int]) -> bool:
+        """pemet savoir l'objet à une colision avec un autre objet dans l'espace
+        args:
+            obj_pos (tuple[int]) : est la position de l'objet
+            obj_size (tuple[int]) : est la taille de l'objet
+        """
+        return self.collision_in_axe(
+            obj_pos[0], obj_size[0], 0
+        ) and self.collision_in_axe(obj_pos[1], obj_size[1], 1)
 
     def objet_dans_zone(self, axe_x: tuple, axe_y: tuple) -> bool:
         """permet de savoir si un bojet est dans une zone
 
         Args:
             axe_x (tuple): à une longuer de 2 (le premier est le plus petit)
-            axe_y (tuple): _description_
+            axe_y (tuple): à une longuer de 2 (le premier est le plus petit)
 
         Returns:
             bool: si l'objet
@@ -98,8 +170,8 @@ class ObjetGraphique:
             or coin_1_self[1] <= coin_1_zone[1] < coin_2_self[1]
         )
         # return (
-        #     axe_x[0] <= self.coordonnee[0] <= axe_x[1] + self.dimension[0]
-        #     and axe_y[0] <= self.coordonnee[1] <= axe_y[1] + self.dimension[1]
+        #     axe_x[0] <= self.coordonnee[0] < axe_x[1] + self.dimension[0]
+        #     and axe_y[0] <= self.coordonnee[1] < axe_y[1] + self.dimension[1]
         # )
 
     def afficher(
@@ -115,13 +187,12 @@ class ObjetGraphique:
             debut (optional): permet de définir le début de la zone d'affichage
             taille (optional): permet de définir la taille de la zone d'affichage
         """
-        # print("tac")
         if surface is None:
             surface = screen
         if debut is None:
             debut = (0, 0)
-        # print(self.coordonnee, decalage_camera, debut)
         taille = surface.get_size()
+
         if decalage_camera is not None:
             if self.objet_dans_zone(
                 (decalage_camera[0], decalage_camera[0] + taille[0]),
@@ -141,7 +212,6 @@ class ObjetGraphique:
             (0, taille[0]),
             (0, taille[1]),
         ):
-            # print("chaton")
             surface.blit(
                 self.image_actuel(),
                 (self.coordonnee[0] + debut[0], self.coordonnee[1] + debut[1]),
@@ -159,7 +229,7 @@ def gener_texture(taille: tuple[int], color: tuple[int] = False) -> pygame.Surfa
         color (tuple[int]): (Red,Green,Blue,trasparence "optionel") est la couleur de l'image
 
     Returns:
-        Suface: est l'image généré
+        Surface: est l'image généré
     """
 
     if len(color) == 3:  # permet de pas forcer de metre des couleurs
@@ -173,7 +243,12 @@ def gener_texture(taille: tuple[int], color: tuple[int] = False) -> pygame.Surfa
 
 
 def gener_texture_arc_ciel(taille: list[int], decalage: int = 0):
-    """génere une texture arc en ciel"""
+    """génere une texture arc en ciel
+
+    agrs:
+        taille (list[int]) : est la taille de l'image
+        decalage (int) : est le décalage de l'arc en ciel
+    """
     couleur = [
         (255, 0, 0),
         (255, 125, 0),
@@ -200,73 +275,96 @@ def gener_texture_arc_ciel(taille: list[int], decalage: int = 0):
     return texture
 
 
+def decoupe_texte(
+    texte: str, longueur_ligne: int, police: pygame.font.Font
+) -> list[str]:
+    """decoupe un texte en plusieur ligne
+    en sorte que chaque ligne ne dépasse pas la longueur donnée
+
+    Args:
+        texte (str): est le texte à découper
+        taille (int): est la taille de la ligne
+        police (pygame.font.Font): est la police du texte
+
+    Returns:
+        list[str]: est le texte découpé
+    """
+    texte = texte.split("\n")
+    texte_decoupe = []
+    for fragment in texte:
+        fragment = fragment.split(" ")
+        ligne = ""
+        for i in fragment:
+            if police.size(ligne + i)[0] < longueur_ligne:
+                ligne += i + " "
+            elif len(ligne) > 0:
+                texte_decoupe.append(ligne[:-1])
+                ligne = i + " "
+            else:
+                texte_decoupe.append(i)
+        if len(ligne) > 0:
+            texte_decoupe.append(ligne[:-1])
+
+    return texte_decoupe
+
+
 def place_texte_in_texture(
     image: pygame.Surface,
     texte: str,
     police: pygame.font.Font,
     color: tuple[int],
+    mode: str = "centrage",
 ) -> pygame.Surface:
     """ajoute du texte sur une image
+    la fonction gère les saut de ligne quand le texte est trop long ou qu'il y a des "\\n"
 
     Args:
-        image (pygame.Surface): est l'image qui ressevera le texte
+        image (pygame.Surface): est l'image qui recevera le texte
         texte (str): est le texte rajouter
-
+        police (pygame.font.Font): est la police du texte
+        color (tuple[int]): est la couleur du texte
+        mode (str, optional): est le mode de placement du texte. Defaults to "centrage".
+                              ("centrage", "haut_gauche")
     Returns:
         image (pygame.Surface): est image avec son texte
     """
     dimention_image = image.get_size()
-    texte_img = police.render(str(texte), 2, color)
-    dimention_texte = texte_img.get_size()
-    # print(dimention_texte[1])
-    if "\n" in texte:
-        frag_texte = texte.split("\n")
-        frag_texte_img: list[pygame.Surface] = []
-        for i in frag_texte:
-            frag_texte_img.append(police.render(i, 2, color))
-        position = (17 * len(frag_texte)) // 2
-        for i, j in enumerate(frag_texte_img):
-            j_taille = j.get_size()
+    texte_decoupe = decoupe_texte(texte, dimention_image[0], police)
+    if mode == "centrage":
+        for i, ligne in enumerate(texte_decoupe):
+            dimention_ligne = police.size(ligne)
             image.blit(
-                j,
+                police.render(ligne, 2, color),
                 (
-                    dimention_image[0] // 2 - j_taille[0] // 2,
-                    dimention_image[1] // 2 - position + 17 * i,
+                    (dimention_image[0] - dimention_ligne[0]) // 2,
+                    (dimention_image[1] - dimention_ligne[1] * len(texte_decoupe)) // 2
+                    + i * dimention_ligne[1],
                 ),
             )
-
-    elif (
-        dimention_texte[0] <= dimention_image[0] or len(texte.split(" ")) == 1
-    ):  # le texte rentre dans l'image
-        image.blit(
-            texte_img,
-            (
-                dimention_image[0] // 2 - dimention_texte[0] // 2,
-                dimention_image[1] // 2 - dimention_texte[1] // 2,
-            ),
-        )
-    else:  # sinon on coupe le texte est on place dans l'image
-        frag_texte = texte.split(" ")
-        frag_texte_img: list[pygame.Surface] = []
-        for i in frag_texte:
-            frag_texte_img.append(police.render(i, 2, color))
-        position = (17 * len(frag_texte)) // 2
-        for i, j in enumerate(frag_texte_img):
-            j_taille = j.get_size()
+    elif mode == "haut_gauche":
+        for i, ligne in enumerate(texte_decoupe):
+            dimention_ligne = police.size(ligne)
             image.blit(
-                j,
+                police.render(ligne, 2, color),
+                (0, i * dimention_ligne[1]),
+            )
+    elif mode == "centrage_haut":
+        for i, ligne in enumerate(texte_decoupe):
+            dimention_ligne = police.size(ligne)
+            image.blit(
+                police.render(ligne, 2, color),
                 (
-                    dimention_image[0] // 2 - j_taille[0] // 2,
-                    dimention_image[1] // 2 - position + 17 * i,
+                    (dimention_image[0] - dimention_ligne[0]) // 2,
+                    i * dimention_ligne[1],
                 ),
             )
-
     return image
 
 
 def vider_affichage(couleur_du_fond: list | int = 0):
     """permet de vider l'affichage
     donc de tout retire et met la couleur qui est entre en fond
+    
     Args:
         couleur_du_fond (list or tuple or int): bref c'est une couleur RGB (red, green, blue)
     """
@@ -277,14 +375,3 @@ def quitter():
     """permet de quitter"""
     pygame.quit()
     exit()
-
-
-# def gestion_mobiliter_fentre(event: pygame.event.Event):
-#     """permet de géreré la mobilité de la fenètre
-
-#     Args:
-#         event (pygame.event.Event): _description_
-#     """
-#     if event.type == pygame.QUIT:
-#         # detecte quand on clique sur la croix pour quiter
-#         quitter()
