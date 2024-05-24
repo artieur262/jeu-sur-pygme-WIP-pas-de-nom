@@ -75,7 +75,8 @@ def main():
             pygame.display.update()
             event = actualise_event(clavier, souris)
             clock.tick(30)
-            change_fullscreen(clavier.get_pression("f11"))
+            if clavier.get_pression("f11") == "vien_presser":
+                change_fullscreen()
             if (
                 clavier.get_pression("echap") == "vien_presser" or "quitter" in event
             ) and selection_oui_non(
@@ -108,7 +109,8 @@ def main():
         elif action == "option":
             screen.fill((175, 175, 175))
             event = actualise_event(clavier, souris)
-            change_fullscreen(clavier.get_pression("f11"))
+            if clavier.get_pression("f11") == "vien_presser":
+                change_fullscreen()
             menu_option.clique_bouton()
             menu_option.actualise_bouton()
             menu_option.affiche()
@@ -129,7 +131,7 @@ def main():
                 save.save_json(lien_controle, controle)
                 for i in controle.values():
                     if isinstance(i, int):
-                        clavier.change_pression(i, "lacher")
+                        clavier.set_pression(i, "lacher")
                 menu_option.etat = "en cour"
                 if "home" in menu_option.contexte:
                     action = "home"
@@ -155,7 +157,8 @@ def main():
 
         elif action == "choix_level":
             event = actualise_event(clavier, souris)
-            change_fullscreen(clavier.get_pression("f11"))
+            if clavier.get_pression("f11") == "vien_presser":
+                change_fullscreen()
             if (
                 clavier.get_pression("echap") == "vien_presser" or "quitter" in event
             ) and selection_oui_non(
@@ -208,7 +211,8 @@ def main():
             jeu.activate()
             if clavier.get_pression(jeu.controle["debug1"]) == "vien_presser":
                 print(jeu.dict_obj["playeur"][0].get_coordonnee())
-            change_fullscreen(clavier.get_pression("f11"))
+            if clavier.get_pression("f11") == "vien_presser":
+                change_fullscreen()
 
             # print(jeu.set_activation)
             # print(jeu.etat, jeu.set_activation, jeu.valeur_de_fin)
@@ -242,7 +246,8 @@ def main():
             # print("cat")
 
             event = actualise_event(clavier, souris)
-            change_fullscreen(clavier.get_pression("f11"))
+            if clavier.get_pression("f11") == "vien_presser":
+                change_fullscreen()
             menu_pause.clique_bouton(souris)
             screen.fill((0, 0, 0))
             jeu.affiche_obj()

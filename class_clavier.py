@@ -93,7 +93,7 @@ class Clavier:
         """ajoute une touche"""
         self.dict_touches[clee] = "lacher"
 
-    def change_pression(self, clee: str, value: str):
+    def set_pression(self, clee: str, value: str):
         """change la pression d'une touche"""
         self.dict_touches[clee] = value
 
@@ -129,7 +129,7 @@ class Souris:
         for key in self.clique_clee.values():
             self.dict_clique[key] = "lacher"
 
-    def change_pression(self, clee: str, value: str):
+    def set_pression(self, clee: str, value: str):
         """change la pression d'une touche"""
         self.dict_clique[clee] = value
 

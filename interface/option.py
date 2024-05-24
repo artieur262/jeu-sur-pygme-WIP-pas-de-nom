@@ -355,7 +355,7 @@ class SelectOption:
                         bouton.donnee[0] == "plein_ecran"
                         and bouton.get_text() == "activer"
                     ):
-                        change_fullscreen("vien_presser")
+                        change_fullscreen()
                     elif (
                         bouton.donnee[0] == "plein_ecran"
                         and bouton.get_text() == "démarage"

@@ -95,14 +95,14 @@ while True:
             # cat[event.unicode] = event.key
             # print(event)
             if event.key in clavier.dict_touches:
-                clavier.change_pression(event.key, "vien_lacher")
+                clavier.set_pression(event.key, "vien_lacher")
 
         if event.type == pygame.KEYDOWN:  # pylint: disable=no-member
             # print(event)
             if event.unicode == "\x1b":
                 quit()
             elif event.key in clavier.dict_touches:
-                clavier.change_pression(event.key, "vien_presser")
+                clavier.set_pression(event.key, "vien_presser")
 
     if face == 1:
         if clavier.get_pression("d") == "presser":
