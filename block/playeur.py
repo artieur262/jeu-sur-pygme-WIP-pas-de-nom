@@ -40,6 +40,9 @@ class Playeur(Block):
             raise ValueError(f"la face n'est pas reconnu : face = {face}")
 
     def deplace(self, list_block: list, axe: int, distance: int):
+        """fait déplacer le joueur en evitant les colisions
+        et change l'état du joueur en fonction de son déplacement
+        """
         deplacemment = super().deplace(list_block, axe, distance)
         if axe == 2 and distance > 0:
             self.etat = "par terre" if deplacemment else "tombe"
@@ -52,6 +55,8 @@ class Playeur(Block):
         return deplacemment
 
     def convert_save(self) -> dict:
+        """Convertit l'état du joueur en un dictionnaire pour sauvegarde.
+        """
         sorti = super().convert_save()
         sorti["type"] = "player"
         sorti["taille"] = self._taille_int
@@ -59,4 +64,6 @@ class Playeur(Block):
 
     @staticmethod
     def convert_load(dic: dict):
+        """Convertit un dictionnaire en un joueur.
+        """
         return Playeur(dic["coor"], dic["taille"], dic["color"], texture=dic["texture"])
