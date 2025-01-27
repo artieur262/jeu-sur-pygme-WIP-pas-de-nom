@@ -8,7 +8,7 @@
 
 
 from .class_block import *
-from .block_activable import PlateformeMouvante, BlockLumiere
+from .block_activable import Platforme, BlockLumiere
 from .block_special import (
     BlockCore,
     TunelDimensionelBrigitte,
@@ -34,7 +34,7 @@ def genere_obj(
     str,
     list[
         Block
-        | PlateformeMouvante
+        | Platforme
         | Playeur
         | Interupteur
         | ZoneActive
@@ -83,7 +83,7 @@ def genere_obj(
         elif obj["type"] == "lumière":
             sorti["lumière"].append(BlockLumiere.convert_load(obj))
         elif obj["type"] == "plaforme":
-            sorti["plaforme"].append(PlateformeMouvante.convert_load(obj))
+            sorti["plaforme"].append(Platforme.convert_load(obj))
 
         elif obj["type"] == "core":
             sorti["core"].append(BlockCore.convert_load(obj))

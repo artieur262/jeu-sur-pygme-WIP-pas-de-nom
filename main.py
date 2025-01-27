@@ -61,14 +61,14 @@ list_texte = [
     )
 ]
 list_platforme_mouvente = [
-    PlateformeMouvante(
+    Platforme(
         (50, 0, 50),
         [30, 30, 30],
         2,
         [[(0, 3, 8)], [(2, -3, 8)], [(0, -3, 8), (2, 3, 8)]],
         [0, 0, 255],
     ),
-    PlateformeMouvante(
+    Platforme(
         (125, 0, 25),
         [30, 30, 30],
         1,
