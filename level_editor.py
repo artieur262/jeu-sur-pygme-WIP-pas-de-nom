@@ -16,7 +16,7 @@ from block.class_obj import (
     Interupteur,
     ZoneActive,
     BlockLumiere,
-    PlateformeMouvante,
+    Platforme,
     #
     BlockCore,
     TunelDimensionelBrigitte,

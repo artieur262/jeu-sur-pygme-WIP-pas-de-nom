@@ -3,8 +3,12 @@
 from .class_block import Block, ObjetGraphique, gener_texture
 
 
-class PlateformeMouvante(Block):
-    """class d'une plateforme mouvante"""
+class Platforme(Block):
+    """class d'une plateforme mouvante
+    
+    mode de fonctionnement:
+    ()
+    """
 
     def __init__(
         self,
@@ -86,7 +90,7 @@ class PlateformeMouvante(Block):
 
     @staticmethod
     def convert_load(dic: dict):
-        return PlateformeMouvante(
+        return Platforme(
             dic["coor"],
             dic["taille"],
             dic["id"],
