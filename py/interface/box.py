@@ -70,6 +70,41 @@ class VBox(Box):
 
         self.actualiser()
     
+    def set_ecart(self, ecart: int) -> None:
+        """set l'ecart entre les ellement"""
+        self.ecart = ecart
+        self.ecart_auto = False
+        self.actualiser()
+
+    def auto_ecart(self, auto: bool) -> None:
+        """set l'ecart entre les ellement"""
+        self.ecart_auto = auto
+        self.actualiser()
+
+    def set_justify_content(self, justify_content: str) -> None:
+        """set la justification du contenu
+        args:
+            justify_content (str): est la justification du contenu (space-between, space-around, space-evenly)
+        """
+        self.justify_content = justify_content
+        self.actualiser()
+
+    def set_position_H(self, position_H: str) -> None:
+        """set la position horizontal de la box
+        args:
+            position_H (str): est la position de la box (left, center, right)
+        """
+        self.position_H = position_H
+        self.actualiser()
+    
+    def set_position_V(self, position_V: str) -> None:
+        """set la position vertical de la box
+        args:
+            position_V (str): est la position de la box (up, center, down)
+        """
+        self.position_V = position_V
+        self.actualiser()
+
     def somme_hauteur_ellement(self) -> int:
         """somme la longueur de tout les ellement"""
         return sum([i.get_size()[1] for i in self.ellement])
@@ -79,11 +114,11 @@ class VBox(Box):
         if self.ecart_auto:
             match self.justify_content:
                 case "space-between":
-                    self.ecart = (self.taille[1] - self.somme_hauteur_ellement()) / (len(self.ellement) - 1)
+                    self.ecart = (self.get_size()[1] - self.somme_hauteur_ellement()) / (len(self.ellement) - 1)
                 case "space-around":
-                    self.ecart = (self.taille[1] - self.somme_hauteur_ellement()) / len(self.ellement) 
+                    self.ecart = (self.get_size()[1] - self.somme_hauteur_ellement()) / len(self.ellement) 
                 case "space-evenly":
-                    self.ecart = (self.taille[1] - self.somme_hauteur_ellement()) / (len(self.ellement) + 1)            
+                    self.ecart = (self.get_size()[1] - self.somme_hauteur_ellement()) / (len(self.ellement) + 1)            
 
     def __actualiser_position(self):
         """actualise la position des ellement"""
@@ -154,6 +189,17 @@ class HBox(Box):
         self.justify_content = "space-between"
 
         self.actualiser()
+        
+    def set_ecart(self, ecart: int) -> None:
+        """set l'ecart entre les ellement"""
+        self.ecart = ecart
+        self.ecart_auto = False
+        self.actualiser()
+
+    def auto_ecart(self, auto: bool) -> None:
+        """set l'ecart entre les ellement"""
+        self.ecart_auto = auto
+        self.actualiser()
 
     def set_justify_content(self, justify_content: str) -> None:
         """set la justification du contenu
@@ -161,7 +207,23 @@ class HBox(Box):
             justify_content (str): est la justification du contenu (space-between, space-around, space-evenly)
         """
         self.justify_content = justify_content
-        self.__actualiser_position()
+        self.actualiser()
+
+    def set_position_H(self, position_H: str) -> None:
+        """set la position horizontal de la box
+        args:
+            position_H (str): est la position de la box (left, center, right)
+        """
+        self.position_H = position_H
+        self.actualiser()
+    
+    def set_position_V(self, position_V: str) -> None:
+        """set la position vertical de la box
+        args:
+            position_V (str): est la position de la box (up, center, down)
+        """
+        self.position_V = position_V
+        self.actualiser()
      
 
     def somme_longueur_ellement(self, fin:int = None) -> int:
@@ -175,11 +237,11 @@ class HBox(Box):
         if self.ecart_auto:
             match self.justify_content:
                 case "space-between":
-                    self.ecart = (self.taille[0] - self.somme_longueur_ellement()) / (len(self.ellement) - 1)
+                    self.ecart = (self.get_size()[0] - self.somme_longueur_ellement()) / (len(self.ellement) - 1)
                 case "space-around":
-                    self.ecart = (self.taille[0] - self.somme_longueur_ellement()) / len(self.ellement) 
+                    self.ecart = (self.get_size()[0] - self.somme_longueur_ellement()) / len(self.ellement) 
                 case "space-evenly":
-                    self.ecart = (self.taille[0] - self.somme_longueur_ellement()) / (len(self.ellement) + 1)
+                    self.ecart = (self.get_size()[0] - self.somme_longueur_ellement()) / (len(self.ellement) + 1)
 
 
     def __actualiser_position(self):
