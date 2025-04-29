@@ -64,7 +64,16 @@ class ObjetVisuel3D(Zone3D):
             decalage = (0, 0)
         if isinstance(face, str):
             face = self.LIST_FACE.index(face)
-        self.face_graphique[face].afficher((self.coordonnee[0]+decalage[0], self.coordonnee[1]+decalage[1]), surface)
+        match face:
+            case 0:
+                coordonnee = self.coordonnee[1:3]
+            case 1:
+                coordonnee = (self.coordonnee[0], self.coordonnee[2])
+            case 2:
+                coordonnee = self.coordonnee[0:2]
+        self.face_graphique[face].afficher((coordonnee[0]+decalage[0], coordonnee[1]+decalage[1]), surface)
+    
+
     
     def afficher_plan(
         self,

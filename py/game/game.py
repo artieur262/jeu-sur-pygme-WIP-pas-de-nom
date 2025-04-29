@@ -64,6 +64,7 @@ class Game:
         self.__touche:dict[str, int] = touche
         self.__plan_actuel:int = 2
         self.hauteur_plan:int = 0
+        self.debug:bool = False
     
 
     def set_plan(self, plan:int) -> None:   
@@ -83,8 +84,9 @@ class Game:
             playeur.deplacer((direction[0], direction[1], 0), self.map.get_colision())
 
 
-    def deplacer(self, plan:int) -> None:
+    def deplacer(self) -> None:
         """deplace le playeur selons les touches du clavier"""
+        plan = self.__plan_actuel
         cla=self.clavier
         if not self.map.get_graviter():
             if cla.get_pression(self.__touche["haut"]) == "presser":
@@ -105,6 +107,17 @@ class Game:
         pygame.display.flip()      
                         
 
+    def debug_mode(self) -> None:
+        """mode debug"""
+        if self.debug:
+            cla = self.clavier
+            if cla.get_pression(pygame.K_1) == "presser":
+                self.__plan_actuel = 0
+            if cla.get_pression(pygame.K_2) == "presser":
+                self.__plan_actuel = 1
+            if cla.get_pression(pygame.K_3) == "presser":
+                self.__plan_actuel = 2
+
     def run(self) -> None:
         """lance le jeu"""
         while self.__running:
@@ -113,7 +126,10 @@ class Game:
                 self.__running = False
             if self.clavier.get_pression(pygame.K_F11) in event:
                 change_fullscreen()
-            self.deplacer(self.__plan_actuel)
+            if self.clavier.get_pression(self.__touche["debug"]) == "vien_presser":
+                self.debug=True
+            self.debug_mode()
+            self.deplacer()
             self.afficher()
             self.__clock.tick(self.__fps)
     
