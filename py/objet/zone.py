@@ -168,7 +168,11 @@ class Zone3D(Zone2D):
         ) and (self.coordonnee[2] <= point[2] < self.coordonnee[2] + self.get_size()[2])
 
     def collision(self, obj_pos, obj_size):
-        return super().collision(obj_pos, obj_size) and self.collision_in_axe(self.coordonnee[2], self.get_size()[2], 2)
+        return(
+            self.collision_in_axe(obj_pos[0], obj_size[0], 0)
+            and self.collision_in_axe(obj_pos[1], obj_size[1], 1)
+            and self.collision_in_axe(obj_pos[2], obj_size[2], 2)
+        )
     
     def objet_dans_zone(self, pos_zone: tuple, size_zone: tuple) -> bool:
         """permet de savoir si un bojet est dans une zone
@@ -223,6 +227,10 @@ class Zone3D(Zone2D):
         self.coordonnee[axe] += valeur
         for i in list_objet:
             if self != i and self.collision(i.get_pos(), i.get_size()):
+                print("collision :\n" \
+                "\tobj" + str(i.get_pos()) + " " + str(i.get_size())+"\n"
+                "\tself" + str(self.get_pos()) + " " + str(self.get_size()))
+
                 if valeur > 0:
                     self.coordonnee[axe] = i.get_pos()[axe] - self.get_size()[axe]
                 else:
