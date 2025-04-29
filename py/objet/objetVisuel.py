@@ -1,5 +1,6 @@
 import pygame
 
+from py.graphique.image import Image
 from py.objet.zone import Zone2D, Zone3D
 
 class ObjetVisuel2D(Zone2D):
@@ -35,10 +36,15 @@ class ObjetVisuel3D(Zone3D):
         Zone (Zone): est la zone de l'objet graphique
     """
 
-    def __init__(self, coordonnee: list[int], taille: tuple[int, int, int], face: tuple[ObjetVisuel2D,ObjetVisuel2D,ObjetVisuel2D]):
+    LIST_FACE = ("x", "y", "z")
+
+    def __init__(self, coordonnee: list[int], taille: tuple[int, int, int], face: tuple[Image, Image, Image]):
+        """initialise le bouton"""
         super().__init__(coordonnee, taille)
         self.face_graphique = face
     
+   
+
     def afficher(
         self,
         face: int|str,
