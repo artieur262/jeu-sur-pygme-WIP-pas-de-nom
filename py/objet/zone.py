@@ -210,4 +210,31 @@ class Zone3D(Zone2D):
             plan = self.LIST_FACE.index(plan)
         return self.coordonnee[plan] <= hauteur < self.coordonnee[plan] + self.__taille[plan]
 
-       
+    def set_pos_in_axe(self, axe:int, valeur:int)->None:
+        """defini les coordonées de l'objet dans un axe"""
+        self.coordonnee[axe] = valeur
+
+    def add_pos_in_axe(self, axe:int, valeur:int)->None:
+        """deplace l'objet dans un axe"""
+        self.coordonnee[axe] += valeur
+    
+    def deplacer_in_axe(self, axe:int, valeur:int, list_objet:list["Zone3D"])->None:
+        """deplace l'objet dans un axe"""
+        self.coordonnee[axe] += valeur
+        for i in list_objet:
+            if self.collision(i.get_pos(), i.get_size()):
+                if valeur > 0:
+                    self.coordonnee[axe] = i.get_pos()[axe] - self.get_size()[axe]
+                else:
+                    self.coordonnee[axe] = i.get_pos()[axe] + i.get_size()[axe]
+        
+    def deplacer(self, valeur:tuple[int, int, int], list_objet:list["Zone3D"])->None:
+        """deplace l'objet dans un axe"""
+        if len(valeur) != 3:
+            raise ValueError("la valeur doit etre de la forme (x,y,z)")
+        if valeur[0] :
+            self.deplacer_in_axe(0, valeur[0], list_objet)
+        if valeur[1] :
+            self.deplacer_in_axe(1, valeur[1], list_objet)
+        if valeur[2] :
+            self.deplacer_in_axe(2, valeur[2], list_objet)
