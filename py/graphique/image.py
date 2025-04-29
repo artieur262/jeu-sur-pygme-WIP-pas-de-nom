@@ -20,6 +20,10 @@ class Image:
         self.ancre: tuple[int, int] = ancre
         self.texture: pygame.Surface = texture
     
+    def get_size(self) -> tuple[int, int]:
+        """get la taille de l'image"""
+        return self.texture.get_size()
+
     def get_texture(self) -> pygame.Surface:
         """get la texture de l'image"""
         return self.texture

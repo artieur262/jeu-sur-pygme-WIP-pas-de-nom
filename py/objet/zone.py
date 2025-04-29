@@ -131,7 +131,7 @@ class Zone3D(Zone2D):
 
     def set_pos(self, valu:list[int, int, int]):
         """defini les coordonées de l'objet"""
-        self.coordonnee = valu
+        self.coordonnee = list(valu)
     
     def add_pos(self, valu: tuple[int, int, int]):
         """ajoute des coordonées à l'objet"""
@@ -139,11 +139,11 @@ class Zone3D(Zone2D):
     
     def get_size(self) -> tuple[int, int, int] | int:
         """renvoi la taille de l'objet"""
-        return self.__taille
+        return super().get_size()
 
     def set_size(self, valu: tuple[int, int, int]):
         """defini la taille de l'objet"""
-        self.__taille = valu
+        super().set_size(valu)
     
     def get_center(self) -> tuple[float, float, float]:
         """renvoi le centre de l'objet"""
@@ -168,7 +168,7 @@ class Zone3D(Zone2D):
         ) and (self.coordonnee[2] <= point[2] < self.coordonnee[2] + self.get_size()[2])
 
     def collision(self, obj_pos, obj_size):
-        return super().collision(obj_pos, obj_size) and self.collision_in_axe(self.coordonnee[2], self.__taille[2], 2)
+        return super().collision(obj_pos, obj_size) and self.collision_in_axe(self.coordonnee[2], self.get_size()[2], 2)
     
     def objet_dans_zone(self, pos_zone: tuple, size_zone: tuple) -> bool:
         """permet de savoir si un bojet est dans une zone
@@ -208,7 +208,7 @@ class Zone3D(Zone2D):
         """permet de savoir si l'objet est dans un plan"""
         if isinstance(plan, str):
             plan = self.LIST_FACE.index(plan)
-        return self.coordonnee[plan] <= hauteur < self.coordonnee[plan] + self.__taille[plan]
+        return self.coordonnee[plan] <= hauteur < self.coordonnee[plan] + self.get_size()[plan]
 
     def set_pos_in_axe(self, axe:int, valeur:int)->None:
         """defini les coordonées de l'objet dans un axe"""
@@ -222,7 +222,7 @@ class Zone3D(Zone2D):
         """deplace l'objet dans un axe"""
         self.coordonnee[axe] += valeur
         for i in list_objet:
-            if self.collision(i.get_pos(), i.get_size()):
+            if self != i and self.collision(i.get_pos(), i.get_size()):
                 if valeur > 0:
                     self.coordonnee[axe] = i.get_pos()[axe] - self.get_size()[axe]
                 else:

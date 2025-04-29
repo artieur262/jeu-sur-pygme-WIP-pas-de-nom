@@ -60,6 +60,8 @@ class ObjetVisuel3D(Zone3D):
         Returns:
             bool: si l'objet est affiché
         """
+        if decalage is None:
+            decalage = (0, 0)
         if isinstance(face, str):
             face = self.LIST_FACE.index(face)
         self.face_graphique[face].afficher((self.coordonnee[0]+decalage[0], self.coordonnee[1]+decalage[1]), surface)
