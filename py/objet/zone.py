@@ -116,6 +116,8 @@ class Zone2D:
 class Zone3D(Zone2D):
     """class pour gérer les zones en 3D"""
 
+    LIST_FACE = ["x", "y", "z"]
+
     def __init__(self, coordonnee: list[int,int,int], taille: list[int,int,int]):
         super().__init__(coordonnee, taille)
      
@@ -201,3 +203,10 @@ class Zone3D(Zone2D):
         """calcule la distance entre 2 zones"""
         return self.calcul_distace_au_carre(zone)**0.5
 
+    def est_dans_plan(self, hauteur:float, plan:int|str)->bool:
+        """permet de savoir si l'objet est dans un plan"""
+        if isinstance(plan, str):
+            plan = self.LIST_FACE.index(plan)
+        return self.coordonnee[plan] <= hauteur < self.coordonnee[plan] + self.__taille[plan]
+
+       

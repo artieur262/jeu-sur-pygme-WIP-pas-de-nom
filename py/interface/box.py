@@ -1,13 +1,13 @@
 import pygame
-from py.objet.objetVisuel import ObjetVisuel
+from py.objet.objetVisuel import ObjetVisuel2D
 
-class Box(ObjetVisuel):
+class Box(ObjetVisuel2D):
     """Box est une zone qui a une image et un texte
     Args:
         ObjetVisuel (ObjetVisuel): est la zone de l'objet graphique
     """
 
-    def __init__(self, taille : tuple[int, int], ellement : list[ObjetVisuel] ):
+    def __init__(self, taille : tuple[int, int], ellement : list[ObjetVisuel2D] ):
         super().__init__((0, 0), taille)
         self.ellement = ellement
 
@@ -60,7 +60,7 @@ class VBox(Box):
         justify_content (str): est la justification du contenu (space-between, space-around, space-evenly)
     """
 
-    def __init__(self, taille : tuple[int, int], ellement : list[ObjetVisuel]):
+    def __init__(self, taille : tuple[int, int], ellement : list[ObjetVisuel2D]):
         super().__init__(taille, ellement)
         self.ecart = 0
         self.ecart_auto = True
@@ -166,7 +166,7 @@ class VBox(Box):
         self.__actualiser_position()
         super().actualiser()
 
-    def ajouter_ellement(self, ellement: ObjetVisuel):
+    def ajouter_ellement(self, ellement: ObjetVisuel2D):
         """ajoute un ellement à la box"""
         self.ellement.append(ellement)
         self.actualiser()
@@ -180,7 +180,7 @@ class HBox(Box):
         justify_content (str): est la justification du contenu (space-between, space-around, space-evenly)
     """
 
-    def __init__(self, taille : tuple[int, int], ellement : list[ObjetVisuel]):
+    def __init__(self, taille : tuple[int, int], ellement : list[ObjetVisuel2D]):
         super().__init__(taille, ellement)
         self.ecart = 0
         self.ecart_auto = True
@@ -289,7 +289,7 @@ class HBox(Box):
         self.__actualiser_position()
         super().actualiser()
     
-    def ajouter_ellement(self, ellement: ObjetVisuel):
+    def ajouter_ellement(self, ellement: ObjetVisuel2D):
         """ajoute un ellement à la box"""
         self.ellement.append(ellement)
         self.actualiser()

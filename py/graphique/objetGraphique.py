@@ -1,9 +1,9 @@
 import pygame
 
-from py.objet.objetVisuel import ObjetVisuel
+from py.objet.objetVisuel import ObjetVisuel2D
 from py.graphique.image import Image
 
-class ObjetGraphique(ObjetVisuel):
+class ObjetGraphique(ObjetVisuel2D):
     """Objet graphique est une zone qui a une image et un texte
     Args:
         Zone (Zone): est la zone de l'objet graphique
