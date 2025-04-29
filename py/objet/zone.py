@@ -190,3 +190,14 @@ class Zone3D(Zone2D):
             coin_1_zone[2] <= coin_1_self[2] < coin_2_zone[2]
             or coin_1_self[2] <= coin_1_zone[2] < coin_2_self[2]
         )
+    
+    def calcul_distace_au_carre(self,zone:"Zone3D")->float:
+        """calcule la distance au carre entre 2 zones"""
+        return ((self.get_center()[0]-zone.get_center()[0])**2 +
+                (self.get_center()[1]-zone.get_center()[1])**2 +
+                (self.get_center()[2]-zone.get_center()[2])**2)
+
+    def calcul_distace(self,zone:"Zone3D")->float:
+        """calcule la distance entre 2 zones"""
+        return self.calcul_distace_au_carre(zone)**0.5
+
