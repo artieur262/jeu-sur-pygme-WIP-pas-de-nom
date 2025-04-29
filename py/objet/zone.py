@@ -116,7 +116,8 @@ class Zone2D:
 class Zone3D(Zone2D):
     """class pour gérer les zones en 3D"""
 
-    LIST_FACE = ("x", "y", "z")
+    LIST_FACE = ("xy", "xz", "yz")
+    LIST_AXE = ("x", "y", "z")
 
     def __init__(self, coordonnee: list[int,int,int], taille: list[int,int,int]):
         super().__init__(coordonnee, taille)
