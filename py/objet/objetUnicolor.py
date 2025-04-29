@@ -46,9 +46,9 @@ class ObjetUnicolor3D(ObjetVisuel3D):
 
     def __init__(self, coordonnee: list[int], taille: tuple[int, int, int], couleur: tuple[int, int, int]):
         """initialise le bouton"""
-        face_graphique = [Image(pygame.surface((taille[0], taille[1]), pygame.SRCALPHA)),
-                Image(pygame.surface((taille[1], taille[2]), pygame.SRCALPHA)),
+        face_graphique = [Image(pygame.surface((taille[1], taille[2]), pygame.SRCALPHA)),
                 Image(pygame.surface((taille[0], taille[2]), pygame.SRCALPHA)),
+                Image(pygame.surface((taille[0], taille[1]), pygame.SRCALPHA)),
                 ]
         for i in face_graphique:
             i.texture.fill(couleur)
