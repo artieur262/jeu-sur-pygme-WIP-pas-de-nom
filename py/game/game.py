@@ -70,6 +70,7 @@ class Game:
     def set_plan(self, plan:int) -> None:   
         """set le plan"""
         self.__plan_actuel = plan
+        self.map.get_playeur().set_face(plan)
 
     def deplacer_dans_plan(self,direction:tuple[int,int], plan:int) -> None:
         """deplace le playeur selons les touches du clavier"""
@@ -107,16 +108,17 @@ class Game:
         pygame.display.flip()      
                         
 
+
     def debug_mode(self) -> None:
         """mode debug"""
         if self.debug:
             cla = self.clavier
             if cla.get_pression(pygame.K_1) == "presser":
-                self.__plan_actuel = 0
+                self.set_plan(0)
             if cla.get_pression(pygame.K_2) == "presser":
-                self.__plan_actuel = 1
+                self.set_plan(1)
             if cla.get_pression(pygame.K_3) == "presser":
-                self.__plan_actuel = 2
+                self.set_plan(2)
 
     def run(self) -> None:
         """lance le jeu"""
