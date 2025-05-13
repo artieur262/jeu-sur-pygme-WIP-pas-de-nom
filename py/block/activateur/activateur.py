@@ -1,4 +1,5 @@
 from py.block.plateforme import Plateforme
+# from py.game.game import Map
 
 class Activateur(Plateforme):
     """Activateur est une zone qui a pour but d'être affiché sur une surface
@@ -21,7 +22,7 @@ class Activateur(Plateforme):
         """permet de changer l'etat du bloc logique"""
         self.__activer = activer
 
-    def activation(self) -> None:
+    def activation(self, map) -> None:
         """permet d'activer le bloc logique"""
         pass
 

@@ -6,6 +6,7 @@ from py.graphique.actualisation_pygame import actualise_event, change_fullscreen
 from py.graphique.image import Image
 from py.block.plateforme import Plateforme
 from py.block.playeur import Playeur
+from py.block.activateur.activateur import Activateur
 from py.objet.objetVisuel import ObjetVisuel3D
 from py.objet.zone import Zone3D
 from py.logique.blocLogique import Logique
@@ -15,14 +16,16 @@ class Map:
     Args:
         Map (Map): est la map
     """
-    def __init__(self):
+    def __init__(self, game = "Game"):
         """initialise la map"""
+        self.__game = game
         self.__colision:set[Zone3D] = set()
         self.__playeur:Playeur = None
         self.__afficher:set[ObjetVisuel3D] = set()
         self.__graviter:bool = False
         self.__logique:set[Logique] = set()
         self.__signal:set[int] = set()
+        self.__activateur:set[Activateur] = set()
 
     def actualiser_activation(self) -> None:
         """actualise l'activation des blocs logiques"""
@@ -51,6 +54,10 @@ class Map:
         """affiche la map"""
         return self.__afficher
     
+    def get_game(self) -> "Game":
+        """get le jeu"""
+        return self.__game
+
     def get_colision(self) -> set[Zone3D]:
         """get la map"""
         return self.__colision
@@ -63,6 +70,7 @@ class Map:
         """get la graviter"""
         return self.__graviter
 
+    
 
 class Game:
     """Game est une classe qui permet de gerer le jeu
@@ -87,6 +95,10 @@ class Game:
         """set le plan"""
         self.__plan_actuel = plan
         self.map.get_playeur().set_face(plan)
+
+    def get_touche(self) -> dict[str, int]:
+        """get les touches"""
+        return self.__touche
 
     def deplacer_dans_plan(self,direction:tuple[int,int], plan:int) -> None:
         """deplace le playeur selons les touches du clavier"""
