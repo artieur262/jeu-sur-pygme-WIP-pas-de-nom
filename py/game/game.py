@@ -28,7 +28,7 @@ class Map:
         """actualise l'activation des blocs logiques"""
         nouveau_signal:set[int] = set()
         for i in self.__logique:
-            i.activer(self.__signal, nouveau_signal)
+            i.get_activation(self.__signal, nouveau_signal)
         self.__signal = nouveau_signal
 
 

@@ -4,7 +4,7 @@ class Logique:
         self.entre = entre 
         self.sorti = sorti
 
-    def activer(self, input:set[int], output:set[int]) -> None:
+    def get_activation(self, input:set[int], output:set[int]) -> None:
         """permet d'activer le bloc logique et ajouter les sorties dans le signal de output"""
         pass
 
@@ -13,7 +13,7 @@ class LogiqueAND(Logique):
         """initialise le bloc logique"""
         super().__init__(entre, sorti)
     
-    def activer(self, input:set[int], output:set[int]) -> None:
+    def get_activation(self, input:set[int], output:set[int]) -> None:
         """permet d'activer le bloc logique et ajouter les sorties dans le signal de output"""
         if input & self.entre == self.entre:
             output.add(self.sorti)
@@ -23,7 +23,7 @@ class LogiqueOR(Logique):
         """initialise le bloc logique"""
         super().__init__(entre, sorti)
     
-    def activer(self, input:set[int], output:set[int]) -> None:
+    def get_activation(self, input:set[int], output:set[int]) -> None:
         """permet d'activer le bloc logique et ajouter les sorties dans le signal de output"""
         if len(input & self.entre) > 0:
             output.add(self.sorti)
@@ -34,7 +34,7 @@ class LogiqueXOR(Logique):
         """initialise le bloc logique"""
         super().__init__(entre, sorti)
     
-    def activer(self, input:set[int], output:set[int]) -> None:
+    def get_activation(self, input:set[int], output:set[int]) -> None:
         """permet """
         if len(input & self.entre) > 0 and not input & self.entre == self.entre:
             output.add(self.sorti)
@@ -45,7 +45,7 @@ class LogiqueNOT(Logique):
         """initialise le bloc logique"""
         super().__init__(entre, sorti)
     
-    def activer(self, input:set[int], output:set[int]) -> None:
+    def get_activation(self, input:set[int], output:set[int]) -> None:
         """permet d'activer le bloc logique et ajouter les sorties dans le signal de output"""
         if self.entre not in input:
             output.add(self.sorti)
@@ -65,7 +65,7 @@ class LogiqueTimer(Logique):
             if t > 0:
                 new_temps.add(t-1)
 
-    def activer(self, input:set[int], output:set[int]) -> None:
+    def get_activation(self, input:set[int], output:set[int]) -> None:
         """permet d'activer le bloc logique et ajouter les sorties dans le signal de output"""
         self.actualiser_temps()
         if 0 in self.temps:
@@ -86,7 +86,7 @@ class LogiqueLevier(Logique):
         """permet de changer l'etat du levier"""
         self.etat = not self.etat
 
-    def activer(self, input:set[int], output:set[int]) -> None:
+    def get_activation(self, input:set[int], output:set[int]) -> None:
         """permet d'activer le bloc logique et ajouter les sorties dans le signal de output"""
         if self.entre in input:
             self.lock_unlock()
@@ -102,7 +102,7 @@ class LogiqueChangementEtat(Logique):
         self.sorti = sorti
         self.etat = False
 
-    def activer(self, input:set[int], output:set[int]) -> None:
+    def get_activation(self, input:set[int], output:set[int]) -> None:
         """permet d'activer le bloc logique et ajouter les sorties dans le signal de output"""
         se_trouve = self.entre in input
         if self.etat != se_trouve:
