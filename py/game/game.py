@@ -8,6 +8,7 @@ from py.block.plateforme import Plateforme
 from py.block.playeur import Playeur
 from py.objet.objetVisuel import ObjetVisuel3D
 from py.objet.zone import Zone3D
+from py.logique.blocLogique import Logique
 
 class Map:
     """Map est une classe qui permet de gerer la map
@@ -20,6 +21,16 @@ class Map:
         self.__playeur:Playeur = None
         self.__afficher:set[ObjetVisuel3D] = set()
         self.__graviter:bool = False
+        self.__logique:set[Logique] = set()
+        self.__signal:set[int] = set()
+
+    def actualiser_activation(self) -> None:
+        """actualise l'activation des blocs logiques"""
+        nouveau_signal:set[int] = set()
+        for i in self.__logique:
+            i.activer(self.__signal, nouveau_signal)
+        self.__signal = nouveau_signal
+
 
     def add_plateforme(self, plateforme: Plateforme) -> None:
         """ajoute une plateforme à la map"""
@@ -30,7 +41,12 @@ class Map:
         """ajoute un playeur à la map"""
         self.__playeur=playeur
         self.__afficher.add(playeur)
+        self.__colision.add(playeur)
     
+    def add_logique(self, logique: Logique) -> None:
+        """ajoute une logique à la map"""
+        self.__logique.add(logique)
+
     def affichable(self) -> set[ObjetVisuel3D]:
         """affiche la map"""
         return self.__afficher
