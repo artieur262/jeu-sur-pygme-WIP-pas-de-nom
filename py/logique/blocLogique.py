@@ -40,6 +40,16 @@ class LogiqueXOR(Logique):
             output.add(self.sorti)
 
 
+class LogiqueNOT(Logique):
+    def __init__(self, entre:int, sorti:int):
+        """initialise le bloc logique"""
+        super().__init__(entre, sorti)
+    
+    def activer(self, input:set[int], output:set[int]) -> None:
+        """permet d'activer le bloc logique et ajouter les sorties dans le signal de output"""
+        if self.entre not in input:
+            output.add(self.sorti)
+
 class LogiqueTimer(Logique):
     def __init__(self, entre:int, sorti:int, duree:int):
         """initialise le bloc logique"""
