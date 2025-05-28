@@ -40,6 +40,27 @@ class Map:
         self.__colision.add(plateforme)
         self.__afficher.add(plateforme)
     
+    def remove_plateforme(self, plateforme: Plateforme) -> None:
+        """retire une plateforme de la map"""
+        self.__colision.remove(plateforme)
+        self.__afficher.remove(plateforme)
+    
+    def add_colision(self, zone: Zone3D) -> None:
+        """ajoute une zone de colision à la map"""
+        self.__colision.add(zone)
+    
+    def remove_colision(self, zone: Zone3D) -> None:
+        """retire une zone de colision de la map"""
+        self.__colision.remove(zone)
+    
+    def add_afficher(self, objet: ObjetVisuel3D) -> None:
+        """ajoute un objet à afficher à la map"""
+        self.__afficher.add(objet)
+    
+    def remove_afficher(self, objet: ObjetVisuel3D) -> None:
+        """retire un objet à afficher de la map"""
+        self.__afficher.remove(objet)
+
     def add_playeur(self, playeur: Playeur) -> None:
         """ajoute un playeur à la map"""
         self.__playeur=playeur
@@ -49,6 +70,10 @@ class Map:
     def add_logique(self, logique: Logique) -> None:
         """ajoute une logique à la map"""
         self.__logique.add(logique)
+
+    def remove_logique(self, logique: Logique) -> None:
+        """retire une logique de la map"""
+        self.__logique.remove(logique)
 
     def affichable(self) -> set[ObjetVisuel3D]:
         """affiche la map"""
@@ -70,6 +95,13 @@ class Map:
         """get la graviter"""
         return self.__graviter
 
+    def add_activateur(self, activateur: Activateur) -> None:
+        """ajoute un activateur à la map"""
+        self.__activateur.add(activateur)
+    
+    def remove_activateur(self, activateur: Activateur) -> None:
+        """retire un activateur de la map"""
+        self.__activateur.remove(activateur)
     
 
 class Game:
@@ -95,6 +127,10 @@ class Game:
         """set le plan"""
         self.__plan_actuel = plan
         self.map.get_playeur().set_face(plan)
+
+    def get_plan(self) -> int:
+        """get le plan"""
+        return self.__plan_actuel
 
     def get_touche(self) -> dict[str, int]:
         """get les touches"""
