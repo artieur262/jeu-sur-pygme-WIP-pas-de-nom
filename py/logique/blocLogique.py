@@ -6,7 +6,15 @@ class Logique:
 
     def get_activation(self, input:set[int], output:set[int]) -> None:
         """permet d'activer le bloc logique et ajouter les sorties dans le signal de output"""
-        pass
+        raise NotImplementedError("la fonction n'est pas encore implémenté")
+
+    def ajouter_map(self, map) -> None:
+        """ajoute la map"""
+        map.add_logique(self)
+    
+    def retirer_map(self, map) -> None:
+        """retire la map"""
+        map.remove_logique(self)
 
 class LogiqueAND(Logique):
     def __init__(self, entre:set[int], sorti:int):

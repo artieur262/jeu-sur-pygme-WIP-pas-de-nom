@@ -11,5 +11,8 @@ class Plateforme(ObjetUnicolor3D):
         """initialise le bouton"""
         super().__init__(coordonnee, taille, couleur)
     
+    def ajouter_map(self, map):
+        map.add_collision(self)
+    
 
 
