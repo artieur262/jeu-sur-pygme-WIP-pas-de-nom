@@ -24,8 +24,10 @@ class Map:
         self.__afficher:set[ObjetVisuel3D] = set()
         self.__graviter:bool = False
         self.__logique:set[Logique] = set()
-        self.__signal:set[int] = set()
         self.__activateur:set[Activateur] = set()
+        self.__poussable:set=set()
+        self.__signal:set[int] = set()
+
 
     def actualiser_activation(self) -> None:
         """actualise l'activation des blocs logiques"""
