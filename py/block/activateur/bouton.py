@@ -15,7 +15,7 @@ class Bouton(ActivateurPlatforme):
         self.__rayon_dectect = rayon_dectect
 
     
-    def get_zone_dectect(self, axe=-1) -> Zone3D:
+    def get_zone_dectect(self) -> Zone3D:
         """permet de savoir si le bloc logique est actif
         Args:
             axe (int, optional): axe de la zone de détection. Defaults to -1, ce qui signifie que la zone de détection est dans les 3 axes.
@@ -27,12 +27,8 @@ class Bouton(ActivateurPlatforme):
         pos= []
         taille = []
         for i in range(3):
-            if axe == i :
-                pos.append(self.get_pos()[i])
-                taille.append(self.get_size()[i])
-            else:
                 pos.append(self.get_pos()[i] - self.__rayon_dectect)
-                taille.append(self.get_size()[i] + self.__rayon_dectect )
+                taille.append(self.get_size()[i] + self.__rayon_dectect*2)
 
 class BoutonPush(Bouton):
     """Bouton_push est une zone qui a pour but d'être affiché sur une surface
