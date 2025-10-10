@@ -1,3 +1,4 @@
+#pylint: disable=missing-function-docstring, missing-class-docstring, too-few-public-methods, missing-module-docstring
 class Chat:
     def __init__(self, name):
         self.name = name
