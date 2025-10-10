@@ -1,24 +1,26 @@
+"""Gestion des id uniques"""
+
+
+global derniere_id #pylint: disable=global-statement, redefined-outer-name, global-at-module-level
 all_id = {0}
-dernière_id = 0
+derniere_id = 0
 
 
 def genere_id() -> int:
     """Génère un id unique"""
-    global dernière_id
-    dernière_id += 1
-    while dernière_id in all_id:
-        dernière_id += 1
-    ajoute_id(dernière_id)
-    return dernière_id
+    global derniere_id #pylint: disable=global-statement
+    derniere_id += 1
+    while derniere_id in all_id:
+        derniere_id += 1
+    ajoute_id(derniere_id)
+    return derniere_id
 
 
-def ajoute_id(id):
+def ajoute_id(id_):
     """Ajoute un id"""
-    global all_id
-    all_id.add(id)
+    all_id.add(id_)
 
 
-def supprime_id(id):
+def supprime_id(id_):
     """Supprime un id"""
-    global all_id
-    all_id.remove(id)
+    all_id.remove(id_)
