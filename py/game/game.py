@@ -9,7 +9,7 @@ from py.block.playeur import Playeur
 from py.block.activateur.activateur import Activateur
 from py.objet.objetVisuel import ObjetVisuel3D
 from py.objet.zone import Zone3D
-from py.logique.blocLogique import Logique
+from py.logique.bloc_logique import Logique
 
 
 class Map:
