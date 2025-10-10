@@ -3,6 +3,7 @@ import pygame
 from py.objet.objetVisuel import ObjetVisuel2D
 from py.graphique.image import Image
 
+
 class ObjetGraphique(ObjetVisuel2D):
     """Objet graphique est une zone qui a une image et un texte
     Args:
@@ -12,11 +13,11 @@ class ObjetGraphique(ObjetVisuel2D):
     def __init__(
         self,
         coordonnee: list,
-        textures: list[str | pygame.Surface | Image | tuple[str|tuple[int,int]]],
+        textures: list[str | pygame.Surface | Image | tuple[str | tuple[int, int]]],
         taille: tuple[int, int],
         animation: int = 0,
     ):
-        self.texture : list[Image] = []
+        self.texture: list[Image] = []
         for i in textures:
             if isinstance(i, Image):
                 self.texture.append(i)
@@ -28,24 +29,25 @@ class ObjetGraphique(ObjetVisuel2D):
     def image_actuel(self) -> Image:
         """get la texture de l'objet graphique"""
         return self.texture[self.animation]
-    
+
     def get_animation(self) -> int:
         """get l'animation de l'objet graphique"""
         return self.animation
-    
+
     def set_animation(self, animation: int) -> None:
         """set l'animation de l'objet graphique"""
         self.animation = animation
 
-    def imgage_dans_surface(self, pos_surface:tuple[int,int], taille_surface:tuple[int,int]) -> bool:
+    def imgage_dans_surface(
+        self, pos_surface: tuple[int, int], taille_surface: tuple[int, int]
+    ) -> bool:
         """permet de savoir si l'image est dans une surface"""
         return self.image_actuel().if_in_zone(pos_surface, (0, 0), taille_surface)
-    
+
     def redimentione_all_image(self, taille: tuple[int]):
         """redimentionne toute les images"""
         for image in self.texture:
             image.redimentione(taille)
-
 
     def afficher(
         self,
@@ -70,10 +72,3 @@ class ObjetGraphique(ObjetVisuel2D):
             )
             return True
         return False
-    
-
-    
-
-
-
-    

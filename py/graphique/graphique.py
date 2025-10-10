@@ -11,7 +11,7 @@ il y a 6 fonctions:
     - place_texte_in_texture : permet de mettre du texte sur une image
     - vider_affichage : permet de vider l'affichage
     - quitter : permet de quitter
-    
+
 et 1 variable:
     - screen : est la fenêtre du jeu
 """
@@ -23,19 +23,16 @@ import pygame
 import numpy as nup
 from py.autre import save
 
-       
-        
-    
 
-
-def surfaces_egales(surface1 :pygame.Surface, surface2:pygame.Surface) -> bool:
+def surfaces_egales(surface1: pygame.Surface, surface2: pygame.Surface) -> bool:
     if surface1.get_size() != surface2.get_size():
         return False
     # Conversion des surfaces en tableaux de pixels
     pixels1 = pygame.surfarray.array3d(surface1)
     pixels2 = pygame.surfarray.array3d(surface2)
-    
+
     return nup.array_equal(pixels1, pixels2)
+
 
 def genere_texture(taille: tuple[int, int], color: tuple) -> pygame.Surface:
     """génere une texture rectangulaire

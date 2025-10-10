@@ -2,6 +2,7 @@ import pygame
 
 from py.graphique.graphique import screen
 
+
 class Image:
     """class pour gérer les images
     avec des fonctions pour les afficher et les redimentionner
@@ -19,7 +20,7 @@ class Image:
             texture.convert()
         self.ancre: tuple[int, int] = ancre
         self.texture: pygame.Surface = texture
-    
+
     def get_size(self) -> tuple[int, int]:
         """get la taille de l'image"""
         return self.texture.get_size()
@@ -27,7 +28,7 @@ class Image:
     def get_texture(self) -> pygame.Surface:
         """get la texture de l'image"""
         return self.texture
-    
+
     def get_ancre(self) -> tuple[int, int]:
         """get l'ancre de l'image"""
         return self.ancre
@@ -35,15 +36,15 @@ class Image:
     def set_ancre(self, ancre: tuple[int, int]) -> None:
         """set l'ancre de l'image"""
         self.ancre = ancre
-    
+
     def get_taille(self) -> tuple[int, int]:
         """get la taille de l'image"""
         return self.texture.get_size()
-    
+
     def redimentione(self, taille: tuple[int, int]):
         """redimentionne l'image"""
         self.texture = pygame.transform.scale(self.texture, taille)
-    
+
     def if_in_zone(self, pos_self: tuple, pos_zone: tuple, size_zone: tuple) -> bool:
         """permet de savoir si l'objet est dans une zone
 
@@ -86,12 +87,12 @@ class Image:
             (position[0] + self.ancre[0], position[1] + self.ancre[1]), self.texture
         )
 
-
-   
     @staticmethod
-    def genere_list_Image(entre:list[str|tuple[str|tuple[int,int]]])->list['Image']:        
+    def genere_list_Image(
+        entre: list[str | tuple[str | tuple[int, int]]],
+    ) -> list["Image"]:
         if isinstance(entre, list):
-            sortie=[]
+            sortie = []
             for i in entre:
                 if isinstance(i, str):
                     sortie.append(Image(i))

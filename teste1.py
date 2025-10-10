@@ -1,9 +1,10 @@
-class Chat :
+class Chat:
     def __init__(self, name):
         self.name = name
 
     def meow(self):
         print(f"{self.name} says Meow!")
+
 
 class Bebe:
     def __init__(self, name, age):
@@ -12,15 +13,16 @@ class Bebe:
 
     def cry(self):
         print(f"{self.name} says Wahhh!")
-    
-    def age(self):
+
+    def voir_age(self):
         return self.age
+
 
 class BebeChat(Bebe, Chat):
     def __init__(self, name, age):
         Bebe.__init__(self, name, age)
         Chat.__init__(self, name)
-    
+
 
 if __name__ == "__main__":
     bebe_chat = BebeChat("Kitty", 1)

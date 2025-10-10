@@ -7,12 +7,14 @@ class Plateforme(ObjetUnicolor3D):
         Zone (Zone): est la zone de l'objet graphique
     """
 
-    def __init__(self, coordonnee: list[int], taille: tuple[int, int, int], couleur: tuple[int, int, int]):
+    def __init__(
+        self,
+        coordonnee: list[int],
+        taille: tuple[int, int, int],
+        couleur: tuple[int, int, int],
+    ):
         """initialise le bouton"""
         super().__init__(coordonnee, taille, couleur)
-    
+
     def ajouter_map(self, map):
         map.add_collision(self)
-    
-
-

@@ -1,7 +1,7 @@
 """module pour actualiser les événement de pygame
 
 il y a 3 fonctions:
-    - actualise_event : actualise les événement et retourne 
+    - actualise_event : actualise les événement et retourne
                         les événement autre que les touches et les cliques
     - get_fullscreen : retourne si on est en plein écran
     - change_fullscreen : change le mode plein écran"""
@@ -15,7 +15,7 @@ from py.interface.class_clavier import Clavier, Souris
 
 def actualise_event(clavier: Clavier, souris: Souris) -> set[str]:
     """actualise les événement et retourne les événement autre que les touches et les cliques
-    
+
     return set["quitter","redimentione"]
     """
     event_autre = set()

@@ -1,7 +1,7 @@
 class Zone2D:
     """class pour gérer les zones"""
 
-    def __init__(self, coordonnee: list[int, int], taille: list[int,int]):
+    def __init__(self, coordonnee: list[int, int], taille: list[int, int]):
         self.coordonnee = coordonnee
         self.__taille = taille
 
@@ -12,7 +12,7 @@ class Zone2D:
 
         return self.coordonnee
 
-    def set_pos(self, valu:list[int, int]):
+    def set_pos(self, valu: list[int, int]):
         """defini les coordonées de l'objet"""
         self.coordonnee = valu
 
@@ -43,7 +43,7 @@ class Zone2D:
 
         retun (bool) : si le point est dans l'objet
 
-        """        
+        """
         return (
             self.coordonnee[0] <= point[0] < self.coordonnee[0] + self.get_size()[0]
         ) and (self.coordonnee[1] <= point[1] < self.coordonnee[1] + self.get_size()[1])
@@ -103,14 +103,15 @@ class Zone2D:
             or coin_1_self[1] <= coin_1_zone[1] < coin_2_self[1]
         )
 
-    def calcul_distace_au_carre(self,zone:"Zone2D")->float:
+    def calcul_distace_au_carre(self, zone: "Zone2D") -> float:
         """calcule la distance au carre entre 2 zones"""
-        return ((self.get_center()[0]-zone.get_center()[0])**2 +
-                (self.get_center()[1]-zone.get_center()[1])**2)
-    
-    def calcul_distace(self,zone:"Zone2D")->float:
+        return (self.get_center()[0] - zone.get_center()[0]) ** 2 + (
+            self.get_center()[1] - zone.get_center()[1]
+        ) ** 2
+
+    def calcul_distace(self, zone: "Zone2D") -> float:
         """calcule la distance entre 2 zones"""
-        return self.calcul_distace_au_carre(zone)**0.5
+        return self.calcul_distace_au_carre(zone) ** 0.5
 
 
 class Zone3D(Zone2D):
@@ -119,9 +120,9 @@ class Zone3D(Zone2D):
     LIST_FACE = ("yz", "xz", "xy")
     LIST_AXE = ("x", "y", "z")
 
-    def __init__(self, coordonnee: list[int,int,int], taille: list[int,int,int]):
+    def __init__(self, coordonnee: list[int, int, int], taille: list[int, int, int]):
         super().__init__(coordonnee, taille)
-     
+
     def get_pos(self) -> tuple[int, int, int] | int:
         """renvoi les coordonées de l'objet
         Args:
@@ -129,14 +130,14 @@ class Zone3D(Zone2D):
 
         return self.coordonnee
 
-    def set_pos(self, valu:list[int, int, int]):
+    def set_pos(self, valu: list[int, int, int]):
         """defini les coordonées de l'objet"""
         self.coordonnee = list(valu)
-    
+
     def add_pos(self, valu: tuple[int, int, int]):
         """ajoute des coordonées à l'objet"""
         self.coordonnee = [self.coordonnee[i] + valu[i] for i in range(3)]
-    
+
     def get_size(self) -> tuple[int, int, int] | int:
         """renvoi la taille de l'objet"""
         return super().get_size()
@@ -144,7 +145,7 @@ class Zone3D(Zone2D):
     def set_size(self, valu: tuple[int, int, int]):
         """defini la taille de l'objet"""
         super().set_size(valu)
-    
+
     def get_center(self) -> tuple[float, float, float]:
         """renvoi le centre de l'objet"""
         return (
@@ -152,7 +153,7 @@ class Zone3D(Zone2D):
             self.coordonnee[1] + self.__taille[1] / 2,
             self.coordonnee[2] + self.__taille[2] / 2,
         )
-    
+
     def point_dans_objet(self, point: tuple[int, int, int]) -> bool:
         """pour savoir si un point est dans l'objet
 
@@ -163,17 +164,22 @@ class Zone3D(Zone2D):
 
         """
         return (
-            self.coordonnee[0] <= point[0] < self.coordonnee[0] + self.get_size()[0]
-        ) and (self.coordonnee[1] <= point[1] < self.coordonnee[1] + self.get_size()[1]
-        ) and (self.coordonnee[2] <= point[2] < self.coordonnee[2] + self.get_size()[2])
+            (self.coordonnee[0] <= point[0] < self.coordonnee[0] + self.get_size()[0])
+            and (
+                self.coordonnee[1] <= point[1] < self.coordonnee[1] + self.get_size()[1]
+            )
+            and (
+                self.coordonnee[2] <= point[2] < self.coordonnee[2] + self.get_size()[2]
+            )
+        )
 
     def collision(self, obj_pos, obj_size):
-        return(
+        return (
             self.collision_in_axe(obj_pos[0], obj_size[0], 0)
             and self.collision_in_axe(obj_pos[1], obj_size[1], 1)
             and self.collision_in_axe(obj_pos[2], obj_size[2], 2)
         )
-    
+
     def objet_dans_zone(self, pos_zone: tuple, size_zone: tuple) -> bool:
         """permet de savoir si un bojet est dans une zone
 
@@ -185,68 +191,88 @@ class Zone3D(Zone2D):
         coin_2_self = [self.get_pos()[i] + self.get_size()[i] for i in range(3)]
 
         coin_1_zone = pos_zone
-        coin_2_zone = [pos_zone[0] + size_zone[0], pos_zone[1] + size_zone[1], pos_zone[2] + size_zone[2]]
+        coin_2_zone = [
+            pos_zone[0] + size_zone[0],
+            pos_zone[1] + size_zone[1],
+            pos_zone[2] + size_zone[2],
+        ]
 
         return (
-            coin_1_zone[0] <= coin_1_self[0] < coin_2_zone[0]
-            or coin_1_self[0] <= coin_1_zone[0] < coin_2_self[0]
-        ) and (
-            coin_1_zone[1] <= coin_1_self[1] < coin_2_zone[1]
-            or coin_1_self[1] <= coin_1_zone[1] < coin_2_self[1]
-        ) and (
-            coin_1_zone[2] <= coin_1_self[2] < coin_2_zone[2]
-            or coin_1_self[2] <= coin_1_zone[2] < coin_2_self[2]
+            (
+                coin_1_zone[0] <= coin_1_self[0] < coin_2_zone[0]
+                or coin_1_self[0] <= coin_1_zone[0] < coin_2_self[0]
+            )
+            and (
+                coin_1_zone[1] <= coin_1_self[1] < coin_2_zone[1]
+                or coin_1_self[1] <= coin_1_zone[1] < coin_2_self[1]
+            )
+            and (
+                coin_1_zone[2] <= coin_1_self[2] < coin_2_zone[2]
+                or coin_1_self[2] <= coin_1_zone[2] < coin_2_self[2]
+            )
         )
-    
-    def calcul_distace_au_carre(self,zone:"Zone3D")->float:
+
+    def calcul_distace_au_carre(self, zone: "Zone3D") -> float:
         """calcule la distance au carre entre 2 zones"""
-        return ((self.get_center()[0]-zone.get_center()[0])**2 +
-                (self.get_center()[1]-zone.get_center()[1])**2 +
-                (self.get_center()[2]-zone.get_center()[2])**2)
+        return (
+            (self.get_center()[0] - zone.get_center()[0]) ** 2
+            + (self.get_center()[1] - zone.get_center()[1]) ** 2
+            + (self.get_center()[2] - zone.get_center()[2]) ** 2
+        )
 
-    def calcul_distace(self,zone:"Zone3D")->float:
+    def calcul_distace(self, zone: "Zone3D") -> float:
         """calcule la distance entre 2 zones"""
-        return self.calcul_distace_au_carre(zone)**0.5
+        return self.calcul_distace_au_carre(zone) ** 0.5
 
-    def est_dans_plan(self, hauteur:float, plan:int|str)->bool:
+    def est_dans_plan(self, hauteur: float, plan: int | str) -> bool:
         """permet de savoir si l'objet est dans un plan"""
         if isinstance(plan, str):
             plan = self.LIST_FACE.index(plan)
-        return self.coordonnee[plan] <= hauteur < self.coordonnee[plan] + self.get_size()[plan]
+        return (
+            self.coordonnee[plan]
+            <= hauteur
+            < self.coordonnee[plan] + self.get_size()[plan]
+        )
 
-    def set_pos_in_axe(self, axe:int, valeur:int)->None:
+    def set_pos_in_axe(self, axe: int, valeur: int) -> None:
         """defini les coordonées de l'objet dans un axe"""
         self.coordonnee[axe] = valeur
 
-    def add_pos_in_axe(self, axe:int, valeur:int)->None:
+    def add_pos_in_axe(self, axe: int, valeur: int) -> None:
         """deplace l'objet dans un axe"""
         self.coordonnee[axe] += valeur
-    
-    def deplacer_in_axe(self, axe:int, valeur:int, list_objet:list["Zone3D"])->None:
+
+    def deplacer_in_axe(
+        self, axe: int, valeur: int, list_objet: list["Zone3D"]
+    ) -> None:
         """deplace l'objet dans un axe"""
         self.coordonnee[axe] += valeur
         for i in list_objet:
             if self != i and self.collision(i.get_pos(), i.get_size()):
-                print("collision :\n" \
-                "\tobj" + str(i.get_pos()) + " " + str(i.get_size())+"\n"
-                "\tself" + str(self.get_pos()) + " " + str(self.get_size()))
+                print(
+                    "collision :\n"
+                    "\tobj" + str(i.get_pos()) + " " + str(i.get_size()) + "\n"
+                    "\tself" + str(self.get_pos()) + " " + str(self.get_size())
+                )
 
                 if valeur > 0:
                     self.coordonnee[axe] = i.get_pos()[axe] - self.get_size()[axe]
                 else:
                     self.coordonnee[axe] = i.get_pos()[axe] + i.get_size()[axe]
-        
-    def deplacer(self, valeur:tuple[int, int, int], list_objet:list["Zone3D"])->None:
+
+    def deplacer(
+        self, valeur: tuple[int, int, int], list_objet: list["Zone3D"]
+    ) -> None:
         """deplace l'objet dans un axe"""
         if len(valeur) != 3:
             raise ValueError("la valeur doit etre de la forme (x,y,z)")
-        if valeur[0] :
+        if valeur[0]:
             self.deplacer_in_axe(0, valeur[0], list_objet)
-        if valeur[1] :
+        if valeur[1]:
             self.deplacer_in_axe(1, valeur[1], list_objet)
-        if valeur[2] :
+        if valeur[2]:
             self.deplacer_in_axe(2, valeur[2], list_objet)
-    
+
     def ajouter_map(self, map):
         """ajoute la zone à la map"""
         raise NotImplementedError("la fonction n'est pas encore implémenté")

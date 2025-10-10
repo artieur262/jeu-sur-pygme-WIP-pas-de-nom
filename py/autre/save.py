@@ -32,7 +32,8 @@ def save_json(lien: str, contenu):
         json.dump(contenu, file, indent=1)
         # file.close()
 
-def chercher_ficher(chemin: str,nom:str):
+
+def chercher_ficher(chemin: str, nom: str):
     """cherche un ficher dans un dossier
 
     Args:
@@ -48,7 +49,6 @@ def chercher_ficher(chemin: str,nom:str):
     return False
 
 
-
 def force_input_y_or_n(texte: str):
     """cette foction va forcé l'utilisateur à entré y ou n pour sortir
     cette fonction est une fonction homme machine
@@ -60,6 +60,7 @@ def force_input_y_or_n(texte: str):
         bool: dépend si l'utilisateur à répond y pour True et n pour False
     """
     repondu = False
+    sortie = False
     while not repondu:
         reponse = input(texte).lower().strip()
         if reponse == "y":
