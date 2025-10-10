@@ -14,6 +14,7 @@ class Playeur(ObjetUnicolor3D):
         self.taille_carrer = taille
         super().__init__(coordonnee, (taille, taille, taille), couleur)
         self.face = 2
+        self.actualiser_taille()
 
     def actualiser_taille(self) -> None:
         """actualise la taille de la plateforme"""
