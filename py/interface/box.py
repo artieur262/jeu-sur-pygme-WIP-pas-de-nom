@@ -26,7 +26,7 @@ class Box(ObjetVisuel2D):
     def actualiser(self, box: "Box" = None):
         """repositionne les ellement dans la box"""
         for i in self.ellement:
-            if isinstance(i, "Box"):
+            if isinstance(i, "Box"): # pylint: disable=isinstance-second-argument-not-valid-type
                 i.actualiser(self)
 
     def afficher(
@@ -60,8 +60,8 @@ class VBox(Box):
         super().__init__(taille, ellement)
         self.ecart = 0
         self.ecart_auto = True
-        self.position_H = "center"
-        self.position_V = "center"
+        self.position_h = "center"
+        self.position_v = "center"
         self.justify_content = "space-between"
 
         self.actualiser()
@@ -85,20 +85,20 @@ class VBox(Box):
         self.justify_content = justify_content
         self.actualiser()
 
-    def set_position_H(self, position_H: str) -> None:
+    def set_position_h(self, position_h: str) -> None:
         """set la position horizontal de la box
         args:
             position_H (str): est la position de la box (left, center, right)
         """
-        self.position_H = position_H
+        self.position_h = position_h
         self.actualiser()
 
-    def set_position_V(self, position_V: str) -> None:
+    def set_position_v(self, position_v: str) -> None:
         """set la position vertical de la box
         args:
             position_V (str): est la position de la box (up, center, down)
         """
-        self.position_V = position_V
+        self.position_v = position_v
         self.actualiser()
 
     def somme_hauteur_ellement(self) -> int:
@@ -129,7 +129,7 @@ class VBox(Box):
         somme_hauteur = self.somme_hauteur_ellement()
         nbre_ellement = len(self.ellement)
         pos_suivant = 0
-        match self.position_V:
+        match self.position_v:
             case "up":
                 pos_suivant = self.coordonnee[1]
             case "center":
@@ -152,7 +152,7 @@ class VBox(Box):
 
         for i, ellement in enumerate(self.ellement):
             taille_ellement = ellement.get_size()
-            match self.position_H:
+            match self.position_h:
                 case "left":
                     ellement.set_pos((self.coordonnee[0], 0))
                 case "center":
