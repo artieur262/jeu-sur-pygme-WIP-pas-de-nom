@@ -22,10 +22,10 @@ if __name__ == "__main__":
         "debug": pygame.K_F12,
     }
     game = Game(clavier, souris, touche)
-    map = game.map
+    map_ = game.map
     # map.add_plateforme(Plateforme([120, 0, 50], (10, 100, 100), (0, 0, 255)))
-    map.add_plateforme(Plateforme([0, 150, 50], (10, 100, 100), (0, 225, 0)))
-    map.add_playeur(Playeur([0, 0, 0], 20, (255, 255, 255)))
+    map_.add_plateforme(Plateforme([0, 150, 50], (10, 100, 100), (0, 225, 0)))
+    map_.add_playeur(Playeur([0, 0, 0], 20, (255, 255, 255)))
     game.set_plan(0)
     game.run()
     pygame.quit()

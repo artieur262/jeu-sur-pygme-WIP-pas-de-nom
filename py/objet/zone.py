@@ -273,10 +273,10 @@ class Zone3D(Zone2D):
         if valeur[2]:
             self.deplacer_in_axe(2, valeur[2], list_objet)
 
-    def ajouter_map(self, map):
+    def ajouter_map(self, map_):
         """ajoute la zone à la map"""
         raise NotImplementedError("la fonction n'est pas encore implémenté")
 
-    def retirer_map(self, map):
+    def retirer_map(self, map_):
         """retire la zone de la map"""
         raise NotImplementedError("la fonction n'est pas encore implémenté")
