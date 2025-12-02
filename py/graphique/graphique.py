@@ -25,6 +25,13 @@ from py.autre import save
 
 
 def surfaces_egales(surface1: pygame.Surface, surface2: pygame.Surface) -> bool:
+    """compare deux surface pygame
+    Args:
+        surface1 (pygame.Surface): est la première surface
+        surface2 (pygame.Surface): est la deuxième surface
+    Returns:
+        bool: est True si les surfaces sont égales, False sinon
+    """
     if surface1.get_size() != surface2.get_size():
         return False
     # Conversion des surfaces en tableaux de pixels

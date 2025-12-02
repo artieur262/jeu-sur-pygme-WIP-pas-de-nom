@@ -1,3 +1,8 @@
+"""
+Module qui gère les objets graphiques 
+"""
+
+
 import pygame
 
 from py.objet.objetVisuel import ObjetVisuel2D

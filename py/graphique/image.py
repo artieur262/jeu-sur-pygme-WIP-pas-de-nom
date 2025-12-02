@@ -1,3 +1,5 @@
+"""module pour gérer les images"""
+
 import pygame
 
 from py.graphique.graphique import screen
@@ -53,7 +55,7 @@ class Image:
             axe_y (tuple): à une longuer de 2 (le premier est le plus petit)
 
         Returns:
-            bool: si l'objet
+            bool: si l'objet est dans la zone
         """
         size_self = self.get_size()
         coin_1_self = [pos_self[0] - self.ancre[0], pos_self[1] - self.ancre[1]]
@@ -88,9 +90,15 @@ class Image:
         )
 
     @staticmethod
-    def genere_list_Image(
+    def genere_list_image(
         entre: list[str | tuple[str | tuple[int, int]]],
     ) -> list["Image"]:
+        """genere une list d'image a partir d'une list de str ou de tuple
+        Args:
+            entre (list): list de str ou de tuple
+        Returns:
+            list[Image]: list d'image
+        """
         if isinstance(entre, list):
             sortie = []
             for i in entre:
