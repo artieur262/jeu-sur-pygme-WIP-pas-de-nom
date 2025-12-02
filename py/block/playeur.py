@@ -35,3 +35,6 @@ class Playeur(ObjetUnicolor3D):
         """set la face de la plateforme"""
         self.face = face
         self.actualiser_taille()
+
+    def ajouter_map(self, map_: "Map") -> None:
+        map_.add_playeur(self)
