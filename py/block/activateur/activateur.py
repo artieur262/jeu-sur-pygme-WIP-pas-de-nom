@@ -1,6 +1,10 @@
-from py.block.plateforme import Plateforme
-# from py.game.game import Map
+from typing import TYPE_CHECKING
 
+from py.block.plateforme import Plateforme
+
+if TYPE_CHECKING:
+    from py.game.Map import Map
+# from py.game.game import Map
 
 
 class Activateur:
@@ -22,18 +26,18 @@ class Activateur:
         """permet de changer l'etat du bloc logique"""
         self.__activer = activer
 
-    def activation(self, map) -> None:
+    def activation(self, map_: "Map") -> None:
         """permet d'activer le bloc logique"""
         raise NotImplementedError("la fonction n'est pas encore implémenté")
 
-    def get_activation(self, output:set[int]) -> None:
+    def get_activation(self, output: set[int]) -> None:
         """permet d'activer le bloc logique et ajouter les sorties dans le signal de output"""
         if self.__activer:
             output.add(self.__sorti)
-    
-    def ajouter_map(self, map) -> None:
+
+    def ajouter_map(self, map_: "Map") -> None:
         """ajoute la map"""
-        map.add_activateur(self)
+        map_.add_activateur(self)
 
 
 class ActivateurPlatforme(Plateforme, Activateur):
@@ -41,11 +45,22 @@ class ActivateurPlatforme(Plateforme, Activateur):
     Args:
         Zone (Zone): est la zone de l'objet graphique
     """
-    def __init__(self, coordonnee: list[int], taille: tuple[int, int, int], couleur: tuple[int, int, int], sorti: int):
+
+    def __init__(
+        self,
+        coordonnee: list[int],
+        taille: tuple[int, int, int],
+        couleur: tuple[int, int, int],
+        sorti: int,
+    ):
         """initialise le bouton"""
         Plateforme.__init__(self, coordonnee, taille, couleur)
         Activateur.__init__(self, sorti)
 
-    def ajouter_map(self, map):
-        Activateur.ajouter_map(self,map)
-        Plateforme.ajouter_map(self,map)
+    def ajouter_map(self, map_: "Map") -> None:
+        Activateur.ajouter_map(self, map_)
+        Plateforme.ajouter_map(self, map_)
+
+    def activation(self, map_: "Map") -> None:
+        """permet d'activer le bloc logique"""
+        raise NotImplementedError("la fonction n'est pas encore implémenté")

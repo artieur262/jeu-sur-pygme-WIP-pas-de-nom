@@ -1,5 +1,15 @@
+"""Bouton est un objet graphique qui a une image et un texte
+
+class :
+    Bouton(ObjetGraphique): Bouton est un objet graphique qui a une image et un texte
+    Args:
+        ObjetGraphique (ObjetGraphique): est l'objet graphique
+
+"""
+
 from py.graphique.objetGraphique import ObjetGraphique
-from py.interface.class_clavier import Souris
+
+# from py.interface.class_clavier import Souris
 
 
 class Bouton(ObjetGraphique):

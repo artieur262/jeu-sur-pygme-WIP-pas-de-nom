@@ -1,8 +1,8 @@
 """
 ce module permet de remplacer des balises dans un text par une valeur
-exemple : 
+exemple :
 remplace = {"{{chat}}":"pandi"}
-transforme("Bonjour, j'ai trouver un chat et il avait le nom de {{chat}}.") -> 
+transforme("Bonjour, j'ai trouver un chat et il avait le nom de {{chat}}.") ->
     -> "Bonjour, j'ai trouver un chat et il avait le nom de pandi.
 
 
@@ -12,6 +12,7 @@ et en vrai avec python c'est un peu la même chose selon moi
 
 a optimser un jour (surtout la fonction transforme)
 """
+
 remplace: dict[str, any] = {}
 
 

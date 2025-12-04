@@ -1,7 +1,6 @@
 """
-Module qui gère les objets graphiques 
+Module qui gère les objets graphiques
 """
-
 
 import pygame
 

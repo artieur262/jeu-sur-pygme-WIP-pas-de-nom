@@ -1,4 +1,6 @@
+from typing import TYPE_CHECKING
 import pygame
+
 from py.objet.objetVisuel import ObjetVisuel2D
 
 
@@ -26,7 +28,9 @@ class Box(ObjetVisuel2D):
     def actualiser(self, box: "Box" = None):
         """repositionne les ellement dans la box"""
         for i in self.ellement:
-            if isinstance(i, "Box"): # pylint: disable=isinstance-second-argument-not-valid-type
+            if isinstance(
+                i, Box
+            ):  # pylint: disable=isinstance-second-argument-not-valid-type
                 i.actualiser(self)
 
     def afficher(
@@ -53,7 +57,8 @@ class VBox(Box):
         ObjetVisuel (ObjetVisuel): est la zone de l'objet graphique
         position_H (str): est la position de la box (left, center, right)
         position_V (str): est la position de la box (up, center, down)
-        justify_content (str): est la justification du contenu (space-between, space-around, space-evenly)
+        justify_content (str): est la justification du contenu
+                               (space-between, space-around, space-evenly)
     """
 
     def __init__(self, taille: tuple[int, int], ellement: list[ObjetVisuel2D]):
@@ -80,7 +85,8 @@ class VBox(Box):
     def set_justify_content(self, justify_content: str) -> None:
         """set la justification du contenu
         args:
-            justify_content (str): est la justification du contenu (space-between, space-around, space-evenly)
+            justify_content (str): est la justification du contenu
+                                   (space-between, space-around, space-evenly)
         """
         self.justify_content = justify_content
         self.actualiser()
@@ -171,7 +177,7 @@ class VBox(Box):
             ellement.set_pos((pos_ellement[0], pos_suivant))
             pos_suivant += taille_ellement[1] + self.ecart
 
-    def actualiser(self):
+    def actualiser(self, box: "Box" = None):
         """actualise la position des ellement"""
         self.__actualiser_position()
         super().actualiser()
@@ -186,17 +192,18 @@ class HBox(Box):
     """Box est une zone qui a une image et un texte
     Args:
         ObjetVisuel (ObjetVisuel): est la zone de l'objet graphique
-        position_H (str): est la position de la box (left, center, right)
-        position_V (str): est la position de la box (up, center, down)
-        justify_content (str): est la justification du contenu (space-between, space-around, space-evenly)
+        position_h (str): est la position de la box (left, center, right)
+        position_v (str): est la position de la box (up, center, down)
+        justify_content (str): est la justification du contenu
+                               (space-between, space-around, space-evenly)
     """
 
     def __init__(self, taille: tuple[int, int], ellement: list[ObjetVisuel2D]):
         super().__init__(taille, ellement)
         self.ecart = 0
         self.ecart_auto = True
-        self.position_H = "center"
-        self.position_V = "center"
+        self.position_h = "center"
+        self.position_v = "center"
         self.justify_content = "space-between"
 
         self.actualiser()
@@ -215,25 +222,26 @@ class HBox(Box):
     def set_justify_content(self, justify_content: str) -> None:
         """set la justification du contenu
         args:
-            justify_content (str): est la justification du contenu (space-between, space-around, space-evenly)
+            justify_content (str): est la justification du contenu
+                                   (space-between, space-around, space-evenly)
         """
         self.justify_content = justify_content
         self.actualiser()
 
-    def set_position_H(self, position_H: str) -> None:
+    def set_position_h(self, position_h: str) -> None:
         """set la position horizontal de la box
         args:
-            position_H (str): est la position de la box (left, center, right)
+            position_h (str): est la position de la box (left, center, right)
         """
-        self.position_H = position_H
+        self.position_h = position_h
         self.actualiser()
 
-    def set_position_V(self, position_V: str) -> None:
+    def set_position_v(self, position_v: str) -> None:
         """set la position vertical de la box
         args:
-            position_V (str): est la position de la box (up, center, down)
+            position_v (str): est la position de la box (up, center, down)
         """
-        self.position_V = position_V
+        self.position_v = position_v
         self.actualiser()
 
     def somme_longueur_ellement(self, fin: int = None) -> int:
@@ -267,7 +275,7 @@ class HBox(Box):
         nbre_ellement = len(self.ellement)
         pos_suivant = 0
 
-        match self.position_H:
+        match self.position_h:
             case "left":
                 pos_suivant = self.coordonnee[0]
             case "center":
@@ -291,7 +299,7 @@ class HBox(Box):
         for i, ellement in enumerate(self.ellement):
             taille_ellement = ellement.get_size()
 
-            match self.position_V:
+            match self.position_v:
                 case "up":
                     ellement.set_pos((0, self.coordonnee[1]))
                 case "center":
@@ -310,7 +318,7 @@ class HBox(Box):
             ellement.set_pos((pos_suivant, pos_ellement[1]))
             pos_suivant += taille_ellement[0] + self.ecart
 
-    def actualiser(self):
+    def actualiser(self, box: "Box" = None):
         """actualise la position des ellement"""
         self.__actualiser_position()
         super().actualiser()

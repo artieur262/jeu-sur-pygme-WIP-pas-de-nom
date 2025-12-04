@@ -1,12 +1,14 @@
 """contient les different bloc logique"""
+
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from py.game.Map import Map
 
 
 class Logique:
-    """classe mere des blocs logique
-    """
+    """classe mere des blocs logique"""
+
     def __init__(self, entre, sorti: int):
         """initialise le bloc logique"""
         self.entre = entre
@@ -16,7 +18,7 @@ class Logique:
         """permet d'activer le bloc logique et ajouter les sorties dans le signal de output"""
         raise NotImplementedError("la fonction n'est pas encore implémenté")
 
-    def ajouter_map(self, map_ :"Map") -> None:
+    def ajouter_map(self, map_: "Map") -> None:
         """ajoute la map"""
         map_.add_logique(self)
 
@@ -26,8 +28,8 @@ class Logique:
 
 
 class LogiqueAND(Logique):
-    """classe qui active la sortie si toutes les entrées sont activées
-    """
+    """classe qui active la sortie si toutes les entrées sont activées"""
+
     def __init__(self, entre: set[int], sorti: int):
         """initialise le bloc logique"""
         super().__init__(entre, sorti)
@@ -39,8 +41,8 @@ class LogiqueAND(Logique):
 
 
 class LogiqueOR(Logique):
-    """classe qui active la sortie si une des entrées est activée
-    """
+    """classe qui active la sortie si une des entrées est activée"""
+
     def __init__(self, entre: set[int], sorti: int):
         """initialise le bloc logique"""
         super().__init__(entre, sorti)
@@ -52,8 +54,8 @@ class LogiqueOR(Logique):
 
 
 class LogiqueXOR(Logique):
-    """classe qui active la sortie si une des entrées est activée
-    """
+    """classe qui active la sortie si une des entrées est activée"""
+
     def __init__(self, entre: set[int], sorti: int):
         """initialise le bloc logique"""
         super().__init__(entre, sorti)
@@ -65,8 +67,8 @@ class LogiqueXOR(Logique):
 
 
 class LogiqueNOT(Logique):
-    """retourne l'inverse de l'entrée 
-    """
+    """retourne l'inverse de l'entrée"""
+
     def __init__(self, entre: int, sorti: int):
         """initialise le bloc logique"""
         super().__init__(entre, sorti)
@@ -78,8 +80,8 @@ class LogiqueNOT(Logique):
 
 
 class LogiqueTimer(Logique):
-    """classe qui active la sortie après un certain temps
-    """
+    """classe qui active la sortie après un certain temps"""
+
     def __init__(self, entre: int, sorti: int, duree: int):
         """initialise le bloc logique"""
         super().__init__(entre, sorti)
@@ -104,8 +106,8 @@ class LogiqueTimer(Logique):
 
 
 class LogiqueLevier(Logique):
-    """classe qui active la sortie si le levier est activé
-    """
+    """classe qui active la sortie si le levier est activé"""
+
     def __init__(self, entre: int, sorti: int):
         """initialise le bloc logique"""
         super().__init__(entre, sorti)
@@ -127,8 +129,8 @@ class LogiqueLevier(Logique):
 
 
 class LogiqueChangementEtat(Logique):
-    """s'active s'il y a un changement. 
-    """
+    """s'active s'il y a un changement."""
+
     def __init__(self, entre: int, sorti: int):
         """initialise le bloc logique"""
         super().__init__(entre, sorti)
