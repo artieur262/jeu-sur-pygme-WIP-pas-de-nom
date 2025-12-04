@@ -1,4 +1,5 @@
 from py.objet.objetUnicolor import ObjetUnicolor3D
+from py.game.Map import Map
 
 
 class Playeur(ObjetUnicolor3D):
@@ -38,3 +39,6 @@ class Playeur(ObjetUnicolor3D):
 
     def ajouter_map(self, map_: "Map") -> None:
         map_.add_playeur(self)
+
+    def retirer_map(self, map_):
+        map_.remove_playeur(self)

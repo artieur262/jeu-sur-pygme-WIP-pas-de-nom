@@ -1,5 +1,8 @@
 """contient les different bloc logique"""
 
+from py.game.Map import Map
+
+
 class Logique:
     """classe mere des blocs logique
     """
@@ -12,11 +15,11 @@ class Logique:
         """permet d'activer le bloc logique et ajouter les sorties dans le signal de output"""
         raise NotImplementedError("la fonction n'est pas encore implémenté")
 
-    def ajouter_map(self, map_) -> None:
+    def ajouter_map(self, map_ :"Map") -> None:
         """ajoute la map"""
         map_.add_logique(self)
 
-    def retirer_map(self, map_) -> None:
+    def retirer_map(self, map_: "Map") -> None:
         """retire la map"""
         map_.remove_logique(self)
 
