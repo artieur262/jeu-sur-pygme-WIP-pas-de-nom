@@ -18,7 +18,7 @@ et 1 variable:
 
 # pylint: disable=no-member
 
-import os
+# import os
 import pygame
 import numpy as nup
 from py.autre import save
