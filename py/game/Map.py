@@ -1,8 +1,13 @@
-# from py.block.plateforme import Plateforme
-# from py.block.playeur import Playeur
-# from py.block.activateur.activateur import Activateur
-from py.objet.objetVisuel import ObjetVisuel3D
-from py.objet.zone import Zone3D
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from py.game.game import Game
+    from py.block.playeur import Playeur
+    from py.block.plateforme import Plateforme
+    from py.block.activateur.activateur import Activateur
+    from py.logique.bloc_logique import Logique
+    from py.objet.objetVisuel import ObjetVisuel3D
+    from py.objet.zone import Zone3D
 
 # from py.logique.bloc_logique import Logique
 
@@ -16,9 +21,9 @@ class Map:
     def __init__(self, game="Game"):
         """initialise la map"""
         self.__game = game
-        self.__colision: set[Zone3D] = set()
+        self.__colision: set["Zone3D"] = set()
         self.__playeur: "Playeur" = None
-        self.__afficher: set[ObjetVisuel3D] = set()
+        self.__afficher: set["ObjetVisuel3D"] = set()
         self.__graviter: bool = False
         self.__logique: set["Logique"] = set()
         self.__activateur: set["Activateur"] = set()
@@ -42,19 +47,19 @@ class Map:
         self.__colision.remove(plateforme)
         self.__afficher.remove(plateforme)
 
-    def add_colision(self, zone: Zone3D) -> None:
+    def add_colision(self, zone: "Zone3D") -> None:
         """ajoute une zone de colision à la map"""
         self.__colision.add(zone)
 
-    def remove_colision(self, zone: Zone3D) -> None:
+    def remove_colision(self, zone: "Zone3D") -> None:
         """retire une zone de colision de la map"""
         self.__colision.remove(zone)
 
-    def add_afficher(self, objet: ObjetVisuel3D) -> None:
+    def add_afficher(self, objet: "ObjetVisuel3D") -> None:
         """ajoute un objet à afficher à la map"""
         self.__afficher.add(objet)
 
-    def remove_afficher(self, objet: ObjetVisuel3D) -> None:
+    def remove_afficher(self, objet: "ObjetVisuel3D") -> None:
         """retire un objet à afficher de la map"""
         self.__afficher.remove(objet)
 
@@ -72,7 +77,7 @@ class Map:
         """retire une logique de la map"""
         self.__logique.remove(logique)
 
-    def affichable(self) -> set[ObjetVisuel3D]:
+    def affichable(self) -> set["ObjetVisuel3D"]:
         """affiche la map"""
         return self.__afficher
 
@@ -80,7 +85,7 @@ class Map:
         """get le jeu"""
         return self.__game
 
-    def get_colision(self) -> set[Zone3D]:
+    def get_colision(self) -> set["Zone3D"]:
         """get la map"""
         return self.__colision
 

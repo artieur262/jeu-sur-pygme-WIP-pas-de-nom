@@ -1,6 +1,7 @@
 """contient les different bloc logique"""
-
-from py.game.Map import Map
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from py.game.Map import Map
 
 
 class Logique:

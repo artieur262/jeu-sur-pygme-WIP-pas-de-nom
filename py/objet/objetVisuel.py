@@ -17,7 +17,7 @@ class ObjetVisuel2D(Zone2D):
         self,
         decalage: tuple[int, int] = None,
         surface: pygame.Surface = None,
-    ):
+    ) -> bool:
         """permet de l'affiché sur la sur une surface et de savoir si il est affiché
 
         Args:
@@ -27,7 +27,19 @@ class ObjetVisuel2D(Zone2D):
         Returns:
             bool: si l'objet est affiché
         """
-        pass
+        if decalage is None:
+            decalage = (0, 0)
+        if surface is None:
+            surface = pygame.display.get_surface()
+        # Vérifie si l'objet est dans la surface
+        if (
+            self.coordonnee[0] + decalage[0] + self.get_size()[0] < 0
+            or self.coordonnee[0] + decalage[0] > surface.get_width()
+            or self.coordonnee[1] + decalage[1] + self.get_size()[1] < 0
+            or self.coordonnee[1] + decalage[1] > surface.get_height()
+        ):
+            return False
+        return True
 
 
 class ObjetVisuel3D(Zone3D):

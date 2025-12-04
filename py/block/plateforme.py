@@ -1,5 +1,8 @@
+from typing import TYPE_CHECKING
 from py.objet.objetUnicolor import ObjetUnicolor3D
-from py.game.Map import Map
+
+if TYPE_CHECKING:
+    from py.game.Map import Map
 
 
 class Plateforme(ObjetUnicolor3D):
@@ -17,5 +20,5 @@ class Plateforme(ObjetUnicolor3D):
         """initialise le bouton"""
         super().__init__(coordonnee, taille, couleur)
 
-    def ajouter_map(self, map_: "Map) -> None:
+    def ajouter_map(self, map_: "Map") -> None:
         map_.add_collision(self)
