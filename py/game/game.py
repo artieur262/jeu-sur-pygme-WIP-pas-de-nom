@@ -5,6 +5,8 @@ from py.graphique.graphique import screen
 from py.graphique.actualisation_pygame import actualise_event, change_fullscreen
 from py.graphique.image import Image
 from py.game.Map import Map
+from py.block.playeur import Playeur
+from py.objet.zone import Zone3D
 
 
 class Game:
