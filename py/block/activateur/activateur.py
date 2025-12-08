@@ -30,7 +30,7 @@ class Activateur:
         """permet d'activer le bloc logique"""
         raise NotImplementedError("la fonction n'est pas encore implémenté")
 
-    def get_activation(self, output: set[int]) -> None:
+    def activer(self, output: set[int]) -> None:
         """permet d'activer le bloc logique et ajouter les sorties dans le signal de output"""
         if self._activer:
             output.add(self._sorti)
