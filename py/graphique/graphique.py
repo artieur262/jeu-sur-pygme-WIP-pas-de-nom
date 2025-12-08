@@ -171,7 +171,8 @@ def place_texte_in_texture(
                     ),
                 )
         case _:
-            print("mode inconnu :", mode)
+            raise ValueError(f"mode inconnu : {mode}")
+            # print("mode inconnu :", mode)
     return image
 
 

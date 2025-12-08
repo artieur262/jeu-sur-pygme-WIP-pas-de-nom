@@ -249,11 +249,11 @@ class Zone3D(Zone2D):
         self.coordonnee[axe] += valeur
         for i in list_objet:
             if self != i and self.collision(i.get_pos(), i.get_size()):
-                print(
-                    "collision :\n"
-                    "\tobj" + str(i.get_pos()) + " " + str(i.get_size()) + "\n"
-                    "\tself" + str(self.get_pos()) + " " + str(self.get_size())
-                )
+                # print(
+                #     "collision :\n"
+                #     "\tobj" + str(i.get_pos()) + " " + str(i.get_size()) + "\n"
+                #     "\tself" + str(self.get_pos()) + " " + str(self.get_size())
+                # )
 
                 if valeur > 0:
                     self.coordonnee[axe] = i.get_pos()[axe] - self.get_size()[axe]
