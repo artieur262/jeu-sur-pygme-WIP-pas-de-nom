@@ -15,16 +15,16 @@ class Activateur:
 
     def __init__(self, sorti: int):
         """initialise le bouton"""
-        self.__sorti = sorti
-        self.__activer = False
+        self._sorti = sorti
+        self._activer = False
 
     def get_activer(self) -> bool:
         """permet de savoir si le bloc logique est actif"""
-        return self.__activer
+        return self._activer
 
     def set_activer(self, activer: bool) -> None:
         """permet de changer l'etat du bloc logique"""
-        self.__activer = activer
+        self._activer = activer
 
     def activation(self, map_: "Map") -> None:
         """permet d'activer le bloc logique"""
@@ -32,8 +32,8 @@ class Activateur:
 
     def get_activation(self, output: set[int]) -> None:
         """permet d'activer le bloc logique et ajouter les sorties dans le signal de output"""
-        if self.__activer:
-            output.add(self.__sorti)
+        if self._activer:
+            output.add(self._sorti)
 
     def ajouter_map(self, map_: "Map") -> None:
         """ajoute la map"""
