@@ -59,13 +59,13 @@ class Game:
         cla = self.clavier
         if not self.map.get_graviter():
             if cla.get_pression(self.__touche["haut"]) == "presser":
-                self.deplacer_dans_plan((0, -1), plan)
+                self.deplacer_dans_plan((0, -2), plan)
             if cla.get_pression(self.__touche["bas"]) == "presser":
-                self.deplacer_dans_plan((0, 1), plan)
+                self.deplacer_dans_plan((0, 2), plan)
         if cla.get_pression(self.__touche["gauche"]) == "presser":
-            self.deplacer_dans_plan((-1, 0), plan)
+            self.deplacer_dans_plan((-2, 0), plan)
         if cla.get_pression(self.__touche["droite"]) == "presser":
-            self.deplacer_dans_plan((1, 0), plan)
+            self.deplacer_dans_plan((2, 0), plan)
 
     def afficher(self) -> None:
         """affiche le jeu"""
