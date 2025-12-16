@@ -1,3 +1,8 @@
+"""ce module contient la class Lumiere et ses variantes
+elle permet de faire des blocs changeant de couleur en fonction d'un signal d'activation
+en realité ce sont des diapos de couleurs
+"""
+
 import pygame
 from py.block.activable.diapo import Diapo, DiapoBoucle, DiapoAllerRetour, DiapoFin
 
