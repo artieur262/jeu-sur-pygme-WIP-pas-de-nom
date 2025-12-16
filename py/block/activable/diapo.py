@@ -97,7 +97,7 @@ class DiapoAllerRetour(Diapo):
             self.actualiser_image()
 
 
-class DiapoUnique(Diapo):
+class DiapoFin(Diapo):
     """cette class permet de faire un diapo unique
     dés qu'elle arrive a la fin elle reste a la dernière image
     """
