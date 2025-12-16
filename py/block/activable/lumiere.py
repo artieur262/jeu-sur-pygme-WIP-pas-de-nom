@@ -31,7 +31,7 @@ class Lumiere(Diapo):
         raise NotImplementedError("La methode activation doit etre implementée")
 
 
-class LumiereBoucle(Lumiere, DiapoBoucle):
+class LumiereBoucle(Lumiere):
     """cette class permet de faire une lumiere qui s'allume et s'eteint en boucle"""
 
     def __init__(self, coordonnee, taille, color_pack, entre):
@@ -41,7 +41,7 @@ class LumiereBoucle(Lumiere, DiapoBoucle):
         DiapoBoucle.activation(self, map_)
 
 
-class LumiereAllerRetour(Lumiere, DiapoAllerRetour):
+class LumiereAllerRetour(Lumiere):
     """cette class permet de faire une lumiere qui s'allume et s'eteint en aller retour"""
 
     def __init__(self, coordonnee, taille, color_pack, entre):
@@ -51,7 +51,7 @@ class LumiereAllerRetour(Lumiere, DiapoAllerRetour):
         DiapoAllerRetour.activation(self, map_)
 
 
-class LumiereFin(Lumiere, DiapoFin):
+class LumiereFin(Lumiere):
     """cette class permet de faire une lumiere qui s'allume et s'eteint une seule fois"""
 
     def __init__(self, coordonnee, taille, color_pack, entre):
