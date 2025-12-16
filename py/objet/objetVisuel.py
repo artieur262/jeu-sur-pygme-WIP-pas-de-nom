@@ -110,3 +110,6 @@ class ObjetVisuel3D(Zone3D):
             face = self.LIST_FACE.index(face)
         if self.est_dans_plan(hauteur, face):
             self.afficher(face, decalage, surface)
+
+    def ajouter_map(self, map_):
+        raise NotImplementedError("Cette méthode n'est pas encore implémentée")

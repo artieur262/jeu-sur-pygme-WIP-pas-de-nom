@@ -5,6 +5,7 @@ if TYPE_CHECKING:
     from py.block.playeur import Playeur
     from py.block.plateforme import Plateforme
     from py.block.activateur.activateur import Activateur
+    from py.block.activable.activable import Activable
     from py.logique.bloc_logique import Logique
     from py.objet.objetVisuel import ObjetVisuel3D
     from py.objet.zone import Zone3D
@@ -27,6 +28,7 @@ class Map:
         self.__graviter: bool = False
         self.__logique: set["Logique"] = set()
         self.__activateur: set["Activateur"] = set()
+        self.__activable: set["Activable"] = set()
         self.__poussable: set = set()
         self.__signal: set[int] = set()
 
@@ -41,6 +43,14 @@ class Map:
         """ajoute une plateforme à la map"""
         self.__colision.add(plateforme)
         self.__afficher.add(plateforme)
+
+    def add_activable(self, activable: "Activable") -> None:
+        """ajoute un activable à la map"""
+        self.__activable.add(activable)
+
+    def remove_activable(self, activable: "Activable") -> None:
+        """retire un activable de la map"""
+        self.__activable.remove(activable)
 
     def remove_plateforme(self, plateforme: "Plateforme") -> None:
         """retire une plateforme de la map"""
@@ -96,6 +106,10 @@ class Map:
     def get_graviter(self) -> bool:
         """get la graviter"""
         return self.__graviter
+
+    def get_signal(self) -> set[int]:
+        """get le signal"""
+        return self.__signal
 
     def add_activateur(self, activateur: "Activateur") -> None:
         """ajoute un activateur à la map"""

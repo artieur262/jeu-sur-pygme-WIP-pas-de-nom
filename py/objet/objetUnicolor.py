@@ -1,3 +1,13 @@
+"""Module qui gère les objets unicolor (2D et 3D)
+elle permet de créer des objets graphique avec une seule couleur
+
+il contient les classes:
+- ObjetUnicolor2D
+- ObjetUnicolor3D
+
+
+"""
+
 import pygame
 from py.graphique.graphique import screen
 from py.graphique.image import Image
@@ -64,3 +74,6 @@ class ObjetUnicolor3D(ObjetVisuel3D):
             i.texture.fill(couleur)
         super().__init__(coordonnee, taille, face_graphique)
         self.couleur = couleur
+
+    def ajouter_map(self, map_):
+        raise NotImplementedError("la fonction n'est pas encore implémenté")

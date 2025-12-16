@@ -1,3 +1,5 @@
+"""ce module contient la classe Activable qui est la classe de base des blocs logique activable"""
+
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
