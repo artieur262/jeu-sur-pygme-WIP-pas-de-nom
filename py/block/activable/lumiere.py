@@ -1,6 +1,5 @@
 import pygame
 from py.block.activable.diapo import Diapo, DiapoBoucle, DiapoAllerRetour, DiapoFin
-from py.graphique.image import Image
 
 
 class Lumiere(Diapo):
