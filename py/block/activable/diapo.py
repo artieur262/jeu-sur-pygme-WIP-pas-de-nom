@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 from py.block.activable.activable import Activable
-from py.objet.objetVisuel import ObjetVisuel3D
+from py.objet.objet_visuel import ObjetVisuel3D
 
 
 if TYPE_CHECKING:

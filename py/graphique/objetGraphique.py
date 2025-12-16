@@ -4,7 +4,7 @@ Module qui gère les objets graphiques
 
 import pygame
 
-from py.objet.objetVisuel import ObjetVisuel2D
+from py.objet.objet_visuel import ObjetVisuel2D
 from py.graphique.image import Image
 
 

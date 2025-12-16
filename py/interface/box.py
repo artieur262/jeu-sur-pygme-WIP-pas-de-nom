@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 import pygame
 
-from py.objet.objetVisuel import ObjetVisuel2D
+from py.objet.objet_visuel import ObjetVisuel2D
 
 
 class Box(ObjetVisuel2D):

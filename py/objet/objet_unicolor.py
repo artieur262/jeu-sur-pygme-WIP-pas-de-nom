@@ -11,7 +11,7 @@ il contient les classes:
 import pygame
 from py.graphique.graphique import screen
 from py.graphique.image import Image
-from py.objet.objetVisuel import ObjetVisuel3D, ObjetVisuel2D
+from py.objet.objet_visuel import ObjetVisuel3D, ObjetVisuel2D
 
 
 class ObjetUnicolor2D(ObjetVisuel2D):

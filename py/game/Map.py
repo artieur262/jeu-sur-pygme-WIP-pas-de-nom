@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from py.block.activateur.activateur import Activateur
     from py.block.activable.activable import Activable
     from py.logique.bloc_logique import Logique
-    from py.objet.objetVisuel import ObjetVisuel3D
+    from py.objet.objet_visuel import ObjetVisuel3D
     from py.objet.zone import Zone3D
 
 # from py.logique.bloc_logique import Logique
