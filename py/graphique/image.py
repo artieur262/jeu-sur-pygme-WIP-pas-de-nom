@@ -14,12 +14,17 @@ class Image:
         ancre (tuple[int, int]) : est l'ancre de l'image
     """
 
-    def __init__(self, texture: str | pygame.Surface, ancre: tuple[int, int] = None):
+    def __init__(
+        self, texture: str | pygame.Surface | "Image", ancre: tuple[int, int] = None
+    ):
         if ancre is None:
             ancre = (0, 0)
         if isinstance(texture, str):
             texture = pygame.image.load(texture)
             texture.convert()
+        elif isinstance(texture, Image):
+            ancre = texture.get_ancre()
+            texture = texture.get_texture()
         self.ancre: tuple[int, int] = ancre
         self.texture: pygame.Surface = texture
 
@@ -99,7 +104,7 @@ class Image:
         Returns:
             list[Image]: list d'image
         """
-        if isinstance(entre, list):
+        if isinstance(entre, list | tuple):
             sortie = []
             for i in entre:
                 if isinstance(i, str):
@@ -112,4 +117,6 @@ class Image:
                     sortie.append(i)
         else:
             raise ValueError("entre doit être une list")
+        if isinstance(entre, tuple):
+            return tuple(sortie)
         return sortie

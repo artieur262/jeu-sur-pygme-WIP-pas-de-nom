@@ -90,6 +90,14 @@ class ObjetVisuel3D(Zone3D):
             (coordonnee[0] + decalage[0], coordonnee[1] + decalage[1]), surface
         )
 
+    def _set_image_list(self, face: tuple[Image, Image, Image]):
+        """permet de set la liste des images des faces
+
+        Args:
+            face (tuple[Image, Image, Image]): est la liste des images des faces
+        """
+        self.face_graphique = face
+
     def afficher_plan(
         self,
         hauteur: int,

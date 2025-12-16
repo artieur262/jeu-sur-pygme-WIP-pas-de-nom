@@ -111,6 +111,10 @@ class Map:
         """get le signal"""
         return self.__signal
 
+    def add_poussable(self, poussable: object) -> None:
+        """ajoute un objet poussable à la map"""
+        self.__poussable.add(poussable)
+
     def add_activateur(self, activateur: "Activateur") -> None:
         """ajoute un activateur à la map"""
         self.__activateur.add(activateur)
@@ -124,3 +128,20 @@ class Map:
         self.__afficher.remove(playeur)
         self.__colision.remove(playeur)
         self.__playeur = None
+
+    def remove_poussable(self, poussable: object) -> None:
+        """retire un objet poussable de la map"""
+        self.__poussable.remove(poussable)
+
+    def in_signal(self, signal: int) -> bool:
+        """permet de savoir si un signal est actif"""
+        return signal in self.__signal
+
+    def intersect_signal(self, signaux: set[int]) -> bool:
+        """permet de savoir si un signal est actif"""
+        return len(self.__signal & signaux) > 0
+
+    def contient_signal(self, signaux: set[int]) -> bool:
+        """permet de savoir si un signal est actif"""
+        return self.__signal & signaux == signaux
+        return len(self.__signal & signaux) == len(signaux)
