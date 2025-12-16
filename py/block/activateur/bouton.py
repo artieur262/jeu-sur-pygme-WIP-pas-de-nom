@@ -5,7 +5,7 @@ from py.objet.zone import Zone3D
 from py.interface.class_clavier import Clavier
 
 if TYPE_CHECKING:
-    from py.game.Map import Map
+    from py.game.map import Map
 
 
 class Bouton(ActivateurPlatforme):

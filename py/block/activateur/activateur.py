@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 from py.block.plateforme import Plateforme
 
 if TYPE_CHECKING:
-    from py.game.Map import Map
+    from py.game.map import Map
 # from py.game.game import Map
 
 

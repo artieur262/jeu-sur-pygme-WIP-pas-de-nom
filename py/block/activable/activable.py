@@ -3,7 +3,7 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from py.game.Map import Map
+    from py.game.map import Map
 
 
 class Activable:

@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 from py.objet.objetUnicolor import ObjetUnicolor3D
 
 if TYPE_CHECKING:
-    from py.game.Map import Map
+    from py.game.map import Map
 
 
 class Playeur(ObjetUnicolor3D):
