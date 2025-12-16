@@ -143,5 +143,4 @@ class Map:
 
     def contient_signal(self, signaux: set[int]) -> bool:
         """permet de savoir si un signal est actif"""
-        return self.__signal & signaux == signaux
         return len(self.__signal & signaux) == len(signaux)
