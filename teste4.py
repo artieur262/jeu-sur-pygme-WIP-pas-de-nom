@@ -1,7 +1,23 @@
-"""permet de savoir comment gerer les enums pyton
-"""
+"""permet de savoir comment gerer les enums pyton"""
+
 
 class Comparator:
+    """cette class permet de comparer deux valeurs selon un comparateur donné
+
+    Attributes:
+        EGALE (str): comparateur pour egalité
+        INFERIEUR (str): comparateur pour inferieur
+        SUPERIEUR (str): comparateur pour superieur
+        INFERIEUR_OU_EGALE (str): comparateur pour inferieur ou
+        SUPERIEUR_OU_EGALE (str): comparateur pour superieur ou egal
+        DIFERENT (str): comparateur pour different
+
+    Methods:
+        compare(value1, value2, comparator: str) -> bool:
+            compare deux valeurs selon le comparateur donné
+
+    """
+
     EGALE = "="
     INFERIEUR = "<"
     SUPERIEUR = ">"
