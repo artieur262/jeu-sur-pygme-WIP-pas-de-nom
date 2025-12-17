@@ -1,3 +1,6 @@
+"""permet de savoir comment gerer les enums pyton
+"""
+
 class Comparator:
     EGALE = "="
     INFERIEUR = "<"
@@ -8,7 +11,7 @@ class Comparator:
 
     @staticmethod
     def compare(value1, value2, comparator: str) -> bool:
-        
+        """compare deux valeurs selon le comparateur donné"""
         if comparator == Comparator.EGALE:
             return value1 == value2
         elif comparator == Comparator.INFERIEUR:
@@ -26,6 +29,7 @@ class Comparator:
 
 
 def main():
+    "est un test de la classe Comparator"
     a = "A"
     b = Comparator.EGALE
     c = "B"
@@ -35,4 +39,5 @@ def main():
     print(type(b))
 
 
-if __name__ == "__m
+if __name__ == "__main__":
+    main()
