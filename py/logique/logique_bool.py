@@ -191,3 +191,21 @@ class LogiqueChangementEtat(Logique_bool):
         if self.etat_precedant != se_trouve:
             map_.add_signal(self.sorti)
         self.etat_precedant = se_trouve
+
+
+class LogiqueMultipriseBool(Logique_bool):
+    """cette class ajoute la posibilité d'activer plusieurs signaux si un signal est activé"""
+
+    def __init__(
+        self,
+        entre: int | tuple[str, int, str] | tuple[str, int],
+        sorti: set[int | tuple[str, int]],
+    ):
+        super().__init__(entre, sorti)
+        self.entre = entre
+        self.sorti = sorti
+
+    def get_activation(self, map_: "Map"):
+        if map_.in_signal(self.entre):
+            for i in self.sorti:
+                map_.add_signal(self.sorti[i])
