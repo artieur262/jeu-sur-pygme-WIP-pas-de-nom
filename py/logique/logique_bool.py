@@ -5,6 +5,7 @@ from py.logique.bloc_logique import Logique
 if TYPE_CHECKING:
     from py.game.map import Map
 
+
 class Logique_bool(Logique):
     """cette class gère les objets logique boolean
 
@@ -20,7 +21,7 @@ class Logique_bool(Logique):
         """initialise le bloc logique"""
         super().__init__(entre, sorti)
 
-    def get_activation(self, map_):
+    def get_activation(self, map_: "Map"):
         raise NotImplementedError()
 
 
@@ -37,8 +38,13 @@ class LogiqueAND(Logique_bool):
 
     def get_activation(self, map_: "Map") -> None:
         """permet d'activer le bloc logique et ajouter les sorties dans le signal de output"""
-        for i in self.entre:
-            if map_.in_signal()
+        active = True
+        for indice in self.entre:
+            if not map_.in_signal(indice):
+                active = False
+                break  # ce break est là que pour de l'optimisation
+        if active:
+            map_.add_signal(self.sorti)
 
 
 class LogiqueOR(Logique_bool):
@@ -52,10 +58,15 @@ class LogiqueOR(Logique_bool):
     #     """initialise le bloc logique"""
     #     super().__init__(entre, sorti)
 
-    def get_activation(self, input_: set[int], output: set[int]) -> None:
+    def get_activation(self, map_: "Map") -> None:
         """permet d'activer le bloc logique et ajouter les sorties dans le signal de output"""
-        if len(input_ & self.entre) > 0:
-            output.add(self.sorti)
+        active = False
+        for indice in self.entre:
+            if map_.in_signal(indice):
+                active = True
+                break  # ce break est là que pour de l'optimisation
+        if active:
+            map_.add_signal(self.sorti)
 
 
 class LogiqueXOR(Logique_bool):
@@ -69,10 +80,20 @@ class LogiqueXOR(Logique_bool):
     #     """initialise le bloc logique"""
     #     super().__init__(entre, sorti)
 
-    def get_activation(self, input_: set[int], output: set[int]) -> None:
+    def get_activation(self, map_: "Map") -> None:
 
-        if len(input_ & self.entre) > 0 and not input_ & self.entre == self.entre:
-            output.add(self.sorti)
+        or_ = False
+        and_ = True
+        i = 0
+        while (not or_ or and_) and i < len(self.entre):
+            indice = self.entre[i]
+            if map_.in_signal(indice):
+                or_ = True
+            else:
+                and_ = False
+            indice += 1
+        if or_ and not and_:
+            map_.add_signal(self.sorti)
 
 
 class LogiqueNOT(Logique_bool):
@@ -86,10 +107,10 @@ class LogiqueNOT(Logique_bool):
         """initialise le bloc logique"""
         super().__init__(entre, sorti)
 
-    def get_activation(self, input_: set[int], output: set[int]) -> None:
+    def get_activation(self, map_: "Map") -> None:
         """permet d'activer le bloc logique et ajouter les sorties dans le signal de output"""
-        if self.entre not in input_:
-            output.add(self.sorti)
+        if not map_.in_signal(self.entre):
+            map_.add_signal(self.sorti)
 
 
 class LogiqueTimer(Logique_bool):
@@ -114,19 +135,23 @@ class LogiqueTimer(Logique_bool):
             if t > 0:
                 new_temps.add(t - 1)
 
-    def get_activation(self, input_: set[int], output: set[int]) -> None:
+    def get_activation(self, map_: "Map") -> None:
         """permet d'activer le bloc logique et ajouter les sorties dans le signal de output"""
         self.actualiser_temps()
         if 0 in self.temps:
-            output.add(self.sorti)
-        if self.entre in input_:
+            map_.add_signal(self.sorti)
+        if map_.in_signal(self.entre):
             self.temps.add(self.duree)
 
 
 class LogiqueLevier(Logique_bool):
     """classe qui active la sortie si le levier est activé"""
 
-    def __init__(self, entre: int, sorti: int):
+    def __init__(
+        self,
+        entre: int | tuple[str, int, str] | tuple[str, int],
+        sorti: int | tuple[str, int],
+    ):
         """initialise le bloc logique"""
         super().__init__(entre, sorti)
         self.entre = entre
@@ -137,29 +162,32 @@ class LogiqueLevier(Logique_bool):
         """permet de changer l'etat du levier"""
         self.etat = not self.etat
 
-    def get_activation(self, input_: set[int], output: set[int]) -> None:
+    def get_activation(self, map_: "Map") -> None:
         """permet d'activer le bloc logique et ajouter les sorties dans le signal de output"""
-        if self.entre in input_:
+        if map_.in_signal(self.entre):
             self.lock_unlock()
 
         if self.etat:
-            output.add(self.sorti)
+            map_.add_signal(self.sorti)
 
 
 class LogiqueChangementEtat(Logique_bool):
     """s'active s'il y a un changement."""
 
-    def __init__(self, entre: int, sorti: int):
+    def __init__(
+        self,
+        entre: int | tuple[str, int, str] | tuple[str, int],
+        sorti: int | tuple[str, int],
+    ):
         """initialise le bloc logique"""
         super().__init__(entre, sorti)
         self.entre = entre
         self.sorti = sorti
-        self.etat = False
+        self.etat_precedant = False
 
-    def get_activation(self, input_: set[int], output: set[int]) -> None:
+    def get_activation(self, map_: "Map") -> None:
         """permet d'activer le bloc logique et ajouter les sorties dans le signal de output"""
-        se_trouve = self.entre in input_
-        if self.etat != se_trouve:
-            output.add(self.sorti)
-
-        self.etat = se_trouve
+        se_trouve = map_.in_signal(self.entre)
+        if self.etat_precedant != se_trouve:
+            map_.add_signal(self.sorti)
+        self.etat_precedant = se_trouve

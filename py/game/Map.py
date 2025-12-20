@@ -55,7 +55,7 @@ class Map:
         else:
             raise TypeError("le signal doit etre un int ou un tuple[str,int]")
 
-    def get_signal(
+    def in_signal(
         self, sorti: str | int | tuple[str, int] | tuple[str, int, str]
     ) -> int | bool:
         """permet de savoir si un signal est actif ou de recupere la valeur d'un signal"""
@@ -206,10 +206,6 @@ class Map:
     def remove_poussable(self, poussable: object) -> None:
         """retire un objet poussable de la map"""
         self.__poussable.remove(poussable)
-
-    def in_signal(self, signal: int) -> bool:
-        """permet de savoir si un signal est actif"""
-        return signal in self.__signal_presence
 
     def intersect_signal(self, signaux: set[int]) -> bool:
         """permet de savoir si un signal est actif"""

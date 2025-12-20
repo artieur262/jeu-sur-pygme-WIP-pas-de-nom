@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 class Logique:
     """classe mere des blocs logique"""
 
-    def __init__(self, entre, sorti: int):
+    def __init__(self, entre, sorti: int | tuple[str, int]):
         """initialise le bloc logique"""
         self.entre = entre
         self.sorti = sorti
