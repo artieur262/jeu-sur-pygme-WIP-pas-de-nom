@@ -6,7 +6,7 @@ if TYPE_CHECKING:
     from py.game.map import Map
 
 
-class Logique_bool(Logique):
+class LogiqueBool(Logique):
     """cette class gère les objets logique boolean
 
     Args:
@@ -25,7 +25,7 @@ class Logique_bool(Logique):
         raise NotImplementedError()
 
 
-class LogiqueAND(Logique_bool):
+class LogiqueAND(LogiqueBool):
     """classe qui active la sortie si toutes les entrées sont activées"""
 
     # def __init__(
@@ -47,7 +47,7 @@ class LogiqueAND(Logique_bool):
             map_.add_signal(self.sorti)
 
 
-class LogiqueOR(Logique_bool):
+class LogiqueOR(LogiqueBool):
     """classe qui active la sortie si une des entrées est activée"""
 
     # def __init__(
@@ -69,7 +69,7 @@ class LogiqueOR(Logique_bool):
             map_.add_signal(self.sorti)
 
 
-class LogiqueXOR(Logique_bool):
+class LogiqueXOR(LogiqueBool):
     """classe qui active la sortie si une des entrées est activée"""
 
     # def __init__(
@@ -96,7 +96,7 @@ class LogiqueXOR(Logique_bool):
             map_.add_signal(self.sorti)
 
 
-class LogiqueNOT(Logique_bool):
+class LogiqueNOT(LogiqueBool):
     """retourne l'inverse de l'entrée"""
 
     def __init__(
@@ -113,7 +113,7 @@ class LogiqueNOT(Logique_bool):
             map_.add_signal(self.sorti)
 
 
-class LogiqueTimer(Logique_bool):
+class LogiqueTimer(LogiqueBool):
     """classe qui active la sortie après un certain temps"""
 
     def __init__(
@@ -144,7 +144,7 @@ class LogiqueTimer(Logique_bool):
             self.temps.add(self.duree)
 
 
-class LogiqueLevier(Logique_bool):
+class LogiqueLevier(LogiqueBool):
     """classe qui active la sortie si le levier est activé"""
 
     def __init__(
@@ -171,7 +171,7 @@ class LogiqueLevier(Logique_bool):
             map_.add_signal(self.sorti)
 
 
-class LogiqueChangementEtat(Logique_bool):
+class LogiqueChangementEtat(LogiqueBool):
     """s'active s'il y a un changement."""
 
     def __init__(
@@ -193,7 +193,7 @@ class LogiqueChangementEtat(Logique_bool):
         self.etat_precedant = se_trouve
 
 
-class LogiqueMultipriseBool(Logique_bool):
+class LogiqueMultipriseBool(LogiqueBool):
     """cette class ajoute la posibilité d'activer plusieurs signaux si un signal est activé"""
 
     def __init__(
