@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING
+from py.autre.operateur import Operateur
 
 if TYPE_CHECKING:
     from py.game.game import Game
@@ -30,14 +31,83 @@ class Map:
         self.__activateur: set["Activateur"] = set()
         self.__activable: set["Activable"] = set()
         self.__poussable: set = set()
-        self.__signal: set[int] = set()
+        self.__signal_presence: set[int] = set()
+        self.__signal_valeur: dict[str, int] = dict()
+        self.__signal_valeur_comportement: dict[str, tuple[str, int]] = dict()
+        self.__new_signal_presence: set[int] = None
+        self.__new_signal_valeur: dict[str, int] = None
+
+    def add_signal(self, signal: int | tuple[str, int]) -> None:
+        """ajoute un signal actif"""
+        if isinstance(signal, tuple):
+            self.__signal_valeur[signal[0]] = signal[1]
+        elif isinstance(signal, int):
+            self.__signal_presence.add(signal)
+        else:
+            raise TypeError("le signal doit etre un int ou un tuple[str,int]")
+
+    def add_new_signal(self, signal: int | tuple[str, int]):
+        """ajoute un signal actif dans les futurs signal"""
+        if isinstance(signal, tuple):
+            self.__new_signal_valeur[signal[0]] = signal[1]
+        elif isinstance(signal, int):
+            self.__new_signal_presence.add(signal)
+        else:
+            raise TypeError("le signal doit etre un int ou un tuple[str,int]")
+
+    def get_signal(
+        self, sorti: str | int | tuple[str, int] | tuple[str, int, str]
+    ) -> int | bool:
+        """permet de savoir si un signal est actif ou de recupere la valeur d'un signal"""
+
+        if isinstance(sorti, str):
+            if sorti in self.__signal_valeur:
+                return self.__signal_valeur[sorti]
+            else:
+                raise KeyError(f"le signal {sorti} n'existe pas dans la map")
+
+        elif isinstance(sorti, int):
+            return sorti in self.__signal_presence
+        elif isinstance(sorti, tuple):
+            if len(sorti) == 2:
+                if isinstance(sorti[0], str) and isinstance(sorti[1], int):
+                    if sorti[0] in self.__signal_valeur:
+                        return self.__signal_valeur[sorti[0]] == sorti[1]
+                    else:
+                        raise KeyError(f"le signal {sorti[0]} n'existe pas dans la map")
+                else:
+                    raise TypeError("le tuple doit contenir (str, int)")
+            elif len(sorti) == 3:
+                if (
+                    isinstance(sorti[0], str)
+                    and isinstance(sorti[1], int)
+                    and isinstance(sorti[2], str)
+                ):
+                    if sorti[0] in self.__signal_valeur:
+                        return Operateur.compare(
+                            self.__signal_valeur[sorti[0]], sorti[1], sorti[2]
+                        )
+                    else:
+                        raise KeyError(f"le signal {sorti[0]} n'existe pas dans la map")
+                else:
+                    raise TypeError("le tuple doit contenir (str, int, str)")
+
+            else:
+                raise ValueError("le tuple doit contenir 2 ou 3 elements")
+
+    def reset_new_signal(self):
+        """reset les futurs signaux"""
+        self.__new_signal_presence: set[int] = set()
+        self.__new_signal_valeur: dict[str, int] = dict()
+        for key, value in self.__signal_valeur_comportement.items():
+            self.__new_signal_valeur[key] = value[1]
 
     def actualiser_activation(self) -> None:
         """actualise l'activation des blocs logiques"""
-        nouveau_signal: set[int] = set()
+        self.reset_new_signal()
         for i in self.__logique:
-            i.get_activation(self.__signal, nouveau_signal)
-        self.__signal = nouveau_signal
+            i.get_activation(self.__signal_presence, self.__new_signal_valeur)
+        self.__signal_presence = self.__new_signal_valeur
 
     def add_plateforme(self, plateforme: "Plateforme") -> None:
         """ajoute une plateforme à la map"""
@@ -107,9 +177,13 @@ class Map:
         """get la graviter"""
         return self.__graviter
 
-    def get_signal(self) -> set[int]:
+    def get_signal_presence(self) -> set[int]:
         """get le signal"""
-        return self.__signal
+        return self.__signal_presence
+
+    def get_signal_valeur(self) -> dict[str, int]:
+        """get le dictionnaire des signaux de valeur"""
+        return self.__signal_valeur
 
     def add_poussable(self, poussable: object) -> None:
         """ajoute un objet poussable à la map"""
@@ -135,12 +209,12 @@ class Map:
 
     def in_signal(self, signal: int) -> bool:
         """permet de savoir si un signal est actif"""
-        return signal in self.__signal
+        return signal in self.__signal_presence
 
     def intersect_signal(self, signaux: set[int]) -> bool:
         """permet de savoir si un signal est actif"""
-        return len(self.__signal & signaux) > 0
+        return len(self.__signal_presence & signaux) > 0
 
     def contient_signal(self, signaux: set[int]) -> bool:
         """permet de savoir si un signal est actif"""
-        return len(self.__signal & signaux) == len(signaux)
+        return len(self.__signal_presence & signaux) == len(signaux)

@@ -32,9 +32,8 @@ class Activateur:
 
     def activer(self, map_: "Map") -> None:
         """permet d'activer le bloc logique et ajouter les sorties dans le signal de output"""
-        output: set[int] = map_.get_signal()
         if self._activer:
-            output.add(self._sorti)
+            map_.add_signal(self._sorti)
 
     def ajouter_map(self, map_: "Map") -> None:
         """ajoute la map"""
