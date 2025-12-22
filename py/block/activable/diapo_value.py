@@ -26,7 +26,18 @@ class DiapoValue(Activable, ObjetVisuel3D):
         ]
         self._entre = entre
         self._index_texture: int = 0
-        self.etat_precedent = False
+
+    def get_index_texture(self) -> int:
+        """permet de recuperer l'index du diapo"""
+        return self._index_texture
+
+    def set_index_texture(self, index_texture: int) -> None:
+        """permet de definir l'index du diapo"""
+        self._index_texture = index_texture
+
+    def get_len_texture_pack(self) -> int:
+        """permet de recuperer la longueur du texture pack"""
+        return len(self._texture_pack)
 
     def ajouter_map(self, map_: "Map") -> None:
         """ajoute la map"""
@@ -63,7 +74,7 @@ class DiapoValueBoucle(DiapoValue):
 
     def actualise_index_texture(self) -> None:
         """permet de mettre a jour l'index du diapo"""
-        self._index_texture = (self._index_texture) % len(self._texture_pack)
+        self.set_index_texture(self.get_index_texture() % self.get_len_texture_pack())
 
 
 class DiapoValueAllerRetour(DiapoValue):
@@ -71,20 +82,12 @@ class DiapoValueAllerRetour(DiapoValue):
     dés qu'elle arrive a la fin elle va dans l'autre sens
     """
 
-    def activation(self, map_: "Map") -> None:
-        """permet d'activer le bloc logique"""
-
-        self._actualise_signal(map_)
-
-        self._set_image_list(self._texture_pack[self._index_texture])
-        self.actualiser_image()
-
     def actualise_index_texture(self) -> None:
         """permet de mettre a jour l'index du diapo"""
-        mod = len(self._texture_pack) - 1
-        self._index_texture = self._index_texture % (2 * mod)
-        if self._index_texture > mod:
-            self._index_texture = 2 * mod - self._index_texture
+        mod = self.get_len_texture_pack() - 1
+        self.set_index_texture(self.get_index_texture() % mod)
+        if self.get_index_texture() > mod:
+            self.set_index_texture(mod * 2 - self.get_index_texture())
 
 
 class DiapoValueFin(DiapoValue):
@@ -94,5 +97,5 @@ class DiapoValueFin(DiapoValue):
 
     def actualise_index_texture(self) -> None:
         """permet de mettre a jour l'index du diapo"""
-        if self._index_texture >= len(self._texture_pack):
-            self._index_texture = len(self._texture_pack) - 1
+        if self.get_index_texture() >= self.get_len_texture_pack():
+            self.set_index_texture(self.get_len_texture_pack() - 1)
