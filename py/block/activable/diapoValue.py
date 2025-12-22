@@ -24,7 +24,8 @@ class DiapoValue(Activable, ObjetVisuel3D):
         self._texture_pack = [
             Image.genere_list_image(texture) for texture in texture_pack
         ]
-        self._index_texture = 0
+        self._entre = entre
+        self._index_texture: int = 0
         self.etat_precedent = False
 
     def ajouter_map(self, map_: "Map") -> None:
@@ -37,8 +38,7 @@ class DiapoValue(Activable, ObjetVisuel3D):
 
     def activation(self, map_: "Map") -> None:
         """permet d'activer le bloc logique"""
-        self._actualise_activer(map_)
-        self._index_texture = self._activer
+        self._actualise_signal(map_)
         self._actualise_index_texture()
         self._set_image_list(self._texture_pack[self._index_texture])
         self.actualiser_image()
@@ -47,9 +47,9 @@ class DiapoValue(Activable, ObjetVisuel3D):
         """permet de mettre a jour l'image en fonction de l'etat"""
         self._set_image_list(self._texture_pack[self._index_texture])
 
-    def _actualise_activer(self, map_: "Map") -> None:
+    def _actualise_signal(self, map_: "Map") -> None:
         """permet de mettre a jour l'etat de l'activable"""
-        self._activer = map_.in_signal(self._entre)
+        self._index_texture: int = map_.in_signal(self._entre)
 
     def _actualise_index_texture(self) -> None:
         """permet de mettre a jour l'index du diapo"""
@@ -74,7 +74,7 @@ class DiapoValueAllerRetour(DiapoValue):
     def activation(self, map_: "Map") -> None:
         """permet d'activer le bloc logique"""
 
-        self._actualise_activer(map_)
+        self._actualise_signal(map_)
 
         self._set_image_list(self._texture_pack[self._index_texture])
         self.actualiser_image()
