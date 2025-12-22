@@ -36,8 +36,9 @@ class Lumiere(DiapoBool):
 
         super().__init__(coordonnee, taille, surface_pack, entre)
 
-    def activation(self, map_):
-        raise NotImplementedError("La methode activation doit etre implementée")
+    def actualise_index_texture(self) -> None:
+        """permet de mettre a jour l'index du diapo"""
+        raise NotImplementedError("la fonction n'est pas encore implémenté")
 
 
 class LumiereBoucle(Lumiere):
