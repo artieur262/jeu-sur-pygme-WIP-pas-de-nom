@@ -4,10 +4,15 @@ en realité ce sont des diapos de couleurs
 """
 
 import pygame
-from py.block.activable.diapo import Diapo, DiapoBoucle, DiapoAllerRetour, DiapoFin
+from py.block.activable.diapo_bool import (
+    DiapoBool,
+    DiapoBoolBoucle,
+    DiapoBoolAllerRetour,
+    DiapoBoolFin,
+)
 
 
-class Lumiere(Diapo):
+class Lumiere(DiapoBool):
     """cette class permet de faire une lumiere qui s'allume et s'eteint"""
 
     def __init__(
@@ -41,8 +46,8 @@ class LumiereBoucle(Lumiere):
     def __init__(self, coordonnee, taille, color_pack, entre):
         Lumiere.__init__(self, coordonnee, taille, color_pack, entre)
 
-    def activation(self, map_):
-        DiapoBoucle.activation(self, map_)
+    def actualise_index_texture(self):
+        DiapoBoolBoucle.actualise_index_texture(self)
 
 
 class LumiereAllerRetour(Lumiere):
@@ -51,8 +56,8 @@ class LumiereAllerRetour(Lumiere):
     def __init__(self, coordonnee, taille, color_pack, entre):
         Lumiere.__init__(self, coordonnee, taille, color_pack, entre)
 
-    def activation(self, map_):
-        DiapoAllerRetour.activation(self, map_)
+    def actualise_index_texture(self):
+        DiapoBoolAllerRetour.actualise_index_texture(self)
 
 
 class LumiereFin(Lumiere):
@@ -61,5 +66,5 @@ class LumiereFin(Lumiere):
     def __init__(self, coordonnee, taille, color_pack, entre):
         Lumiere.__init__(self, coordonnee, taille, color_pack, entre)
 
-    def activation(self, map_):
-        DiapoFin.activation(self, map_)
+    def actualise_index_texture(self):
+        DiapoBoolFin.actualise_index_texture(self)

@@ -39,7 +39,7 @@ class DiapoValue(Activable, ObjetVisuel3D):
     def activation(self, map_: "Map") -> None:
         """permet d'activer le bloc logique"""
         self._actualise_signal(map_)
-        self._actualise_index_texture()
+        self.actualise_index_texture()
         self._set_image_list(self._texture_pack[self._index_texture])
         self.actualiser_image()
 
@@ -51,7 +51,7 @@ class DiapoValue(Activable, ObjetVisuel3D):
         """permet de mettre a jour l'etat de l'activable"""
         self._index_texture: int = map_.in_signal(self._entre)
 
-    def _actualise_index_texture(self) -> None:
+    def actualise_index_texture(self) -> None:
         """permet de mettre a jour l'index du diapo"""
         raise NotImplementedError("la fonction n'est pas encore implémenté")
 
@@ -61,7 +61,7 @@ class DiapoValueBoucle(DiapoValue):
     dés qu'elle arrive a la fin elle recommence au début
     """
 
-    def _actualise_index_texture(self) -> None:
+    def actualise_index_texture(self) -> None:
         """permet de mettre a jour l'index du diapo"""
         self._index_texture = (self._index_texture) % len(self._texture_pack)
 
@@ -79,7 +79,7 @@ class DiapoValueAllerRetour(DiapoValue):
         self._set_image_list(self._texture_pack[self._index_texture])
         self.actualiser_image()
 
-    def _actualise_index_texture(self) -> None:
+    def actualise_index_texture(self) -> None:
         """permet de mettre a jour l'index du diapo"""
         mod = len(self._texture_pack) - 1
         self._index_texture = self._index_texture % (2 * mod)
@@ -92,7 +92,7 @@ class DiapoValueFin(DiapoValue):
     dés qu'elle arrive a la fin elle reste a la dernière image
     """
 
-    def _actualise_index_texture(self) -> None:
+    def actualise_index_texture(self) -> None:
         """permet de mettre a jour l'index du diapo"""
         if self._index_texture >= len(self._texture_pack):
             self._index_texture = len(self._texture_pack) - 1
