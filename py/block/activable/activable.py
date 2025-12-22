@@ -12,7 +12,7 @@ class Activable:
         Zone (Zone): est la zone de l'objet graphique
     """
 
-    def __init__(self, entre: int):
+    def __init__(self, entre: str | int | tuple[str, int] | tuple[str, int, str]):
         """initialise le bouton"""
         self._entre = entre
         self._activer = False
