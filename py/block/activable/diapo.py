@@ -8,13 +8,13 @@ if TYPE_CHECKING:
     from py.game.map import Map
 
 
-class Diapo(Activable, ObjetVisuel3D):
+class DiapoValue(Activable, ObjetVisuel3D):
     def __init__(
         self,
         coordonnee: list[int],
         taille: tuple[int, int, int],
         texture_pack: list[tuple[Image, Image, Image]],
-        entre: int,
+        entre: str,
     ):
         """initialise le diapo"""
         Activable.__init__(self, entre)
@@ -37,7 +37,11 @@ class Diapo(Activable, ObjetVisuel3D):
 
     def activation(self, map_: "Map") -> None:
         """permet d'activer le bloc logique"""
-        raise NotImplementedError("la fonction n'est pas encore implémenté")
+        self._actualise_activer(map_)
+        self._index_texture = self._activer
+        self._actualise_index_texture()
+        self._set_image_list(self._texture_pack[self._index_texture])
+        self.actualiser_image()
 
     def actualiser_image(self) -> None:
         """permet de mettre a jour l'image en fonction de l'etat"""
@@ -45,68 +49,50 @@ class Diapo(Activable, ObjetVisuel3D):
 
     def _actualise_activer(self, map_: "Map") -> None:
         """permet de mettre a jour l'etat de l'activable"""
-        present_entre = map_.in_signal(self._entre)
-        self._activer = present_entre and not self.etat_precedent
-        self.etat_precedent = present_entre
+        self._activer = map_.in_signal(self._entre)
+
+    def _actualise_index_texture(self) -> None:
+        """permet de mettre a jour l'index du diapo"""
+        raise NotImplementedError("la fonction n'est pas encore implémenté")
 
 
-class DiapoBoucle(Diapo):
+class DiapoValueBoucle(DiapoValue):
     """cette class permet de faire un diapo en boucle
     dés qu'elle arrive a la fin elle recommence au début
     """
 
-    def activation(self, map_: "Map") -> None:
-        """permet d'activer le bloc logique"""
-        self._actualise_activer(map_)
-        if self.get_activer():
-            self._index_texture = (self._index_texture + 1) % len(self._texture_pack)
-            self._set_image_list(self._texture_pack[self._index_texture])
-            self.actualiser_image()
+    def _actualise_index_texture(self) -> None:
+        """permet de mettre a jour l'index du diapo"""
+        self._index_texture = (self._index_texture) % len(self._texture_pack)
 
 
-class DiapoAllerRetour(Diapo):
+class DiapoValueAllerRetour(DiapoValue):
     """cette class permet de faire un diapo aller retour
     dés qu'elle arrive a la fin elle va dans l'autre sens
     """
 
-    def __init__(
-        self,
-        coordonnee: list[int],
-        taille: tuple[int, int, int],
-        texture_pack: list[tuple[Image, Image, Image]],
-        entre: int,
-    ):
-        """initialise le diapo aller retour"""
-        super().__init__(coordonnee, taille, texture_pack, entre)
-        self._direction = 1
-
     def activation(self, map_: "Map") -> None:
         """permet d'activer le bloc logique"""
 
         self._actualise_activer(map_)
 
-        if self.get_activer():
-            self._index_texture += self._direction
-            if self._index_texture >= len(self._texture_pack):
-                self._index_texture = len(self._texture_pack) - 2
-                self._direction = -1
-            elif self._index_texture < 0:
-                self._index_texture = 1
-                self._direction = 1
-            self._set_image_list(self._texture_pack[self._index_texture])
-            self.actualiser_image()
+        self._set_image_list(self._texture_pack[self._index_texture])
+        self.actualiser_image()
+
+    def _actualise_index_texture(self) -> None:
+        """permet de mettre a jour l'index du diapo"""
+        mod = len(self._texture_pack) - 1
+        self._index_texture = self._index_texture % (2 * mod)
+        if self._index_texture > mod:
+            self._index_texture = 2 * mod - self._index_texture
 
 
-class DiapoFin(Diapo):
+class DiapoValueFin(DiapoValue):
     """cette class permet de faire un diapo unique
     dés qu'elle arrive a la fin elle reste a la dernière image
     """
 
-    def activation(self, map_: "Map") -> None:
-        """permet d'activer le bloc logique"""
-        self._actualise_activer(map_)
-        if self.get_activer():
-            if self._index_texture < len(self._texture_pack) - 1:
-                self._index_texture += 1
-                self._set_image_list(self._texture_pack[self._index_texture])
-                self.actualiser_image()
+    def _actualise_index_texture(self) -> None:
+        """permet de mettre a jour l'index du diapo"""
+        if self._index_texture >= len(self._texture_pack):
+            self._index_texture = len(self._texture_pack) - 1
