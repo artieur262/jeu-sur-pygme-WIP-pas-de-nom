@@ -2,35 +2,22 @@ class A1:
     def __init__(self, value):
         self.value = value
 
+    def get_value(self):
+        return self.value
+
     def test1(self):
         raise NotImplementedError("A1 ne peut pas faire test1.")
 
     def test2(self):
-        raise NotImplementedError("A1 ne peut pas faire test2.")
+        self.test1()
 
 
 class B1:
-    def __init__(self, value):
-        self.value = value
-        print("B1 initialisé avec value =", value)
-
-    def test3(self):
-        print("B1 fait test3.")
+    def test1(self: A1):
+        print("test1 de B1 :", self.get_value())
 
 
-class C1(A1):
-
-    def __init__(self, value):
-        super().__init__(value)
-
-    def test1(self):
-        print("B1 fait test1.")
-
-    def test2(self):
-        print(self.value)
-
-
-class fusion(C1, B1):
+class fusion(B1, A1):
 
     def cat(self):
         print("fusion de A1 et B1")
