@@ -9,6 +9,15 @@ if TYPE_CHECKING:
 
 
 class Diapo(Activable, ObjetVisuel3D):
+    """Diapo est une zone qui a pour but d'être affiché sur une surface
+    son but est de changer d'image en fonction d'une entree logique
+    Args:
+        coordonnee (list[int]): est la coordonnee de l'objet graphique
+        taille (tuple[int, int, int]): est la taille de l'objet graphique
+        texture_pack (list[tuple[Image, Image, Image]]): est le pack de texture du diapo
+        entre (str): est l'entree logique du diapo
+    """
+
     def __init__(
         self,
         coordonnee: list[int],

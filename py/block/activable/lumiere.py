@@ -13,7 +13,14 @@ from py.block.activable.diapo import (
 
 
 class Lumiere(Diapo):
-    """cette class permet de faire une lumiere qui s'allume et s'eteint"""
+    """cette class permet de faire une lumiere qui s'allume et s'eteint
+    la class lumière est une diapo dont les images sont des surfaces remplies de couleurs
+    Args:
+        coordonnee (list[int]): est la coordonnee de l'objet graphique
+        taille (tuple[int, int, int]): est la taille de l'objet graphique
+        color_pack (list[tuple[tuple[int, int, int]]]): est le pack de couleur du diapo
+        entre (str): est l'entree logique de la lumiere
+    """
 
     def __init__(
         self,
