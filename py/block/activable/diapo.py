@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from py.game.map import Map
 
 
-class DiapoValue(Activable, ObjetVisuel3D):
+class Diapo(Activable, ObjetVisuel3D):
     def __init__(
         self,
         coordonnee: list[int],
@@ -24,7 +24,7 @@ class DiapoValue(Activable, ObjetVisuel3D):
         self._texture_pack = [
             Image.genere_list_image(texture) for texture in texture_pack
         ]
-        self._entre = entre
+        self._entre: str = entre
         self._index_texture: int = 0
 
     def get_index_texture(self) -> int:
@@ -67,7 +67,7 @@ class DiapoValue(Activable, ObjetVisuel3D):
         raise NotImplementedError("la fonction n'est pas encore implémenté")
 
 
-class DiapoValueBoucle(DiapoValue):
+class DiapoBoucle(Diapo):
     """cette class permet de faire un diapo en boucle
     dés qu'elle arrive a la fin elle recommence au début
     """
@@ -77,7 +77,7 @@ class DiapoValueBoucle(DiapoValue):
         self.set_index_texture(self.get_index_texture() % self.get_len_texture_pack())
 
 
-class DiapoValueAllerRetour(DiapoValue):
+class DiapoAllerRetour(Diapo):
     """cette class permet de faire un diapo aller retour
     dés qu'elle arrive a la fin elle va dans l'autre sens
     """
@@ -90,7 +90,7 @@ class DiapoValueAllerRetour(DiapoValue):
             self.set_index_texture(mod * 2 - self.get_index_texture())
 
 
-class DiapoValueFin(DiapoValue):
+class DiapoFin(Diapo):
     """cette class permet de faire un diapo unique
     dés qu'elle arrive a la fin elle reste a la dernière image
     """
