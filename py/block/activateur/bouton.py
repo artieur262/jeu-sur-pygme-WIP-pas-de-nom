@@ -25,9 +25,14 @@ class Bouton(ActivateurPlatforme):
         """initialise le bouton"""
         super().__init__(coordonnee, taille, couleur, sorti)
         self.__rayon_dectect = rayon_dectect
+        self.__zone_dectect: Zone3D = self.genere_zone_dectect()
 
     def get_zone_dectect(self) -> Zone3D:
-        """permet de savoir si le bloc logique est actif
+        """permet de récupérer la zone de détection"""
+        return self.__zone_dectect
+
+    def genere_zone_dectect(self) -> Zone3D:
+        """permet de générer la zone de détection
         Args:
             axe (int, optional):
                 axe de la zone de détection. Defaults to -1, ce qui signifie que la zone de
@@ -73,7 +78,7 @@ class BoutonPush(Bouton):
 
         if clavier.get_pression(
             touche["interaction"]
-        ) == "presser" and self.__rayon_dectect.collision(
+        ) == "presser" and self.get_zone_dectect().collision(
             joueur.get_pos(), joueur.get_size()
         ):
             self.set_activer(True)
@@ -106,7 +111,7 @@ class BoutonSwitch(Bouton):
 
         if clavier.get_pression(
             touche["interaction"]
-        ) == "vien_presser" and self.__rayon_dectect.collision(
+        ) == "vien_presser" and self.get_zone_dectect().collision(
             joueur.get_pos(), joueur.get_size()
         ):
             self.set_activer(not self.get_activer())
@@ -137,7 +142,7 @@ class BoutonImpulse(Bouton):
 
         if clavier.get_pression(
             touche["interaction"]
-        ) == "vien_presser" and self.__rayon_dectect.collision(
+        ) == "vien_presser" and self.get_zone_dectect().collision(
             joueur.get_pos(), joueur.get_size()
         ):
             self.set_activer(True)
