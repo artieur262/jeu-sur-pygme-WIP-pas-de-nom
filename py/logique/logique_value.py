@@ -189,7 +189,7 @@ class LogiqueOperate(LogiqueValue):
 class LogiqueValueChangement(LogiqueValue):
     """cette class détecte un changement de valeur d'un signal et envoie une activation à la sortie
     Args:
-        entre (str): le signal d'entrée 
+        entre (str): le signal d'entrée
         sorti (str | int | tuple[str, int]): le signal de sortie
         mode (str): le mode de détection du changement ("changement", "augmentation", "diminution")
     """
@@ -209,25 +209,18 @@ class LogiqueValueChangement(LogiqueValue):
         current_value = map_.in_signal(self.entre)
         if self.last_value is None:
             self.last_value = current_value
+            return
 
         match self.mode:
             case "changement":
                 if current_value != self.last_value:
                     map_.add_signal(self.sorti)
-                    self.last_value = current_value
-                else:
-                    map_.add_signal(self.sorti)
             case "augmentation":
                 if current_value > self.last_value:
-                    map_.add_signal(self.sorti)
-                    self.last_value = current_value
-                else:
                     map_.add_signal(self.sorti)
             case "diminution":
                 if current_value < self.last_value:
                     map_.add_signal(self.sorti)
-                    self.last_value = current_value
-                else:
-                    map_.add_signal(self.sorti)
             case _:
                 raise ValueError(f"Mode inconnu: {self.mode}")
+        self.last_value = current_value
