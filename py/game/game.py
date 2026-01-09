@@ -17,7 +17,7 @@ class Game:
 
     def __init__(self, clavier: Clavier, souris: Souris, touche: dict[str, int]):
         """initialise le jeu"""
-        self.map: Map = Map()
+        self.map: Map = Map(self)
         self.clavier: Clavier = clavier
         self.souris: Souris = souris
         self.__running: bool = True

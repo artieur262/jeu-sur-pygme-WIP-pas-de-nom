@@ -20,9 +20,9 @@ class Map:
         Map (Map): est la map
     """
 
-    def __init__(self, game="Game"):
+    def __init__(self, game: "Game"):
         """initialise la map"""
-        self.__game = game
+        self.__game: "Game" = game
         self.__colision: set["Zone3D"] = set()
         self.__playeur: "Playeur" = None
         self.__afficher: set["ObjetVisuel3D"] = set()
@@ -36,6 +36,14 @@ class Map:
         self.__signal_valeur_comportement: dict[str, tuple[str, int]] = dict()
         self.__new_signal_presence: set[int] = None
         self.__new_signal_valeur: dict[str, int] = None
+
+    def get_game(self) -> "Game":
+        """get le jeu"""
+        return self.__game
+
+    def set_game(self, game: "Game") -> None:
+        """set le jeu"""
+        self.__game = game
 
     def add_signal(self, signal: int | tuple[str, int]) -> None:
         """ajoute un signal actif"""
@@ -160,10 +168,6 @@ class Map:
     def affichable(self) -> set["ObjetVisuel3D"]:
         """affiche la map"""
         return self.__afficher
-
-    def get_game(self) -> "Game":
-        """get le jeu"""
-        return self.__game
 
     def get_colision(self) -> set["Zone3D"]:
         """get la map"""
