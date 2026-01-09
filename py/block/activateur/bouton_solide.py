@@ -57,11 +57,13 @@ class BoutonSolid(ActivateurPlatforme):
 
     def condition_sup(self, map_: "Map") -> bool:
         """permet de vérifier la condition supplémentaire"""
-        playeur = map_.get_playeur()
-        plan = map_.get_game().get_plan()
-        return self.collision_in_axe(
-            playeur.get_pos()[plan], playeur.get_size()[plan], plan
-        )
+        return self.dans_plan(map_.get_game().get_hauteur(), map_.get_game().get_plan())
+        # autre possibilité avec la collision mais optimisation moins bonne
+        # playeur = map_.get_playeur()
+        # plan = map_.get_game().get_plan()
+        # return self.collision_in_axe(
+        #     playeur.get_pos()[plan], playeur.get_size()[plan], plan
+        # )
 
     def activation(self, map_: "Map") -> None:
         """permet d'activer le bloc logique"""

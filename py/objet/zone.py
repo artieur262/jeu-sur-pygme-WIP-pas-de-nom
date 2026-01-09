@@ -5,6 +5,14 @@ class Zone2D:
         self.coordonnee = coordonnee
         self.__taille = taille
 
+    def dans_plan(self, hauteur: int, plan: int) -> bool:
+        """permet de savoir si l'objet est dans un plan"""
+        return (
+            self.coordonnee[plan]
+            <= hauteur
+            < self.coordonnee[plan] + self.get_size()[plan]
+        )
+
     def get_pos(self) -> tuple[int, int] | int:
         """renvoi les coordonées de l'objet
         Args:

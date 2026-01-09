@@ -36,6 +36,14 @@ class Game:
         """get le plan"""
         return self.__plan_actuel
 
+    def set_hauteur(self, hauteur: int) -> None:
+        """set la hauteur du plan"""
+        self.hauteur_plan = hauteur
+
+    def get_hauteur(self) -> int:
+        """get la hauteur du plan"""
+        return self.hauteur_plan
+
     def get_touche(self) -> dict[str, int]:
         """get les touches"""
         return self.__touche
