@@ -56,6 +56,34 @@ class Zone2D:
             self.coordonnee[0] <= point[0] < self.coordonnee[0] + self.get_size()[0]
         ) and (self.coordonnee[1] <= point[1] < self.coordonnee[1] + self.get_size()[1])
 
+    def contiens_in_axe(self, obj_pos: int, obj_size: int, axe: int) -> bool:
+        """pemet de voir si un objet est contenu sur un plan
+
+        Args:
+            obj_pos (int): est la position de l'objet sur l'axe
+            obj_size (int): est la taille de l'objet sur l'axe
+            axe (int): {1= axe x, 2= axe y}
+
+        Returns: (bool)
+        """
+        coin_1_self = self.get_pos()[axe]
+        coin_2_self = self.get_pos()[axe] + self.get_size()[axe]
+
+        coin_1_obj = obj_pos
+        coin_2_obj = obj_pos + obj_size
+
+        return coin_1_self <= coin_1_obj and coin_2_obj <= coin_2_self
+
+    def contiens(self, obj_pos: tuple[int], obj_size: tuple[int]) -> bool:
+        """pemet savoir l'objet est contenu dans un autre objet dans l'espace
+        args:
+            obj_pos (tuple[int]) : est la position de l'objet
+            obj_size (tuple[int]) : est la taille de l'objet
+        """
+        return self.contiens_in_axe(
+            obj_pos[0], obj_size[0], 0
+        ) and self.contiens_in_axe(obj_pos[1], obj_size[1], 1)
+
     def collision_in_axe(self, obj_pos: int, obj_size: int, axe: int) -> bool:
         """pemet de voir si un objet a une colisiont sur un plan
 
@@ -179,6 +207,18 @@ class Zone3D(Zone2D):
             and (
                 self.coordonnee[2] <= point[2] < self.coordonnee[2] + self.get_size()[2]
             )
+        )
+
+    def contiens_zone(self, zone: "Zone3D") -> bool:
+        """pemet savoir l'objet est contenu dans un autre objet dans l'espace
+        args:
+            zone (Zone3D) : est la zone à tester
+        """
+        return self.contiens(zone.get_pos(), zone.get_size())
+
+    def contiens(self, obj_pos, obj_size):
+        return super().contiens(obj_pos, obj_size) and self.contiens_in_axe(
+            obj_pos[2], obj_size[2], 2
         )
 
     def collision_zone(self, zone: "Zone3D") -> bool:
