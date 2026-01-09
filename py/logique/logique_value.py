@@ -190,7 +190,7 @@ class LogiqueValueChangement(LogiqueValue):
     """cette class détecte un changement de valeur d'un signal et envoie une activation à la sortie
     Args:
         entre (str): le signal d'entrée
-        sorti (str | int | tuple[str, int]): le signal de sortie
+        sorti (int | tuple[str, int]): le signal de sortie
         mode (str): le mode de détection du changement ("changement", "augmentation", "diminution")
     """
 
