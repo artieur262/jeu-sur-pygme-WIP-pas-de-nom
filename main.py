@@ -5,7 +5,7 @@ from py.graphique.actualisation_pygame import actualise_event, change_fullscreen
 from py.game.game import Game
 from py.block.plateforme import Plateforme
 from py.block.playeur import Playeur
-from py.block.activateur.bouton import BoutonPush, BoutonSwitch
+from py.block.activateur.bouton_flotant import BoutonPush, BoutonSwitch
 # from py.block.
 
 

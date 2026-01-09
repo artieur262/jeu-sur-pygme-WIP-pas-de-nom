@@ -2,13 +2,20 @@ from typing import TYPE_CHECKING
 
 from py.block.activateur.activateur import ActivateurPlatforme
 from py.objet.zone import Zone3D
-from py.interface.class_clavier import Clavier
+
+# from py.interface.class_clavier import Clavier
+from py.block.activateur.bouton_flotant import (
+    BoutonFlottantPush,
+    BoutonFlottantSwitch,
+    BoutonFlottantImpulse,
+)
 
 if TYPE_CHECKING:
     from py.game.map import Map
+    from py.interface.class_clavier import Clavier
 
 
-class Bouton(ActivateurPlatforme):
+class BoutonSolid(ActivateurPlatforme):
     """Bouton est une zone qui a pour but d'être affiché sur une surface
     Args:
         Zone (Zone): est la zone de l'objet graphique
@@ -48,12 +55,20 @@ class Bouton(ActivateurPlatforme):
             pos.append(self.get_pos()[i] - self.__rayon_dectect)
             taille.append(self.get_size()[i] + self.__rayon_dectect * 2)
 
+    def condition_sup(self, map_: "Map") -> bool:
+        """permet de vérifier la condition supplémentaire"""
+        playeur = map_.get_playeur()
+        plan = map_.get_game().get_plan()
+        return self.collision_in_axe(
+            playeur.get_pos()[plan], playeur.get_size()[plan], plan
+        )
+
     def activation(self, map_: "Map") -> None:
         """permet d'activer le bloc logique"""
         raise NotImplementedError("la fonction n'est pas encore implémenté")
 
 
-class BoutonPush(Bouton):
+class BoutonSolidPush(BoutonSolid):
     """Bouton_push est une zone qui a pour but d'être affiché sur une surface
     Args:
         Zone (Zone): est la zone de l'objet graphique
@@ -72,79 +87,26 @@ class BoutonPush(Bouton):
 
     def activation(self, map_: "Map") -> None:
         """permet d'activer le bloc logique"""
-        clavier: Clavier = map_.get_game().clavier
-        touche: dict[str, int] = map_.get_game().get_touche()
-        joueur: Zone3D = map_.get_playeur()
-
-        if clavier.get_pression(
-            touche["interaction"]
-        ) == "presser" and self.get_zone_dectect().collision(
-            joueur.get_pos(), joueur.get_size()
-        ):
-            self.set_activer(True)
-        else:
-            self.set_activer(False)
+        BoutonFlottantPush.activation(self, map_)
 
 
-class BoutonSwitch(Bouton):
+class BoutonSolidSwitch(BoutonSolid):
     """Bouton_switch est une zone qui a pour but d'être affiché sur une surface
     Args:
         Zone (Zone): est la zone de l'objet graphique
     """
 
-    # def __init__(
-    #     self,
-    #     coordonnee: list[int],
-    #     taille: tuple[int, int, int],
-    #     couleur: tuple[int, int, int],
-    #     sorti: int,
-    #     zone_dectect: Zone3D,
-    # ):
-    #     """initialise le bouton"""
-    #     super().__init__(coordonnee, taille, couleur, sorti, zone_dectect)
-
     def activation(self, map_: "Map") -> None:
         """permet d'activer le bloc logique"""
-        clavier: Clavier = map_.get_game().clavier
-        touche: dict[str, int] = map_.get_game().get_touche()
-        joueur: Zone3D = map_.get_playeur()
-
-        if clavier.get_pression(
-            touche["interaction"]
-        ) == "vien_presser" and self.get_zone_dectect().collision(
-            joueur.get_pos(), joueur.get_size()
-        ):
-            self.set_activer(not self.get_activer())
+        BoutonFlottantSwitch.activation(self, map_)
 
 
-class BoutonImpulse(Bouton):
+class BoutonSolidImpulse(BoutonSolid):
     """Bouton_impulse est une zone qui a pour but d'être affiché sur une surface
     Args:
         Zone (Zone): est la zone de l'objet graphique
     """
 
-    # def __init__(
-    #     self,
-    #     coordonnee: list[int],
-    #     taille: tuple[int, int, int],
-    #     couleur: tuple[int, int, int],
-    #     sorti: int,
-    #     zone_dectect: Zone3D,
-    # ):
-    #     """initialise le bouton"""
-    #     super().__init__(coordonnee, taille, couleur, sorti, zone_dectect)
-
     def activation(self, map_: "Map") -> None:
         """permet d'activer le bloc logique"""
-        clavier: Clavier = map_.get_game().clavier
-        touche: dict[str, int] = map_.get_game().get_touche()
-        joueur: Zone3D = map_.get_playeur()
-
-        if clavier.get_pression(
-            touche["interaction"]
-        ) == "vien_presser" and self.get_zone_dectect().collision(
-            joueur.get_pos(), joueur.get_size()
-        ):
-            self.set_activer(True)
-        else:
-            self.set_activer(False)
+        BoutonFlottantImpulse.activation(self, map_)
