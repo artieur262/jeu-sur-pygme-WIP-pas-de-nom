@@ -184,3 +184,50 @@ class LogiqueOperate(LogiqueValue):
         valeur2 = map_.in_signal(self.entre[1])
         resultat = Operateur.operate(valeur1, valeur2, self.operateur)
         map_.add_signal((self.sorti, resultat))
+
+
+class LogiqueValueChangement(LogiqueValue):
+    """cette class détecte un changement de valeur d'un signal et envoie une activation à la sortie
+    Args:
+        entre (str): le signal d'entrée 
+        sorti (str | int | tuple[str, int]): le signal de sortie
+        mode (str): le mode de détection du changement ("changement", "augmentation", "diminution")
+    """
+
+    def __init__(self, entre: str, sorti: int | tuple[str, int], mode: str = None):
+        """initialise le bloc logique"""
+        if mode is None:
+            mode = "changement"
+        super().__init__(entre, sorti)
+        self.entre = entre
+        self.sorti = sorti
+        self.last_value = None
+        self.mode = mode
+
+    def get_activation(self, map_: "Map") -> None:
+        """permet d'activer le bloc logique et ajouter les sorties dans le signal de output"""
+        current_value = map_.in_signal(self.entre)
+        if self.last_value is None:
+            self.last_value = current_value
+
+        match self.mode:
+            case "changement":
+                if current_value != self.last_value:
+                    map_.add_signal(self.sorti)
+                    self.last_value = current_value
+                else:
+                    map_.add_signal(self.sorti)
+            case "augmentation":
+                if current_value > self.last_value:
+                    map_.add_signal(self.sorti)
+                    self.last_value = current_value
+                else:
+                    map_.add_signal(self.sorti)
+            case "diminution":
+                if current_value < self.last_value:
+                    map_.add_signal(self.sorti)
+                    self.last_value = current_value
+                else:
+                    map_.add_signal(self.sorti)
+            case _:
+                raise ValueError(f"Mode inconnu: {self.mode}")
