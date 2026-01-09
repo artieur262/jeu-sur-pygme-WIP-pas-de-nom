@@ -25,10 +25,10 @@ class DectorZone(Zone3D, Activateur):
         taille: list[int],
         target: list[int],
         detection_mode: str,
-        entre: int | str | tuple[str, int],
+        sorti: int | str | tuple[str, int],
     ):
         Zone3D.__init__(self, coordonnee, taille)
-        Activateur.__init__(self, entre)
+        Activateur.__init__(self, sorti)
         self._target: set[int] = set(target)
         self._detection_mode: str = detection_mode
 
@@ -74,3 +74,60 @@ class DectorZone(Zone3D, Activateur):
     def ajouter_map(self, map_: "Map") -> None:
         """ajoute la map"""
         Activateur.ajouter_map(self, map_)
+
+    def retirer_map(self, map_):
+        Activateur.retirer_map(self, map_)
+
+
+class DectorZoneCount(DectorZone):
+    """DectorZoneCount est une zone qui a pour but de détecter des objets dans une zone
+    et de compter le nombre d'objets détectés
+    Args:
+        Zone (Zone): est la zone de l'objet graphique
+    """
+
+    def __init__(
+        self,
+        coordonnee: list[int],
+        taille: list[int],
+        target: list[int],
+        detection_mode: str,
+        sorti: str,
+    ):
+        """initialise le bouton"""
+        super().__init__(coordonnee, taille, target, detection_mode, sorti)
+        self._sorti = sorti
+
+    def activation(self, map_: "Map") -> None:
+        """permet d'activer le bloc logique"""
+        liste_target: set[Zone3D] = self.get_setarget(map_)
+        count: int = self._dectecter_all(list(liste_target))
+        map_.add_signal((self._sorti, count))
+
+class DectorZoneDifference(DectorZone):
+    """DectorZoneDifference est une zone qui a pour but de détecter des objets dans une zone
+    et de savoir si le nombre d'objets détectés a changé
+    Args:
+        Zone (Zone): est la zone de l'objet graphique
+    """
+
+    def __init__(
+        self,
+        coordonnee: list[int],
+        taille: list[int],
+        target: list[int],
+        detection_mode: str,
+        sorti: int | tuple[str, int],
+    ):
+        """initialise le bouton"""
+        super().__init__(coordonnee, taille, target, detection_mode, sorti)
+        self._sorti = sorti
+        self._last_count: int = -1
+
+    def activation(self, map_: "Map") -> None:
+        """permet d'activer le bloc logique"""
+        liste_target: set[Zone3D] = self.get_setarget(map_)
+        count: int = self._dectecter_all(list(liste_target))
+        if count != self._last_count:
+            map_.add_signal(self._sorti)
+            self._last_count = count
