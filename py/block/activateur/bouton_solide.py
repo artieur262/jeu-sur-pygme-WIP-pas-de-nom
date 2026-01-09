@@ -26,7 +26,7 @@ class BoutonSolid(ActivateurPlatforme):
         coordonnee: list[int],
         taille: tuple[int, int, int],
         couleur: tuple[int, int, int],
-        sorti: int,
+        sorti: int | tuple[str, int],
         rayon_dectect: int,
     ):
         """initialise le bouton"""
@@ -76,17 +76,6 @@ class BoutonSolidPush(BoutonSolid):
         Zone (Zone): est la zone de l'objet graphique
     """
 
-    # def __init__(
-    #     self,
-    #     coordonnee: list[int],
-    #     taille: tuple[int, int, int],
-    #     couleur: tuple[int, int, int],
-    #     sorti: int,
-    #     rayon_dectect: int,
-    # ):
-    #     """initialise le bouton"""
-    #     super().__init__(coordonnee, taille, couleur, sorti, rayon_dectect)
-
     def activation(self, map_: "Map") -> None:
         """permet d'activer le bloc logique"""
         BoutonFlottantPush.activation(self, map_)
@@ -97,6 +86,18 @@ class BoutonSolidSwitch(BoutonSolid):
     Args:
         Zone (Zone): est la zone de l'objet graphique
     """
+
+    def __init__(
+        self,
+        coordonnee: list[int],
+        taille: tuple[int, int, int],
+        couleur: tuple[int, int, int],
+        sorti: int | tuple[str, int],
+        rayon_dectect: int,
+    ):
+        """initialise le bouton"""
+        super().__init__(coordonnee, taille, couleur, sorti, rayon_dectect)
+        self.activer: bool = False
 
     def activation(self, map_: "Map") -> None:
         """permet d'activer le bloc logique"""

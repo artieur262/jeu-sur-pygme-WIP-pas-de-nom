@@ -14,15 +14,16 @@ class BoutonFlottant(ActivateurPlatforme):
         Zone (Zone): est la zone de l'objet graphique
     """
 
-    # def __init__(
-    #     self,
-    #     coordonnee: list[int],
-    #     taille: tuple[int, int, int],
-    #     couleur: tuple[int, int, int],
-    #     sorti: int,
-    # ):
-    #     """initialise le bouton"""
-    #     super().__init__(coordonnee, taille, couleur, sorti)
+    def __init__(
+        self,
+        coordonnee: list[int],
+        taille: tuple[int, int, int],
+        couleur: tuple[int, int, int],
+        sorti: int | tuple[str, int],
+    ):
+        """initialise le bouton"""
+        super().__init__(coordonnee, taille, couleur, sorti)
+        self._sorti = sorti
 
     def get_zone_dectect(self) -> Zone3D:
         """permet de récupérer la zone de détection"""
@@ -65,9 +66,8 @@ class BoutonFlottantPush(BoutonFlottant):
             and self.condition_sup(map_)
             and self.get_zone_dectect().collision(joueur.get_pos(), joueur.get_size())
         ):
-            self.set_activer(True)
-        else:
-            self.set_activer(False)
+
+            map_.add_signal(self._sorti)
 
 
 class BoutonFlottantSwitch(BoutonFlottant):
@@ -76,16 +76,17 @@ class BoutonFlottantSwitch(BoutonFlottant):
         Zone (Zone): est la zone de l'objet graphique
     """
 
-    # def __init__(
-    #     self,
-    #     coordonnee: list[int],
-    #     taille: tuple[int, int, int],
-    #     couleur: tuple[int, int, int],
-    #     sorti: int,
-    #     zone_dectect: Zone3D,
-    # ):
-    #     """initialise le bouton"""
-    #     super().__init__(coordonnee, taille, couleur, sorti, zone_dectect)
+    def __init__(
+        self,
+        coordonnee: list[int],
+        taille: tuple[int, int, int],
+        couleur: tuple[int, int, int],
+        sorti: int | tuple[str, int],
+    ):
+        """initialise le bouton"""
+        super().__init__(coordonnee, taille, couleur, sorti)
+        self._sorti = sorti
+        self.activer: bool = False
 
     def activation(self, map_: "Map") -> None:
         """permet d'activer le bloc logique"""
@@ -98,7 +99,9 @@ class BoutonFlottantSwitch(BoutonFlottant):
             and self.condition_sup(map_)
             and self.get_zone_dectect().collision(joueur.get_pos(), joueur.get_size())
         ):
-            self.set_activer(not self.get_activer())
+            self.activer = not self.activer
+        if self.activer:
+            map_.add_signal(self._sorti)
 
 
 class BoutonFlottantImpulse(BoutonFlottant):
@@ -129,6 +132,4 @@ class BoutonFlottantImpulse(BoutonFlottant):
             and self.condition_sup(map_)
             and self.get_zone_dectect().collision(joueur.get_pos(), joueur.get_size())
         ):
-            self.set_activer(True)
-        else:
-            self.set_activer(False)
+            map_.add_signal(self._sorti)

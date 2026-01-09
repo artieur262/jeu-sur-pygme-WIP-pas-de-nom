@@ -24,6 +24,10 @@ class Activateur:
         """ajoute la map"""
         map_.add_activateur(self)
 
+    def retirer_map(self, map_: "Map") -> None:
+        """retire la map"""
+        map_.remove_activateur(self)
+
 
 class ActivateurPlatforme(Plateforme, Activateur):
     """Activateur est une zone qui a pour but d'être affiché sur une surface
