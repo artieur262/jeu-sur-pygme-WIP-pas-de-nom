@@ -4,7 +4,6 @@ from py.block.plateforme import Plateforme
 
 if TYPE_CHECKING:
     from py.game.map import Map
-# from py.game.game import Map
 
 
 class Activateur:
@@ -13,27 +12,13 @@ class Activateur:
         Zone (Zone): est la zone de l'objet graphique
     """
 
-    def __init__(self, sorti: int):
+    def __init__(self, sorti: int | str | tuple[str, int]):
         """initialise le bouton"""
-        self._sorti = sorti
-        self._activer = False
-
-    def get_activer(self) -> bool:
-        """permet de savoir si le bloc logique est actif"""
-        return self._activer
-
-    def set_activer(self, activer: bool) -> None:
-        """permet de changer l'etat du bloc logique"""
-        self._activer = activer
+        self._sorti: int | str = sorti
 
     def activation(self, map_: "Map") -> None:
         """permet d'activer le bloc logique"""
         raise NotImplementedError("la fonction n'est pas encore implémenté")
-
-    def activer(self, map_: "Map") -> None:
-        """permet d'activer le bloc logique et ajouter les sorties dans le signal de output"""
-        if self._activer:
-            map_.add_signal(self._sorti)
 
     def ajouter_map(self, map_: "Map") -> None:
         """ajoute la map"""

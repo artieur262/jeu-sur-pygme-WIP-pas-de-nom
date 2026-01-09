@@ -181,6 +181,16 @@ class Zone3D(Zone2D):
             )
         )
 
+    def collision_zone(self, zone: "Zone3D") -> bool:
+        """pemet savoir l'objet à une colision avec un autre objet dans l'espace
+        args:
+            zone (Zone3D) : est la zone à tester
+        """
+        return self.collision(
+            zone.get_pos(),
+            zone.get_size(),
+        )
+
     def collision(self, obj_pos, obj_size):
         return (
             self.collision_in_axe(obj_pos[0], obj_size[0], 0)
