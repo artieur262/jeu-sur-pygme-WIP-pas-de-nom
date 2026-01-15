@@ -44,7 +44,7 @@ class LogiqueAND(LogiqueBool):
                 active = False
                 break  # ce break est là que pour de l'optimisation
         if active:
-            map_.add_signal(self.sorti)
+            map_.add_new_signal(self.sorti)
 
 
 class LogiqueOR(LogiqueBool):
@@ -66,7 +66,7 @@ class LogiqueOR(LogiqueBool):
                 active = True
                 break  # ce break est là que pour de l'optimisation
         if active:
-            map_.add_signal(self.sorti)
+            map_.add_new_signal(self.sorti)
 
 
 class LogiqueXOR(LogiqueBool):
@@ -93,7 +93,7 @@ class LogiqueXOR(LogiqueBool):
                 and_ = False
             indice += 1
         if or_ and not and_:
-            map_.add_signal(self.sorti)
+            map_.add_new_signal(self.sorti)
 
 
 class LogiqueNOT(LogiqueBool):
@@ -110,7 +110,7 @@ class LogiqueNOT(LogiqueBool):
     def get_activation(self, map_: "Map") -> None:
         """permet d'activer le bloc logique et ajouter les sorties dans le signal de output"""
         if not map_.in_signal(self.entre):
-            map_.add_signal(self.sorti)
+            map_.add_new_signal(self.sorti)
 
 
 class LogiqueTimer(LogiqueBool):
@@ -139,7 +139,7 @@ class LogiqueTimer(LogiqueBool):
         """permet d'activer le bloc logique et ajouter les sorties dans le signal de output"""
         self.actualiser_temps()
         if 0 in self.temps:
-            map_.add_signal(self.sorti)
+            map_.add_new_signal(self.sorti)
         if map_.in_signal(self.entre):
             self.temps.add(self.duree)
 
@@ -168,7 +168,7 @@ class LogiqueLevier(LogiqueBool):
             self.lock_unlock()
 
         if self.etat:
-            map_.add_signal(self.sorti)
+            map_.add_new_signal(self.sorti)
 
 
 class LogiqueChangementEtat(LogiqueBool):
@@ -178,19 +178,35 @@ class LogiqueChangementEtat(LogiqueBool):
         self,
         entre: int | tuple[str, int, str] | tuple[str, int],
         sorti: int | tuple[str, int],
+        mode: str = None,
     ):
         """initialise le bloc logique"""
+        if mode is None:
+            mode = "change"
         super().__init__(entre, sorti)
         self.entre = entre
         self.sorti = sorti
         self.etat_precedant = False
+        self.mode = mode
+
+    def __mode_change(self, new_etat: bool) -> bool:
+        """permet de savoir si l'etat a changé"""
+        match self.mode:
+            case "change":
+                return new_etat != self.etat_precedant
+            case "change_go_on":
+                return new_etat and new_etat != self.etat_precedant
+            case "change_go_off":
+                return not new_etat and new_etat != self.etat_precedant
+            case _:
+                raise ValueError(f"Mode inconnu: {self.mode}")
 
     def get_activation(self, map_: "Map") -> None:
         """permet d'activer le bloc logique et ajouter les sorties dans le signal de output"""
-        se_trouve = map_.in_signal(self.entre)
-        if self.etat_precedant != se_trouve:
-            map_.add_signal(self.sorti)
-        self.etat_precedant = se_trouve
+        new_etat = map_.in_signal(self.entre)
+        if self.__mode_change(new_etat):
+            map_.add_new_signal(self.sorti)
+        self.etat_precedant = new_etat
 
 
 class LogiqueMultipriseBool(LogiqueBool):
@@ -208,4 +224,4 @@ class LogiqueMultipriseBool(LogiqueBool):
     def get_activation(self, map_: "Map"):
         if map_.in_signal(self.entre):
             for i in self.sorti:
-                map_.add_signal(self.sorti[i])
+                map_.add_new_signal(self.sorti[i])
