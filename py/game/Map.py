@@ -182,6 +182,10 @@ class Map:
         """get la graviter"""
         return self.__graviter
 
+    def get_poussable(self) -> set:
+        """get les objets poussable"""
+        return self.__poussable
+
     def get_signal_presence(self) -> set[int]:
         """get le signal"""
         return self.__signal_presence

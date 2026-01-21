@@ -23,13 +23,15 @@ class DectorZone(Zone3D, Activateur):
         self,
         coordonnee: list[int],
         taille: list[int],
-        target: list[int],
+        target: set[int],
         detection_mode: str,
         sorti: int | str | tuple[str, int],
     ):
         Zone3D.__init__(self, coordonnee, taille)
         Activateur.__init__(self, sorti)
-        self._target: set[int] = set(target)
+        if not isinstance(target, set):
+            target = set(target)
+        self._target: set[int] = target
         self._detection_mode: str = detection_mode
 
     def activation(self, map_: "Map") -> None:
@@ -61,10 +63,10 @@ class DectorZone(Zone3D, Activateur):
     def get_setarget(self, map_: "Map") -> set[Zone3D]:
         """permet de récupérer la liste des cibles"""
         liste_target: set[Zone3D] = set()
-        if TargetDectorZone.PLAYEUR in self._target:
-            liste_target.add(map_.get_playeur())
         if TargetDectorZone.POUSSABLE in self._target:
             liste_target = liste_target.union(map_.get_poussable())
+        if TargetDectorZone.PLAYEUR in self._target:
+            liste_target.add(map_.get_playeur())
         if TargetDectorZone.NOT_PLAYEUR in self._target:
             liste_target.remove(map_.get_playeur())
         if TargetDectorZone.NOT_POUSSABLE in self._target:
@@ -75,7 +77,7 @@ class DectorZone(Zone3D, Activateur):
         """ajoute la map"""
         Activateur.ajouter_map(self, map_)
 
-    def retirer_map(self, map_):
+    def retirer_map(self, map_: "Map") -> None:
         Activateur.retirer_map(self, map_)
 
 
@@ -90,7 +92,7 @@ class DectorZoneCount(DectorZone):
         self,
         coordonnee: list[int],
         taille: list[int],
-        target: list[int],
+        target: set[int],
         detection_mode: str,
         sorti: str,
     ):
@@ -104,6 +106,7 @@ class DectorZoneCount(DectorZone):
         count: int = self._dectecter_all(list(liste_target))
         map_.add_signal((self._sorti, count))
 
+
 class DectorZoneDifference(DectorZone):
     """DectorZoneDifference est une zone qui a pour but de détecter des objets dans une zone
     et de savoir si le nombre d'objets détectés a changé
@@ -115,7 +118,7 @@ class DectorZoneDifference(DectorZone):
         self,
         coordonnee: list[int],
         taille: list[int],
-        target: list[int],
+        target: set[int],
         detection_mode: str,
         sorti: int | tuple[str, int],
     ):
@@ -128,6 +131,8 @@ class DectorZoneDifference(DectorZone):
         """permet d'activer le bloc logique"""
         liste_target: set[Zone3D] = self.get_setarget(map_)
         count: int = self._dectecter_all(list(liste_target))
-        if count != self._last_count:
+        if self._last_count == -1:
+            self._last_count = count
+        elif count != self._last_count:
             map_.add_signal(self._sorti)
             self._last_count = count
