@@ -27,6 +27,10 @@ class Game:
         self.hauteur_plan: int = 0
         self.debug: bool = False
 
+    def get_clavier(self) -> Clavier:
+        """get le clavier"""
+        return self.clavier
+
     def set_plan(self, plan: int) -> None:
         """set le plan"""
         self.__plan_actuel = plan

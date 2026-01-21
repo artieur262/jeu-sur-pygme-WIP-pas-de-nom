@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from py.logique.bloc_logique import Logique
     from py.objet.objet_visuel import ObjetVisuel3D
     from py.objet.zone import Zone3D
-
+    from py.block.tunel import TunelSimple
 # from py.logique.bloc_logique import Logique
 
 
@@ -31,6 +31,9 @@ class Map:
         self.__activateur: set["Activateur"] = set()
         self.__activable: set["Activable"] = set()
         self.__poussable: set = set()
+
+        self.__tunel: set["TunelSimple"] = set()
+
         self.__signal_presence: set[int] = set()
         self.__signal_valeur: dict[str, int] = dict()
         self.__signal_valeur_comportement: dict[str, tuple[str, int]] = dict()
@@ -117,10 +120,13 @@ class Map:
             i.get_activation(self.__signal_presence, self.__new_signal_valeur)
         self.__signal_presence = self.__new_signal_valeur
 
-    def add_plateforme(self, plateforme: "Plateforme") -> None:
-        """ajoute une plateforme à la map"""
-        self.__colision.add(plateforme)
-        self.__afficher.add(plateforme)
+    def add_tunel(self, tunel: "TunelSimple") -> None:
+        """ajoute un tunel à la map"""
+        self.__tunel.add(tunel)
+
+    def remove_tunel(self, tunel: "TunelSimple") -> None:
+        """retire un tunel de la map"""
+        self.__tunel.remove(tunel)
 
     def add_activable(self, activable: "Activable") -> None:
         """ajoute un activable à la map"""
@@ -129,11 +135,6 @@ class Map:
     def remove_activable(self, activable: "Activable") -> None:
         """retire un activable de la map"""
         self.__activable.remove(activable)
-
-    def remove_plateforme(self, plateforme: "Plateforme") -> None:
-        """retire une plateforme de la map"""
-        self.__colision.remove(plateforme)
-        self.__afficher.remove(plateforme)
 
     def add_colision(self, zone: "Zone3D") -> None:
         """ajoute une zone de colision à la map"""
