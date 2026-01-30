@@ -13,7 +13,69 @@ from typing import Literal
 import pygame
 
 
-class Clavier:
+class Peripherique:
+    """classe de base pour les périphériques (clavier, souris, manette, etc.)"""
+
+    CLICK_NAMES = [
+        "lacher",
+        "vien_presser",
+        "presser",
+        "vien_lacher",
+    ]
+
+    def __init__(self):
+        self.dict_touches = {}
+
+    def reset(self):
+        """reset la pression de toute les touches
+        pour les mettre a lacher
+        """
+        self.dict_touches = {}
+
+    def lacher_tout(self):
+        """met toute les touches a lacher"""
+        for clee, value in self.dict_touches.items():
+            if value == "presser":
+                self.dict_touches[clee] = "vien_lacher"
+            if value == "vien_presser":
+                self.dict_touches[clee] = "vien_lacher"
+
+    def update_all_key(self):
+        """actualise toute les touches"""
+        clee_a_supprimer = []
+        for clee, touche in self.dict_touches.items():
+            if touche == "vien_presser":
+                self.dict_touches[clee] = "presser"
+            elif touche in ("vien_lacher", "lacher"):
+                clee_a_supprimer.append(clee)
+        for clee in clee_a_supprimer:
+            del self.dict_touches[clee]
+
+    def get_pression(
+        self, clee: int
+    ) -> Literal["vien_presser", "presser", "vien_lacher", "lacher"]:
+        """get la pression d'une touche
+
+        retrun : Literal["vien_presser", "presser", "vien_lacher", "lacher"]
+        """
+        if clee in self.dict_touches:
+            return self.dict_touches[clee]
+        else:
+            return "lacher"
+
+    def set_pression(self, clee: str, value: str):
+        """change la pression d'une touche"""
+        self.dict_touches[clee] = value
+
+    def __str__(self) -> str:
+        res = "-{"
+        for clee, value in self.dict_touches.items():
+            res += f"{clee}:{value},"
+        res += "}-"
+        return res
+
+
+class Clavier(Peripherique):
     """cette class permet de gérer le clavier
     et de savoir si une touche est presser ou lacher
     """
@@ -63,59 +125,8 @@ class Clavier:
         },
     }
 
-    def __init__(self) -> None:
-        self.dict_touches = {}
 
-    def reset(self):
-        """reset la pression de toute les touches
-        pour les mettre a lacher
-        """
-        self.dict_touches = {}
-
-    def lacher_tout(self):
-        """met toute les touches a lacher"""
-        for clee, value in self.dict_touches.items():
-            if value == "presser":
-                self.dict_touches[clee] = "vien_lacher"
-            if value == "vien_presser":
-                self.dict_touches[clee] = "vien_lacher"
-
-    def update_all_key(self):
-        """actualise toute les touches"""
-        clee_a_supprimer = []
-        for clee, touche in self.dict_touches.items():
-            if touche == "vien_presser":
-                self.dict_touches[clee] = "presser"
-            elif touche in ("vien_lacher", "lacher"):
-                clee_a_supprimer.append(clee)
-        for clee in clee_a_supprimer:
-            del self.dict_touches[clee]
-
-    def get_pression(
-        self, clee: int
-    ) -> Literal["vien_presser", "presser", "vien_lacher", "lacher"]:
-        """get la pression d'une touche
-
-        retrun : Literal["vien_presser", "presser", "vien_lacher", "lacher"]
-        """
-        if clee in self.dict_touches:
-            return self.dict_touches[clee]
-        else:
-            return "lacher"
-
-    def set_pression(self, clee: int, value: str):
-        """change la pression d'une touche"""
-        self.dict_touches[clee] = value
-
-    def __str__(self) -> str:
-        res = "-{"
-        for clee, value in self.dict_touches.items():
-            res += f"{clee}:{value},"
-        res += "}-"
-        return res
-
-
-class Souris:
+class Souris(Peripherique):
     """cette class permet de gérer la souris
     peremet de savoir la position de la souris
     et permet de savoir si un clique est vien_presser, presser, vien_lacher ou lacher
@@ -127,46 +138,8 @@ class Souris:
     }
 
     def __init__(self):
+        super().__init__()
         self.update_pos()
-        self.dict_clique = {}
-
-    def reset(self):
-        """reset la pression de toute les touches
-        pour les mettre a lacher
-        """
-        self.dict_clique = {}
-
-    def lacher_tout(self):
-        """met toute les touches a lacher"""
-        for clee, value in self.dict_clique.items():
-            if value == "presser":
-                self.dict_clique[clee] = "vien_lacher"
-            if value == "vien_presser":
-                self.dict_clique[clee] = "vien_lacher"
-
-    def actualise_all_clique(self):
-        """actualise toute les touches"""
-        clee_a_supprimer = []
-        for clee, touche in self.dict_clique.items():
-            if touche == "vien_presser":
-                self.dict_clique[clee] = "presser"
-            elif touche in ("vien_lacher", "lacher"):
-                clee_a_supprimer.append(clee)
-        for clee in clee_a_supprimer:
-            del self.dict_clique[clee]
-
-    def get_pression(self, clee: int):
-        """get la pression d'une touche
-        retrun : Literal["vien_presser", "presser", "vien_lacher", "lacher"]
-        """
-        if clee in self.dict_clique:
-            return self.dict_clique[clee]
-        else:
-            return "lacher"
-
-    def set_pression(self, clee: str, value: str):
-        """change la pression d'une touche"""
-        self.dict_clique[clee] = value
 
     def get_pos(self):
         """get la position de la souris"""
@@ -175,13 +148,6 @@ class Souris:
     def update_pos(self):
         """actualise la position de la souris"""
         self.pos = pygame.mouse.get_pos()
-
-    def __str__(self) -> str:
-        res = "-{"
-        for clee, value in self.dict_clique.items():
-            res += f"{clee}:{value},"
-        res += "}-"
-        return res
 
 
 # if __name__ == "__main__":
