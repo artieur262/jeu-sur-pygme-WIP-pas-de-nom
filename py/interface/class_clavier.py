@@ -9,8 +9,8 @@ et 2 dictionnaire:
     - mouse_names : dictionnaire pour les noms des cliques de la souris
 """
 
-import pygame
 from typing import Literal
+import pygame
 
 
 class Clavier:
@@ -103,7 +103,7 @@ class Clavier:
         else:
             return "lacher"
 
-    def set_pression(self, clee: str, value: str):
+    def set_pression(self, clee: int, value: str):
         """change la pression d'une touche"""
         self.dict_touches[clee] = value
 
