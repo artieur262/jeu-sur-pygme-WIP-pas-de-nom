@@ -115,6 +115,26 @@ class Zone2D:
             obj_pos[0], obj_size[0], 0
         ) and self.collision_in_axe(obj_pos[1], obj_size[1], 1)
 
+    def collision_zone(self, zone: "Zone2D") -> bool:
+        """pemet savoir l'objet à une colision avec un autre objet dans l'espace
+        args:
+            zone (Zone3D) : est la zone à tester
+        """
+        return self.collision(
+            zone.get_pos(),
+            zone.get_size(),
+        )
+
+    def collision_list_zone(self, list_zone: list["Zone2D"]) -> bool:
+        """pemet savoir l'objet à une colision avec un autre objet dans une liste
+        args:
+            list_zone (list[Zone3D]) : est la liste des zones à tester
+        """
+        for i in list_zone:
+            if self != i and self.collision_zone(i):
+                return True
+        return False
+
     def objet_dans_zone(self, pos_zone: tuple, size_zone: tuple) -> bool:
         """permet de savoir si un bojet est dans une zone
 
@@ -209,6 +229,10 @@ class Zone3D(Zone2D):
             )
         )
 
+    def deplacer_on_point(self, point: tuple[int, int, int]) -> None:
+        """deplace l'objet pour que son centre soit sur un point"""
+        self.coordonnee = [point[i] - self.get_size()[i] / 2 for i in range(3)]
+
     def contiens_zone(self, zone: "Zone3D") -> bool:
         """pemet savoir l'objet est contenu dans un autre objet dans l'espace
         args:
@@ -221,22 +245,22 @@ class Zone3D(Zone2D):
             obj_pos[2], obj_size[2], 2
         )
 
-    def collision_zone(self, zone: "Zone3D") -> bool:
-        """pemet savoir l'objet à une colision avec un autre objet dans l'espace
-        args:
-            zone (Zone3D) : est la zone à tester
-        """
-        return self.collision(
-            zone.get_pos(),
-            zone.get_size(),
-        )
-
     def collision(self, obj_pos, obj_size):
         return (
             self.collision_in_axe(obj_pos[0], obj_size[0], 0)
             and self.collision_in_axe(obj_pos[1], obj_size[1], 1)
             and self.collision_in_axe(obj_pos[2], obj_size[2], 2)
         )
+
+    def collision_zone(self, zone: "Zone3D") -> bool:
+        return super().collision_zone(zone)
+
+    def collision_list_zone(self, list_zone: list["Zone3D"]) -> bool:
+        """pemet savoir l'objet à une colision avec un autre objet dans une liste
+        args:
+            list_zone (list[Zone3D]) : est la liste des zones à tester
+        """
+        return super().collision_list_zone(list_zone)
 
     def objet_dans_zone(self, pos_zone: tuple, size_zone: tuple) -> bool:
         """permet de savoir si un bojet est dans une zone
