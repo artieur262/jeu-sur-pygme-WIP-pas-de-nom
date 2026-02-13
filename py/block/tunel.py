@@ -31,8 +31,8 @@ class TunelSimple(ObjetUnicolor3D, Special):
         """verifie si le tunel est dans le plan"""
         return plan == self.__plan_deplassable
 
-    def active_input(self, touche: tuple[str, int], map_: "Map") -> None:
-        self.deplacer_playeur(touche, map_)
+    def active_input(self, controle: tuple[str, int], map_: "Map") -> None:
+        self.deplacer_playeur(controle, map_)
 
     def deplacer_playeur(
         self,
