@@ -32,6 +32,7 @@ class TunelSimple(ObjetUnicolor3D, Special):
         return plan == self.__plan_deplassable
 
     def active_input(self, touche: tuple[str, int], map_: "Map") -> None:
+        self.deplacer_playeur(touche, map_)
 
     def deplacer_playeur(
         self,
@@ -40,21 +41,26 @@ class TunelSimple(ObjetUnicolor3D, Special):
     ):
         """deplace le playeur dans le plan si il est dans le plan ou on peut deplacer"""
         player = map_.get_playeur()
-        clavier = map_.get_game().get_clavier()
-        touches = map_.get_game().get_touche()
         plan_actuel = map_.get_game().get_plan()
-        if self._plan_deplacable(plan_actuel) and touche[1] == 2 and self.contiens_zone(player):
+        if (
+            self._plan_deplacable(plan_actuel)
+            and touche[1] == 2
+            and self.contiens_zone(player)
+        ):
             player_mouvement = player.get_pos()[plan_actuel]
             if touche[0] == "deplacer_plan_plus":
                 player.deplacer_in_axe(plan_actuel, 2, map_.get_colision())
             elif touche[0] == "deplacer_plan_moins":
                 player.deplacer_in_axe(plan_actuel, -2, map_.get_colision())
             else:
-                raise ValueError("la touche doit etre deplacer_plan_plus ou deplacer_plan_moins")
+                raise ValueError(
+                    "la touche doit etre deplacer_plan_plus ou deplacer_plan_moins"
+                )
             player_mouvement = player.get_pos()[plan_actuel] - player_mouvement
             map_.get_game().set_hauteur(
                 map_.get_game().get_hauteur() + player_mouvement
             )
+
     def actualiser(self, map_: "Map") -> None:
         """actualise le tunel"""
         pass
