@@ -63,7 +63,7 @@ class TunelSimple(ObjetUnicolor3D, Special):
 
     def actualiser(self, map_: "Map") -> None:
         """actualise le tunel"""
-        pass
+        pass  # pylint: disable=unnecessary-pass
 
     def ajouter_map(self, map_: "Map") -> None:
         map_.add_special(self)
