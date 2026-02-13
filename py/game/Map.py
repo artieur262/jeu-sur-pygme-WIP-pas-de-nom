@@ -10,7 +10,10 @@ if TYPE_CHECKING:
     from py.logique.bloc_logique import Logique
     from py.objet.objet_visuel import ObjetVisuel3D
     from py.objet.zone import Zone3D
-    from py.block.tunel import TunelSimple
+    from py.block.special import Special
+
+    # from py.block.tunel import TunelSimple
+    # from py.block.activable.core import Core
 # from py.logique.bloc_logique import Logique
 
 
@@ -32,7 +35,7 @@ class Map:
         self.__activable: set["Activable"] = set()
         self.__poussable: set = set()
 
-        self.__tunel: set["TunelSimple"] = set()
+        self.__special: dict[tuple[int, int], list["Special"]] = dict()
 
         self.__signal_presence: set[int] = set()
         self.__signal_valeur: dict[str, int] = dict()
@@ -120,13 +123,18 @@ class Map:
             i.get_activation(self.__signal_presence, self.__new_signal_valeur)
         self.__signal_presence = self.__new_signal_valeur
 
-    def add_tunel(self, tunel: "TunelSimple") -> None:
-        """ajoute un tunel à la map"""
-        self.__tunel.add(tunel)
+    def add_special(self, control: str, special: "Special") -> None:
+        """ajoute un special à la map"""
+        if control not in self.__special:
+            self.__special[control] = []
+        self.__special[control].append(special)
 
-    def remove_tunel(self, tunel: "TunelSimple") -> None:
-        """retire un tunel de la map"""
-        self.__tunel.remove(tunel)
+    def remove_special(self, control: str, special: "Special") -> None:
+        """retire un special de la map"""
+        if control in self.__special:
+            self.__special[control].remove(special)
+            if len(self.__special[control]) == 0:
+                del self.__special[control]
 
     def add_activable(self, activable: "Activable") -> None:
         """ajoute un activable à la map"""
@@ -169,6 +177,10 @@ class Map:
     def affichable(self) -> set["ObjetVisuel3D"]:
         """affiche la map"""
         return self.__afficher
+
+    def get_special(self) -> dict[str, list["Special"]]:
+        """get les special"""
+        return self.__special
 
     def get_colision(self) -> set["Zone3D"]:
         """get la map"""

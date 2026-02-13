@@ -16,9 +16,6 @@ class Activable:
         """initialise le bouton"""
         self._entre = entre
 
-
-    
-
     def activation(self, map_: "Map") -> None:
         """permet d'activer le bloc logique"""
         raise NotImplementedError("la fonction n'est pas encore implémenté")
@@ -26,3 +23,7 @@ class Activable:
     def ajouter_map(self, map_: "Map") -> None:
         """ajoute la map"""
         map_.add_activateur(self)
+
+    def retirer_map(self, map_: "Map") -> None:
+        """retire la map"""
+        map_.remove_activateur(self)
