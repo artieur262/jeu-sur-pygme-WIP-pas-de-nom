@@ -61,10 +61,6 @@ class TunelSimple(ObjetUnicolor3D, Special):
                 map_.get_game().get_hauteur() + player_mouvement
             )
 
-    def actualiser(self, map_: "Map") -> None:
-        """actualise le tunel"""
-        pass  # pylint: disable=unnecessary-pass
-
     def ajouter_map(self, map_: "Map") -> None:
         map_.add_special(self)
         map_.add_afficher(self)

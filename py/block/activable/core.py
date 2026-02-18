@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING
 from py.objet.objet_visuel import ObjetVisuel3D
 from py.block.activable.activable import Activable
+from py.block.actualisable import Actualisable
 from py.block.special import Special
 
 
@@ -10,7 +11,7 @@ if TYPE_CHECKING:
     from py.block.playeur import Playeur
 
 
-class Core(ObjetVisuel3D):
+class Core(ObjetVisuel3D, Actualisable):
     """Classe de base pour les blocs du jeu.
 
 
@@ -59,10 +60,17 @@ class Core(ObjetVisuel3D):
     def ajouter_map(self, map_: "Map") -> None:
         """Ajoute l'objet à la map."""
         map_.add_afficher(self)
+        Actualisable.ajouter_map(self, map_)
 
     def retirer_map(self, map_: "Map") -> None:
         """Retire l'objet de la map."""
         map_.remove_afficher(self)
+        Actualisable.retirer_map(self, map_)
+
+    def actualiser(self, map_):
+        raise NotImplementedError(
+            "Cette méthode doit être implémentée par les sous-classes."
+        )
 
 
 class CoreActivable(Core, Activable):
@@ -94,6 +102,12 @@ class CoreActivable(Core, Activable):
         """Retire l'objet de la map."""
         Core.retirer_map(self, map_)
         Activable.retirer_map(self, map_)
+
+    def actualiser(self, map_: "Map") -> None:
+        """Méthode d'actualisation spéciale."""
+        raise NotImplementedError(
+            "Cette méthode doit être implémentée par les sous-classes."
+        )
 
 
 class CoreSpecial(Core, Special):

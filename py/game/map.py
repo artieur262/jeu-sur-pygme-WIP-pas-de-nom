@@ -11,6 +11,7 @@ if TYPE_CHECKING:
     from py.objet.objet_visuel import ObjetVisuel3D
     from py.objet.zone import Zone3D
     from py.block.special import Special
+    from py.block.actualisable import Actualisable
 
     # from py.block.tunel import TunelSimple
     # from py.block.activable.core import Core
@@ -35,6 +36,7 @@ class Map:
         self.__activable: set["Activable"] = set()
         self.__poussable: set = set()
 
+        self.__actualisable: set["Actualisable"] = set()
         self.__special: dict[tuple[int, int], list["Special"]] = dict()
 
         self.__signal_presence: set[int] = set()
@@ -143,6 +145,14 @@ class Map:
     def remove_activable(self, activable: "Activable") -> None:
         """retire un activable de la map"""
         self.__activable.remove(activable)
+
+    def add_actualisable(self, actualisable: "Actualisable") -> None:
+        """ajoute un actualisable à la map"""
+        self.__actualisable.add(actualisable)
+
+    def remove_actualisable(self, actualisable: "Actualisable") -> None:
+        """retire un actualisable de la map"""
+        self.__actualisable.remove(actualisable)
 
     def add_colision(self, zone: "Zone3D") -> None:
         """ajoute une zone de colision à la map"""
