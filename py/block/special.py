@@ -29,10 +29,6 @@ class Special:
         """gère les entrées pour l'élément spécial"""
         raise NotImplementedError("la fonction n'est pas encore implémenté")
 
-    def actualiser(self, map_: "Map") -> None:
-        """actualise les éléments spéciaux"""
-        raise NotImplementedError("la fonction n'est pas encore implémenté")
-
     def ajouter_map(self, map_: "Map") -> None:
         """ajoute la map"""
         for controle in self.__controle:

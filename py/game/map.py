@@ -45,13 +45,25 @@ class Map:
         self.__new_signal_presence: set[int] = None
         self.__new_signal_valeur: dict[str, int] = None
 
-    def get_game(self) -> "Game":
-        """get le jeu"""
-        return self.__game
+    def play_turn(self) -> None:
+        """permet de jouer un tour de jeu"""
+        self.actualiser_logique()
+        self.special_active_input()
+        self.actualiser_actualisable()
 
-    def set_game(self, game: "Game") -> None:
-        """set le jeu"""
-        self.__game = game
+    def actualiser_actualisable(self) -> None:
+        """actualise la map"""
+        for i in self.__actualisable:
+            i.actualiser(self)
+
+    def special_active_input(self):
+        """permet d'activer les special en fonction des entrées du clavier
+        puis active les special concerné avec les entrées du clavier en parametre
+        """
+        for key, value in self.__special.items():
+            if self.get_game().get_clavier().get_pression(key[0]) == key[1]:
+                for special in value:
+                    special.active_input(key, self)
 
     def add_signal(self, signal: int | tuple[str, int]) -> None:
         """ajoute un signal actif"""
@@ -118,12 +130,20 @@ class Map:
         for key, value in self.__signal_valeur_comportement.items():
             self.__new_signal_valeur[key] = value[1]
 
-    def actualiser_activation(self) -> None:
+    def actualiser_logique(self) -> None:
         """actualise l'activation des blocs logiques"""
         self.reset_new_signal()
         for i in self.__logique:
             i.get_activation(self.__signal_presence, self.__new_signal_valeur)
         self.__signal_presence = self.__new_signal_valeur
+
+    def get_game(self) -> "Game":
+        """get le jeu"""
+        return self.__game
+
+    def set_game(self, game: "Game") -> None:
+        """set le jeu"""
+        self.__game = game
 
     def add_special(self, control: str, special: "Special") -> None:
         """ajoute un special à la map"""
@@ -184,7 +204,7 @@ class Map:
         """retire une logique de la map"""
         self.__logique.remove(logique)
 
-    def affichable(self) -> set["ObjetVisuel3D"]:
+    def get_affichable(self) -> set["ObjetVisuel3D"]:
         """affiche la map"""
         return self.__afficher
 
