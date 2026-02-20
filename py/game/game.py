@@ -58,11 +58,17 @@ class Game:
         if isinstance(plan, str):
             plan = Zone3D.LIST_FACE.index(plan)
         if plan == 0:
-            playeur.deplacer((0, direction[0], direction[1]), self.map.get_colision())
+            playeur.deplacer_indepant_axe(
+                (0, direction[0], direction[1]), self.map.get_colision()
+            )
         elif plan == 1:
-            playeur.deplacer((direction[0], 0, direction[1]), self.map.get_colision())
+            playeur.deplacer_indepant_axe(
+                (direction[0], 0, direction[1]), self.map.get_colision()
+            )
         elif plan == 2:
-            playeur.deplacer((direction[0], direction[1], 0), self.map.get_colision())
+            playeur.deplacer_indepant_axe(
+                (direction[0], direction[1], 0), self.map.get_colision()
+            )
 
     def deplacer(self) -> None:
         """deplace le playeur selons les touches du clavier"""
@@ -81,7 +87,7 @@ class Game:
     def afficher(self) -> None:
         """affiche le jeu"""
         screen.fill((0, 0, 0))
-        for i in self.map.affichable():
+        for i in self.map.get_affichable():
             i.afficher_plan(self.hauteur_plan, self.__plan_actuel)
         pygame.display.flip()
 
