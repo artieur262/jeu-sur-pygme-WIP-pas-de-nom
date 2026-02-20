@@ -185,6 +185,75 @@ class Zone2D:
         """change la taille de l'objet dans un axe"""
         self.__taille[axe] += valeur
 
+    def distance_entre_in_axe(self, zone: "Zone2D", axe: int) -> float:
+        """calcule la distance entre 2 zones dans un axe
+        il calcule la distance en regardant l'espace vide entre les 2 zones dans l'axe,
+        si les zones se chevauchent dans l'axe alors la distance est de -1
+        """
+        coin_1_self = self.coordonnee[axe]
+        coin_2_self = self.coordonnee[axe] + self.get_size()[axe]
+
+        coin_1_zone = zone.get_pos()[axe]
+        coin_2_zone = zone.get_pos()[axe] + zone.get_size()[axe]
+
+        if coin_1_self < coin_1_zone:
+            if coin_2_self <= coin_1_zone:
+                return coin_1_zone - coin_2_self
+            else:
+                return -1
+        else:
+            if coin_2_zone <= coin_1_self:
+                return coin_1_self - coin_2_zone
+            else:
+                return -1
+
+    def deplacer_in_axe(
+        self,
+        axe: int,
+        valeur: int,
+        list_collision: list["Zone2D"] = None,
+        list_poussable: list["Zone2D"] = None,
+    ) -> int:
+        """deplace l'objet dans un axe"""
+        if list_collision is None:
+            list_collision = []
+        if list_poussable is None:
+            list_poussable = []
+        zonne_collision = Zone3D(
+            [i for i in self.coordonnee], [i for i in self.get_size()]
+        )
+        zonne_collision.add_size_in_axe(axe, abs(valeur))
+        if valeur < 0:
+            zonne_collision.add_pos_in_axe(axe, valeur)
+        toucher = False
+        objet_plus_proche: Zone3D | None = None
+        for i in list_collision:
+            if i != self and zonne_collision.collision_zone(i):
+                toucher = True
+                if objet_plus_proche is None or (
+                    self.distance_entre_in_axe(i, axe)
+                    < self.distance_entre_in_axe(objet_plus_proche, axe)
+                ):
+                    objet_plus_proche = i
+
+        direction = valeur
+        if toucher:
+            if objet_plus_proche.distance_entre_in_axe(self, axe) <= 0:
+                direction = 0
+            elif valeur > 0:
+                new_pos = objet_plus_proche.get_pos()[axe] - self.get_size()[axe]
+                direction = new_pos - self.coordonnee[axe]
+                self.coordonnee[axe] = new_pos
+            else:
+                new_pos = (
+                    objet_plus_proche.get_pos()[axe] + objet_plus_proche.get_size()[axe]
+                )
+                direction = new_pos - self.coordonnee[axe]
+                self.coordonnee[axe] = new_pos
+        else:
+            self.coordonnee[axe] += valeur
+        return direction
+
 
 class Zone3D(Zone2D):
     """class pour gérer les zones en 3D"""
@@ -333,78 +402,32 @@ class Zone3D(Zone2D):
         )
 
     def distance_entre_in_axe(self, zone: "Zone3D", axe: int) -> float:
-        """calcule la distance entre 2 zones dans un axe
-        il calcule la distance en regardant l'espace vide entre les 2 zones dans l'axe,
-        si les zones se chevauchent dans l'axe alors la distance est de -1
-        """
-        coin_1_self = self.coordonnee[axe]
-        coin_2_self = self.coordonnee[axe] + self.get_size()[axe]
-
-        coin_1_zone = zone.get_pos()[axe]
-        coin_2_zone = zone.get_pos()[axe] + zone.get_size()[axe]
-
-        if coin_1_self < coin_1_zone:
-            if coin_2_self <= coin_1_zone:
-                return coin_1_zone - coin_2_self
-            else:
-                return -1
-        else:
-            if coin_2_zone <= coin_1_self:
-                return coin_1_self - coin_2_zone
-            else:
-                return -1
+        return super().distance_entre_in_axe(zone, axe)
 
     def deplacer_in_axe(
-        self, axe: int, valeur: int, list_collision: list["Zone3D"]
+        self,
+        axe: int,
+        valeur: int,
+        list_collision: list["Zone3D"] = None,
+        list_poussable: list["Zone3D"] = None,
     ) -> int:
-        """deplace l'objet dans un axe"""
-        zonne_collision = Zone3D(
-            [i for i in self.coordonnee], [i for i in self.get_size()]
-        )
-        zonne_collision.add_size_in_axe(axe, abs(valeur))
-        if valeur < 0:
-            zonne_collision.add_pos_in_axe(axe, valeur)
-        toucher = False
-        objet_plus_proche: Zone3D | None = None
-        for i in list_collision:
-            if i != self and zonne_collision.collision_zone(i):
-                toucher = True
-                if objet_plus_proche is None or (
-                    self.distance_entre_in_axe(i, axe)
-                    < self.distance_entre_in_axe(objet_plus_proche, axe)
-                ):
-                    objet_plus_proche = i
-
-        direction = valeur
-        if toucher:
-            if objet_plus_proche.distance_entre_in_axe(self, axe) <= 0:
-                direction = 0
-            elif valeur > 0:
-                new_pos = objet_plus_proche.get_pos()[axe] - self.get_size()[axe]
-                direction = new_pos - self.coordonnee[axe]
-                self.coordonnee[axe] = new_pos
-            else:
-                new_pos = (
-                    objet_plus_proche.get_pos()[axe] + objet_plus_proche.get_size()[axe]
-                )
-                direction = new_pos - self.coordonnee[axe]
-                self.coordonnee[axe] = new_pos
-        else:
-            self.coordonnee[axe] += valeur
-        return direction
+        return super().deplacer_in_axe(axe, valeur, list_collision, list_poussable)
 
     def deplacer_indepant_axe(
-        self, valeur: tuple[int, int, int], list_collision: list["Zone3D"]
+        self,
+        valeur: tuple[int, int, int],
+        list_collision: list["Zone3D"] = None,
+        list_poussable: list["Zone3D"] = None,
     ) -> None:
         """deplace l'objet dans un axe"""
         if len(valeur) != 3:
             raise ValueError("la valeur doit etre de la forme (x,y,z)")
         if valeur[0]:
-            self.deplacer_in_axe(0, valeur[0], list_collision)
+            self.deplacer_in_axe(0, valeur[0], list_collision, list_poussable)
         if valeur[1]:
-            self.deplacer_in_axe(1, valeur[1], list_collision)
+            self.deplacer_in_axe(1, valeur[1], list_collision, list_poussable)
         if valeur[2]:
-            self.deplacer_in_axe(2, valeur[2], list_collision)
+            self.deplacer_in_axe(2, valeur[2], list_collision, list_poussable)
 
     def ajouter_map(self, map_):
         """ajoute la zone à la map"""
