@@ -8,6 +8,14 @@ if TYPE_CHECKING:
 
 
 class PlatformeMouvante(ObjetUnicolor3D, Activable):
+    """PlatformeMouvante est une zone qui a pour but d'être affiché sur une surface
+    Args:
+        coordonnee (list[int]): est la coordonnee de l'objet graphique
+        taille (tuple[int, int, int]): est la taille de l'objet graphique
+        couleur (tuple[int, int, int]): est la couleur de l'objet graphique
+        entre (int | tuple[str, int] | tuple[str, int, str]): est l'entree logique de la plateforme
+    """
+
     def __init__(
         self,
         coordonnee: list[int],
