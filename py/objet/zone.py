@@ -211,14 +211,14 @@ class Zone2D:
         self,
         axe: int,
         valeur: int,
-        list_collision: list["Zone2D"] = None,
-        list_poussable: list["Zone2D"] = None,
+        list_collision: set["Zone2D"] = None,
+        list_poussable: set["Zone2D"] = None,
     ) -> int:
         """deplace l'objet dans un axe"""
         if list_collision is None:
-            list_collision = []
+            list_collision = set()
         if list_poussable is None:
-            list_poussable = []
+            list_poussable = set()
         zonne_collision = Zone3D(
             [i for i in self.coordonnee], [i for i in self.get_size()]
         )
@@ -253,6 +253,20 @@ class Zone2D:
         else:
             self.coordonnee[axe] += valeur
         return direction
+
+    def deplacer_indepant_axe(
+        self,
+        valeur: tuple[int, int],
+        list_collision: set["Zone2D"] = None,
+        list_poussable: set["Zone2D"] = None,
+    ) -> None:
+        """deplace l'objet dans un axe"""
+        if len(valeur) != 2:
+            raise ValueError("la valeur doit etre de la forme (x,y)")
+        if valeur[0]:
+            self.deplacer_in_axe(0, valeur[0], list_collision, list_poussable)
+        if valeur[1]:
+            self.deplacer_in_axe(1, valeur[1], list_collision, list_poussable)
 
 
 class Zone3D(Zone2D):
@@ -408,16 +422,16 @@ class Zone3D(Zone2D):
         self,
         axe: int,
         valeur: int,
-        list_collision: list["Zone3D"] = None,
-        list_poussable: list["Zone3D"] = None,
+        list_collision: set["Zone3D"] = None,
+        list_poussable: set["Zone3D"] = None,
     ) -> int:
         return super().deplacer_in_axe(axe, valeur, list_collision, list_poussable)
 
     def deplacer_indepant_axe(
         self,
         valeur: tuple[int, int, int],
-        list_collision: list["Zone3D"] = None,
-        list_poussable: list["Zone3D"] = None,
+        list_collision: set["Zone3D"] = None,
+        list_poussable: set["Zone3D"] = None,
     ) -> None:
         """deplace l'objet dans un axe"""
         if len(valeur) != 3:
