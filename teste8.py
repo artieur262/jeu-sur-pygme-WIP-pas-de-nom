@@ -42,6 +42,8 @@ def main2():
     print("deplacer_in_axe :")
     print(zone0.deplacer_in_axe(0, 50, set([zone2]), set([zone1])))
     print(zone0.get_pos())
+    print(zone1.get_pos())
+    print(zone2.get_pos())
 
 
 if __name__ == "__main__":

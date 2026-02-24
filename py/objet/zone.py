@@ -227,6 +227,7 @@ class Zone2D:
             list_collision = set()
         if list_poussable is None:
             list_poussable = set()
+
         zonne_collision = self.new_zone_agrandi_axe(axe, valeur)
         toucher = False
         objet_plus_proche: Zone2D | None = None
@@ -252,16 +253,26 @@ class Zone2D:
                 )
                 direction = new_pos - self.coordonnee[axe]
 
+        zonne_collision = self.new_zone_agrandi_axe(axe, direction)
         for i in list_poussable:
-            if i != self and self.collision_zone(i):
-                temp = i.pre_deplacer_in_axe(
-                    axe, direction, list_collision, list_poussable
-                )
-
+            if i != self and zonne_collision.collision_zone(i):
                 distance = self.distance_entre_in_axe(i, axe)
-                temp += distance if temp < 0 else -distance
+                new_direction = direction + (distance if direction < 0 else -distance)
+                if (new_direction < 0) != (direction < 0):
+                    # pour éviter les erreurs de calcul qui font
+                    # que l'objet se déplace dans le mauvais sens
+                    new_direction = 0
+                temp = i.pre_deplacer_in_axe(
+                    axe,
+                    new_direction,
+                    list_collision,
+                    list_poussable,
+                )
+                temp -= distance if temp < 0 else -distance
                 if abs(temp) < abs(direction):
                     direction = temp
+                    zonne_collision = self.new_zone_agrandi_axe(axe, direction)
+
         return direction
 
     def deplacer_in_axe(
@@ -282,9 +293,36 @@ class Zone2D:
         return direction
 
     def deplacer_pousser_in_axe(
-        self, axe: int, valeur: int, list_poussable: set["Zone2D"] = None
+        self,
+        axe: int,
+        valeur: int,
+        list_poussable: set["Zone2D"] = None,
+        deja_pousser: set["Zone2D"] = None,
     ) -> int:
-        raise NotImplementedError("la fonction n'est pas encore implémenté")
+        """deplace l'objet dans un axe
+        en poussant les objets de la liste de poussable
+        """
+        if list_poussable is None:
+            list_poussable = set()
+        if deja_pousser is None:
+            deja_pousser = set()
+        zonne_collision = self.new_zone_agrandi_axe(axe, valeur)
+        for i in list_poussable:
+            if (
+                i not in deja_pousser
+                and i != self
+                and zonne_collision.collision_zone(i)
+            ):
+                deja_pousser.add(i)
+                distance = self.distance_entre_in_axe(i, axe)
+                i.deplacer_pousser_in_axe(
+                    axe,
+                    valeur + (distance if valeur < 0 else -distance),
+                    list_poussable,
+                    deja_pousser,
+                )
+        self.add_pos_in_axe(axe, valeur)
+        return valeur
 
     def deplacer_indepant_axe(
         self,
