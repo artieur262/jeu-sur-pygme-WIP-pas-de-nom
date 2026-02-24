@@ -39,11 +39,17 @@ def main2():
     zone0 = Zone3D([0, 0, 0], [10, 10, 10])
     zone1 = Zone3D([15, 0, 0], [10, 10, 10])
     zone2 = Zone3D([30, 0, 0], [10, 10, 10])
+    zone3 = Zone3D([45, 0, 0], [10, 10, 10])
+    zone0.id = 0
+    zone1.id = 1
+    zone2.id = 2
+    zone3.id = 3
     print("deplacer_in_axe :")
-    print(zone0.deplacer_in_axe(0, 50, set([zone2]), set([zone1])))
+    print(zone0.deplacer_in_axe(0, 500, set([]), set([zone1, zone2, zone3])))
     print(zone0.get_pos())
     print(zone1.get_pos())
     print(zone2.get_pos())
+    print(zone3.get_pos())
 
 
 if __name__ == "__main__":

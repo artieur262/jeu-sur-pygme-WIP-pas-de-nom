@@ -289,39 +289,52 @@ class Zone2D:
         direction = self.pre_deplacer_in_axe(
             axe, valeur, list_collision, list_poussable
         )
+
         self.deplacer_pousser_in_axe(axe, direction, list_poussable)
         return direction
 
     def deplacer_pousser_in_axe(
+        self, axe: int, valeur: int, list_poussable: set["Zone2D"] = None
+    ) -> None:
+        """deplace l'objet dans un axe en poussant les objets de la liste de poussable"""
+        if list_poussable is None:
+            self.add_pos_in_axe(axe, valeur)
+            return None
+        dict_deplacement: dict["Zone2D", int] = dict()
+        self.__deplacer_pousser_recursif_in_axe(
+            axe, valeur, list_poussable, dict_deplacement
+        )
+        for key, value in dict_deplacement.items():
+            key.add_pos_in_axe(axe, value)
+
+    def __deplacer_pousser_recursif_in_axe(
         self,
         axe: int,
         valeur: int,
-        list_poussable: set["Zone2D"] = None,
-        deja_pousser: set["Zone2D"] = None,
+        list_poussable: set["Zone2D"],
+        dict_deplacement: dict["Zone2D", int],
     ) -> int:
         """deplace l'objet dans un axe
         en poussant les objets de la liste de poussable
         """
-        if list_poussable is None:
-            list_poussable = set()
-        if deja_pousser is None:
-            deja_pousser = set()
         zonne_collision = self.new_zone_agrandi_axe(axe, valeur)
         for i in list_poussable:
-            if (
-                i not in deja_pousser
-                and i != self
-                and zonne_collision.collision_zone(i)
-            ):
-                deja_pousser.add(i)
+            if i != self and zonne_collision.collision_zone(i):
+
                 distance = self.distance_entre_in_axe(i, axe)
-                i.deplacer_pousser_in_axe(
+                temp = valeur + (distance if valeur < 0 else -distance)
+
+                if i not in dict_deplacement:
+                    dict_deplacement[i] = temp
+                elif abs(dict_deplacement[i]) < abs(temp):
+                    dict_deplacement[i] = temp
+                i.__deplacer_pousser_recursif_in_axe(  # pylint: disable=protected-access
                     axe,
-                    valeur + (distance if valeur < 0 else -distance),
+                    temp,
                     list_poussable,
-                    deja_pousser,
+                    dict_deplacement,
                 )
-        self.add_pos_in_axe(axe, valeur)
+
         return valeur
 
     def deplacer_indepant_axe(
