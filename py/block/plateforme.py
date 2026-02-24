@@ -22,6 +22,8 @@ class Plateforme(ObjetUnicolor3D):
 
     def ajouter_map(self, map_: "Map") -> None:
         map_.add_colision(self)
+        map_.add_afficher(self)
 
     def retirer_map(self, map_: "Map") -> None:
         map_.remove_colision(self)
+        map_.remove_afficher(self)

@@ -193,8 +193,8 @@ class Map:
     def add_playeur(self, playeur: "Playeur") -> None:
         """ajoute un playeur à la map"""
         self.__playeur = playeur
-        self.__afficher.add(playeur)
-        self.__colision.add(playeur)
+        self.add_afficher(playeur)
+        self.add_poussable(playeur)
 
     def add_logique(self, logique: "Logique") -> None:
         """ajoute une logique à la map"""
@@ -250,8 +250,8 @@ class Map:
 
     def remove_playeur(self, playeur: "Playeur") -> None:
         """retire le playeur de la map"""
-        self.__afficher.remove(playeur)
-        self.__colision.remove(playeur)
+        self.remove_afficher(playeur)
+        self.remove_poussable(playeur)
         self.__playeur = None
 
     def remove_poussable(self, poussable: object) -> None:
