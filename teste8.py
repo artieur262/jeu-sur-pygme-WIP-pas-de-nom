@@ -1,6 +1,7 @@
 from py.objet.zone import Zone3D
 
-if __name__ == "__main__":
+
+def main1():
     zone0 = Zone3D([0, 0, 0], [10, 10, 10])
     zone1 = Zone3D([5, 0, 0], [10, 10, 10])
     zone2 = Zone3D([10, 0, 0], [10, 10, 10])
@@ -30,5 +31,19 @@ if __name__ == "__main__":
     # print(zone0.deplacer_in_axe(0, 5, [zone2, zone3, zone_moins_3]))
     # print(zone0.get_pos())
     print("deplacement 3 :")
-    print(zone0.deplacer_in_axe(0, 25, [zone3, zone_moins_3]))
+    print(zone0.deplacer_in_axe(0, 25, set([zone3, zone_moins_3])))
     print(zone0.get_pos())
+
+
+def main2():
+    zone0 = Zone3D([0, 0, 0], [10, 10, 10])
+    zone1 = Zone3D([15, 0, 0], [10, 10, 10])
+    zone2 = Zone3D([30, 0, 0], [10, 10, 10])
+    print("deplacer_in_axe :")
+    print(zone0.deplacer_in_axe(0, 50, set([zone2]), set([zone1])))
+    print(zone0.get_pos())
+
+
+if __name__ == "__main__":
+    # main1()
+    main2()

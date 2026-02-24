@@ -207,7 +207,15 @@ class Zone2D:
             else:
                 return -1
 
-    def deplacer_in_axe(
+    def new_zone_agrandi_axe(self, axe: int, valeur: int) -> "Zone2D":
+        """renvoi une nouvelle zone agrandi dans un axe"""
+        new_zone = Zone2D([i for i in self.get_pos()], [i for i in self.get_size()])
+        new_zone.add_size_in_axe(axe, valeur)
+        if valeur < 0:
+            new_zone.add_pos_in_axe(axe, valeur)
+        return new_zone
+
+    def pre_deplacer_in_axe(
         self,
         axe: int,
         valeur: int,
@@ -219,14 +227,9 @@ class Zone2D:
             list_collision = set()
         if list_poussable is None:
             list_poussable = set()
-        zonne_collision = Zone3D(
-            [i for i in self.coordonnee], [i for i in self.get_size()]
-        )
-        zonne_collision.add_size_in_axe(axe, abs(valeur))
-        if valeur < 0:
-            zonne_collision.add_pos_in_axe(axe, valeur)
+        zonne_collision = self.new_zone_agrandi_axe(axe, valeur)
         toucher = False
-        objet_plus_proche: Zone3D | None = None
+        objet_plus_proche: Zone2D | None = None
         for i in list_collision:
             if i != self and zonne_collision.collision_zone(i):
                 toucher = True
@@ -243,16 +246,45 @@ class Zone2D:
             elif valeur > 0:
                 new_pos = objet_plus_proche.get_pos()[axe] - self.get_size()[axe]
                 direction = new_pos - self.coordonnee[axe]
-                self.coordonnee[axe] = new_pos
             else:
                 new_pos = (
                     objet_plus_proche.get_pos()[axe] + objet_plus_proche.get_size()[axe]
                 )
                 direction = new_pos - self.coordonnee[axe]
-                self.coordonnee[axe] = new_pos
-        else:
-            self.coordonnee[axe] += valeur
+
+        for i in list_poussable:
+            if i != self and self.collision_zone(i):
+                temp = i.pre_deplacer_in_axe(
+                    axe, direction, list_collision, list_poussable
+                )
+
+                distance = self.distance_entre_in_axe(i, axe)
+                temp += distance if temp < 0 else -distance
+                if abs(temp) < abs(direction):
+                    direction = temp
         return direction
+
+    def deplacer_in_axe(
+        self,
+        axe: int,
+        valeur: int,
+        list_collision: set["Zone2D"] = None,
+        list_poussable: set["Zone2D"] = None,
+    ) -> int:
+        """deplace l'objet dans un axe
+        en prenant en compte les collisions avec les objets de la liste de collision et
+        en poussant les objets de la liste de poussable
+        """
+        direction = self.pre_deplacer_in_axe(
+            axe, valeur, list_collision, list_poussable
+        )
+        self.deplacer_pousser_in_axe(axe, direction, list_poussable)
+        return direction
+
+    def deplacer_pousser_in_axe(
+        self, axe: int, valeur: int, list_poussable: set["Zone2D"] = None
+    ) -> int:
+        raise NotImplementedError("la fonction n'est pas encore implémenté")
 
     def deplacer_indepant_axe(
         self,
@@ -301,6 +333,14 @@ class Zone3D(Zone2D):
         """defini la taille de l'objet"""
         super().set_size(valu)
 
+    def new_zone_agrandi_axe(self, axe: int, valeur: int) -> "Zone3D":
+        """renvoi une nouvelle zone agrandi dans un axe"""
+        new_zone = Zone3D([i for i in self.get_pos()], [i for i in self.get_size()])
+        new_zone.add_size_in_axe(axe, valeur)
+        if valeur < 0:
+            new_zone.add_pos_in_axe(axe, valeur)
+        return new_zone
+
     def get_center(self) -> tuple[float, float, float]:
         """renvoi le centre de l'objet"""
         return (
@@ -313,7 +353,7 @@ class Zone3D(Zone2D):
         """pour savoir si un point est dans l'objet
 
         entre :
-            point (tuple[int, int]) : est le point à tester
+            point (tuple[int, int, int]) : est le point à tester
 
         retun (bool) : si le point est dans l'objet
 
