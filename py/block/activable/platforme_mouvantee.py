@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from py.game.map import Map
 
 
-class PlatformeMouvante(ObjetUnicolor3D, Activable):
+class PlatformeMouvantee(ObjetUnicolor3D, Activable):
     """PlatformeMouvante est une zone qui a pour but d'être affiché sur une surface
     Args:
         coordonnee (list[int]): est la coordonnee de l'objet graphique
@@ -32,8 +32,15 @@ class PlatformeMouvante(ObjetUnicolor3D, Activable):
         """permet d'activer le bloc logique"""
         self._active = map_.in_signal(self._entre)
 
-    def ajouter_map(self, map_):
+    def ajouter_map(self, map_: "Map") -> None:
         Activable.ajouter_map(self, map_)
+        map_.add_colision(self)
+        map_.add_afficher(self)
+
+    def retirer_map(self, map_: "Map") -> None:
+        Activable.retirer_map(self, map_)
+        map_.remove_afficher(self)
+        map_.remove_colision(self)
 
     def arriver_fin(self):
         """permet de definir le comportement de la plateforme a la fin du deplacement"""
@@ -43,3 +50,7 @@ class PlatformeMouvante(ObjetUnicolor3D, Activable):
     def deplacer(self, map_: "Map") -> None:
         """permet de deplacer la plateforme"""
         raise NotImplementedError("la fonction n'est pas encore implémenté")
+        # a definir en fonction de la plateforme
+
+
+# class PlatformeMouvantee
