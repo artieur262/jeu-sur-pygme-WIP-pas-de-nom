@@ -31,6 +31,7 @@ class PlatformeMouvantee(ObjetUnicolor3D, Activable):
     def activation(self, map_: "Map") -> None:
         """permet d'activer le bloc logique"""
         self._active = map_.in_signal(self._entre)
+        self.mouvoir(map_)
 
     def ajouter_map(self, map_: "Map") -> None:
         Activable.ajouter_map(self, map_)
@@ -47,7 +48,7 @@ class PlatformeMouvantee(ObjetUnicolor3D, Activable):
         pass  # pylint: disable=unnecessary-pass
         # a definir en fonction de la plateforme
 
-    def deplacer(self, map_: "Map") -> None:
+    def mouvoir(self, map_: "Map") -> None:
         """permet de deplacer la plateforme"""
         raise NotImplementedError("la fonction n'est pas encore implémenté")
         # a definir en fonction de la plateforme
@@ -86,7 +87,7 @@ class PlatformeMouvanteeOnGo(PlatformeMouvantee):
         else:
             self._index_parcour: int = 0
 
-    def deplacer(self, map_: "Map") -> None:
+    def mouvoir(self, map_: "Map") -> None:
         """permet de deplacer la plateforme"""
         if self._active and self._index_parcour != -2:
             if self._index_parcour >= len(self._parcour):
@@ -121,8 +122,8 @@ class PlatformeMouvanteeOnGoOffRetour(PlatformeMouvanteeOnGo):
         entre (int | tuple[str, int] | tuple[str, int, str]): est l'entree logique de la plateforme
     """
 
-    def deplacer(self, map_: "Map") -> None:
-        super().deplacer(map_)
+    def mouvoir(self, map_: "Map") -> None:
+        super().mouvoir(map_)
         if not self._active and self._index_parcour < 0:
             axe, vitesse, distance = self._parcour[self._index_parcour]
             vitesse = min(abs(vitesse), abs(distance) - self._distance_parcourue) * (
