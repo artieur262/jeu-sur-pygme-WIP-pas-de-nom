@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 
 class PlatformeMouvantee(ObjetUnicolor3D, Activable):
-    """PlatformeMouvante est une zone qui a pour but d'être affiché sur une surface
+    """PlatformeMouvante est une zone qui a pour but de se deplacer
     Args:
         coordonnee (list[int]): est la coordonnee de l'objet graphique
         taille (tuple[int, int, int]): est la taille de l'objet graphique
@@ -53,4 +53,87 @@ class PlatformeMouvantee(ObjetUnicolor3D, Activable):
         # a definir en fonction de la plateforme
 
 
-# class PlatformeMouvantee
+class PlatformeMouvanteeOnGo(PlatformeMouvantee):
+    """PlatformeMouvanteOnGo est une zone qui a pour but de se deplacer
+    quand elle est active
+    Args:
+        coordonnee (list[int]): est la coordonnee de l'objet graphique
+        taille (tuple[int, int, int]): est la taille de l'objet graphique
+        couleur (tuple[int, int, int]): est la couleur de l'objet graphique
+        parcour (list[tuple[int, int, int]]): est la liste de deplacement de la plateforme
+            tuple[int, int, int] : est le mouvement dans un axe
+                tuple[0] : est l'axe de mouvement (0, 1 ou 2)
+                tuple[1] : est la vitesse de mouvement
+                tuple[2] : est la distance de mouvement
+        entre (int | tuple[str, int] | tuple[str, int, str]): est l'entree logique de la plateforme
+    """
+
+    def __init__(
+        self,
+        coordonnee: list[int],
+        taille: tuple[int, int, int],
+        couleur: tuple[int, int, int],
+        parcour: list[tuple[int, int, int]],
+        entre: int | tuple[str, int] | tuple[str, int, str],
+    ):
+        """initialise le bouton"""
+        PlatformeMouvantee.__init__(self, coordonnee, taille, couleur, entre)
+        self._parcour: list[tuple[int, int, int]] = parcour
+        self._distance_parcourue: int = 0
+
+        if len(self._parcour) == 0:
+            self._index_parcour = -2
+        else:
+            self._index_parcour: int = 0
+
+    def deplacer(self, map_: "Map") -> None:
+        """permet de deplacer la plateforme"""
+        if self._active and self._index_parcour != -2:
+            if self._index_parcour >= len(self._parcour):
+                return None
+            axe, vitesse, distance = self._parcour[self._index_parcour]
+            vitesse = min(abs(vitesse), abs(distance) - self._distance_parcourue) * (
+                1 if vitesse > 0 else -1
+            )
+            effectuer = self.deplacer_in_axe(
+                axe, vitesse, map_.get_colision(), map_.get_poussable()
+            )
+            self._distance_parcourue += abs(effectuer)
+            if self._distance_parcourue >= abs(distance):
+                self._distance_parcourue = 0
+                self._index_parcour += 1
+                if self._index_parcour >= len(self._parcour):
+                    self.arriver_fin()
+
+
+class PlatformeMouvanteeOnGoOffRetour(PlatformeMouvanteeOnGo):
+    """PlatformeMouvanteOnGoOffRetour est une zone qui a pour but de se deplacer
+    quand elle est active et de revenir a sa position initiale quand elle est desactive
+    Args:
+        coordonnee (list[int]): est la coordonnee de l'objet graphique
+        taille (tuple[int, int, int]): est la taille de l'objet graphique
+        couleur (tuple[int, int, int]): est la couleur de l'objet graphique
+        parcour (list[tuple[int, int, int]]): est la liste de deplacement de la plateforme
+            tuple[int, int, int] : est le mouvement dans un axe
+                tuple[0] : est l'axe de mouvement (0, 1 ou 2)
+                tuple[1] : est la vitesse de mouvement
+                tuple[2] : est la distance de mouvement
+        entre (int | tuple[str, int] | tuple[str, int, str]): est l'entree logique de la plateforme
+    """
+
+    def deplacer(self, map_: "Map") -> None:
+        super().deplacer(map_)
+        if not self._active and self._index_parcour < 0:
+            axe, vitesse, distance = self._parcour[self._index_parcour]
+            vitesse = min(abs(vitesse), abs(distance) - self._distance_parcourue) * (
+                -1 if vitesse > 0 else 1
+            )
+            effectuer = self.deplacer_in_axe(
+                axe, vitesse, map_.get_colision(), map_.get_poussable()
+            )
+            self._distance_parcourue += abs(effectuer)
+            if self._distance_parcourue >= abs(distance):
+                self._distance_parcourue = 0
+                self._index_parcour -= 1
+                if self._index_parcour < 0:
+                    self.arriver_fin()

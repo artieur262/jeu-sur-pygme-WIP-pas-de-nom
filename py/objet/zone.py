@@ -297,7 +297,7 @@ class Zone2D:
         self, axe: int, valeur: int, list_poussable: set["Zone2D"] = None
     ) -> None:
         """deplace l'objet dans un axe en poussant les objets de la liste de poussable"""
-        if list_poussable is None:
+        if list_poussable is None or len(list_poussable) == 0:
             self.add_pos_in_axe(axe, valeur)
             return None
         dict_deplacement: dict["Zone2D", int] = dict()
