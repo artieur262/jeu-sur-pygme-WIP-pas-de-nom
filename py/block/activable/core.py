@@ -87,7 +87,7 @@ class CoreActivable(Core, Activable):
         super().__init__(coordonnee, taille, texture, transposition)
         Activable.__init__(self, entre)
 
-    def activation(self, map_):
+    def activativer(self, map_):
         """Méthode d'activation spéciale."""
         raise NotImplementedError(
             "Cette méthode doit être implémentée par les sous-classes."

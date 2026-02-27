@@ -56,7 +56,7 @@ class Diapo(Activable, ObjetVisuel3D):
         """retire la map"""
         map_.remove_activable(self)
 
-    def activation(self, map_: "Map") -> None:
+    def activativer(self, map_: "Map") -> None:
         """permet d'activer le bloc logique"""
         self._actualise_signal(map_)
         self.actualise_index_texture()

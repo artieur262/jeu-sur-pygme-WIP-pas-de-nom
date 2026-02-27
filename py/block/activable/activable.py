@@ -16,7 +16,7 @@ class Activable:
         """initialise le bouton"""
         self._entre = entre
 
-    def activation(self, map_: "Map") -> None:
+    def activativer(self, map_: "Map") -> None:
         """permet d'activer le bloc logique"""
         raise NotImplementedError("la fonction n'est pas encore implémenté")
 
