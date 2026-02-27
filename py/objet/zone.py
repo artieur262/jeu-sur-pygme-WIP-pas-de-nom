@@ -221,12 +221,15 @@ class Zone2D:
         valeur: int,
         list_collision: set["Zone2D"] = None,
         list_poussable: set["Zone2D"] = None,
+        list_collision_poussable: set["Zone2D"] = None,
     ) -> int:
         """deplace l'objet dans un axe"""
         if list_collision is None:
             list_collision = set()
         if list_poussable is None:
             list_poussable = set()
+        if list_collision_poussable is None:
+            list_collision_poussable = list_collision
 
         zonne_collision = self.new_zone_agrandi_axe(axe, valeur)
         toucher = False
@@ -265,7 +268,7 @@ class Zone2D:
                 temp = i.pre_deplacer_in_axe(
                     axe,
                     new_direction,
-                    list_collision,
+                    list_collision_poussable,
                     list_poussable,
                 )
                 temp -= distance if temp < 0 else -distance
@@ -281,13 +284,14 @@ class Zone2D:
         valeur: int,
         list_collision: set["Zone2D"] = None,
         list_poussable: set["Zone2D"] = None,
+        list_collision_poussable: set["Zone2D"] = None,
     ) -> int:
         """deplace l'objet dans un axe
         en prenant en compte les collisions avec les objets de la liste de collision et
         en poussant les objets de la liste de poussable
         """
         direction = self.pre_deplacer_in_axe(
-            axe, valeur, list_collision, list_poussable
+            axe, valeur, list_collision, list_poussable, list_collision_poussable
         )
 
         self.deplacer_pousser_in_axe(axe, direction, list_poussable)
@@ -306,6 +310,7 @@ class Zone2D:
         )
         for key, value in dict_deplacement.items():
             key.add_pos_in_axe(axe, value)
+        self.add_pos_in_axe(axe, valeur)
 
     def __deplacer_pousser_recursif_in_axe(
         self,
