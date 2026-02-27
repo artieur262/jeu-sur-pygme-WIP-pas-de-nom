@@ -1,14 +1,15 @@
 from typing import TYPE_CHECKING
 
 from py.block.activable.activable import Activable
+from py.block.activateur.activateur import Activateur
 from py.objet.objet_unicolor import ObjetUnicolor3D
 
 if TYPE_CHECKING:
     from py.game.map import Map
 
 
-class PlatformeMouvantee(ObjetUnicolor3D, Activable):
-    """PlatformeMouvante est une zone qui a pour but de se deplacer
+class PlateformeMouvantee(ObjetUnicolor3D, Activable, Activateur):
+    """PlateformeMouvantee est une zone qui a pour but de se deplacer
     Args:
         coordonnee (list[int]): est la coordonnee de l'objet graphique
         taille (tuple[int, int, int]): est la taille de l'objet graphique
@@ -22,30 +23,42 @@ class PlatformeMouvantee(ObjetUnicolor3D, Activable):
         taille: tuple[int, int, int],
         couleur: tuple[int, int, int],
         entre: int | tuple[str, int] | tuple[str, int, str],
+        sortie: int | tuple[str, int] | tuple[str, int, str] = None,
     ):
         """initialise le bouton"""
         ObjetUnicolor3D.__init__(self, coordonnee, taille, couleur)
         Activable.__init__(self, entre)
+        Activateur.__init__(self, sortie)
         self._active: bool = False
+        self._fin: bool = False
+
+    def activativer(self, map_: "Map") -> None:
+        """permet d'activer le bloc logique"""
+        self.mouvoir(map_)
 
     def activation(self, map_: "Map") -> None:
         """permet d'activer le bloc logique"""
-        self._active = map_.in_signal(self._entre)
-        self.mouvoir(map_)
+        if self._sorti is not None and self._fin:
+            self._fin = False
+            map_.add_new_signal(self._sorti)
 
     def ajouter_map(self, map_: "Map") -> None:
         Activable.ajouter_map(self, map_)
         map_.add_colision(self)
         map_.add_afficher(self)
+        if self._sorti is not None:
+            Activateur.ajouter_map(self, map_)
 
     def retirer_map(self, map_: "Map") -> None:
         Activable.retirer_map(self, map_)
         map_.remove_afficher(self)
         map_.remove_colision(self)
+        if self._sorti is not None:
+            Activateur.retirer_map(self, map_)
 
     def arriver_fin(self):
         """permet de definir le comportement de la plateforme a la fin du deplacement"""
-        pass  # pylint: disable=unnecessary-pass
+        self._fin = True
         # a definir en fonction de la plateforme
 
     def mouvoir(self, map_: "Map") -> None:
@@ -54,8 +67,8 @@ class PlatformeMouvantee(ObjetUnicolor3D, Activable):
         # a definir en fonction de la plateforme
 
 
-class PlatformeMouvanteeOnGo(PlatformeMouvantee):
-    """PlatformeMouvanteOnGo est une zone qui a pour but de se deplacer
+class PlateformeMouvanteeOnGo(PlateformeMouvantee):
+    """PlateformeMouvanteeOnGo est une zone qui a pour but de se deplacer
     quand elle est active
     Args:
         coordonnee (list[int]): est la coordonnee de l'objet graphique
@@ -76,20 +89,26 @@ class PlatformeMouvanteeOnGo(PlatformeMouvantee):
         couleur: tuple[int, int, int],
         parcour: list[tuple[int, int, int]],
         entre: int | tuple[str, int] | tuple[str, int, str],
+        sortie: int | tuple[str, int] | tuple[str, int, str] = None,
     ):
         """initialise le bouton"""
-        PlatformeMouvantee.__init__(self, coordonnee, taille, couleur, entre)
+        PlateformeMouvantee.__init__(self, coordonnee, taille, couleur, entre, sortie)
         self._parcour: list[tuple[int, int, int]] = parcour
         self._distance_parcourue: int = 0
 
         if len(self._parcour) == 0:
-            self._index_parcour = -2
+            self._index_parcour = -1
         else:
             self._index_parcour: int = 0
 
+    def activativer(self, map_: "Map") -> None:
+        """permet d'activer le bloc logique"""
+        self._active = map_.in_signal(self._entre)
+        self.mouvoir(map_)
+
     def mouvoir(self, map_: "Map") -> None:
         """permet de deplacer la plateforme"""
-        if self._active and self._index_parcour != -2:
+        if self._active and self._index_parcour >= 0:
             if self._index_parcour >= len(self._parcour):
                 return None
             axe, vitesse, distance = self._parcour[self._index_parcour]
@@ -107,8 +126,8 @@ class PlatformeMouvanteeOnGo(PlatformeMouvantee):
                     self.arriver_fin()
 
 
-class PlatformeMouvanteeOnGoOffRetour(PlatformeMouvanteeOnGo):
-    """PlatformeMouvanteOnGoOffRetour est une zone qui a pour but de se deplacer
+class PlateformeMouvanteeOnGoOffRetour(PlateformeMouvanteeOnGo):
+    """PlateformeMouvanteeOnGoOffRetour est une zone qui a pour but de se deplacer
     quand elle est active et de revenir a sa position initiale quand elle est desactive
     Args:
         coordonnee (list[int]): est la coordonnee de l'objet graphique
@@ -124,8 +143,8 @@ class PlatformeMouvanteeOnGoOffRetour(PlatformeMouvanteeOnGo):
 
     def mouvoir(self, map_: "Map") -> None:
         super().mouvoir(map_)
-        if not self._active and self._index_parcour < 0:
-            axe, vitesse, distance = self._parcour[self._index_parcour]
+        if not self._active and self._index_parcour >= 0:
+            axe, vitesse, distance = self._parcour[self._index_parcour - 1]
             vitesse = min(abs(vitesse), abs(distance) - self._distance_parcourue) * (
                 -1 if vitesse > 0 else 1
             )
@@ -136,5 +155,96 @@ class PlatformeMouvanteeOnGoOffRetour(PlatformeMouvanteeOnGo):
             if self._distance_parcourue >= abs(distance):
                 self._distance_parcourue = 0
                 self._index_parcour -= 1
-                if self._index_parcour < 0:
+                if self._index_parcour <= 0:
                     self.arriver_fin()
+
+
+class PlateformeMouvanteeOnGoBoucle(PlateformeMouvanteeOnGo):
+    """PlateformeMouvanteeOnGoBoucle est une zone qui a pour but de se deplacer
+    quand elle est active quand elle arrive a la fin du parcour elle recommence le parcour
+    et de revenir a sa position initiale a la fin du parcour
+    Args:
+        coordonnee (list[int]): est la coordonnee de l'objet graphique
+        taille (tuple[int, int, int]): est la taille de l'objet graphique
+        couleur (tuple[int, int, int]): est la couleur de l'objet graphique
+        parcour (list[tuple[int, int, int]]): est la liste de deplacement de la plateforme
+            tuple[int, int, int] : est le mouvement dans un axe
+                tuple[0] : est l'axe de mouvement (0, 1 ou 2)
+                tuple[1] : est la vitesse de mouvement
+                tuple[2] : est la distance de mouvement
+        entre (int | tuple[str, int] | tuple[str, int, str]): est l'entree logique de la plateforme
+    """
+
+    def arriver_fin(self):
+        super().arriver_fin()
+        self._index_parcour = 0
+
+
+class PlateformeMouvanteeOnGoMultiParcour(PlateformeMouvantee):
+    """PlateformeMouvanteeOnGoMultiParcour est une zone qui a pour but de se deplacer
+    quand elle est active, elle fait un parcour puis s'arrete,
+    quand elle est active a nouveau elle fait le parcour suivant et ainsi de suite
+    Args:
+        coordonnee (list[int]): est la coordonnee de l'objet graphique
+        taille (tuple[int, int, int]): est la taille de l'objet graphique
+        couleur (tuple[int, int, int]): est la couleur de l'objet graphique
+        chemin (list[list[tuple[int, int, int]]]): est la liste de liste de deplacement
+            list[list[tuple[int, int, int]]] : est un chemin
+                list[tuple[int, int, int]] : est un parcour
+                    tuple[int, int, int] : est le mouvement dans un axe
+                        tuple[0] : est l'axe de mouvement (0, 1 ou 2)
+                        tuple[1] : est la vitesse de mouvement
+                        tuple[2] : est la distance de mouvement
+        entre (int | tuple[str, int] | tuple[str, int, str]): est l'entree logique de la plateforme
+    """
+
+    def __init__(
+        self,
+        coordonnee: list[int],
+        taille: tuple[int, int, int],
+        couleur: tuple[int, int, int],
+        chemin: list[list[tuple[int, int, int]]],
+        entre: int | tuple[str, int] | tuple[str, int, str],
+        sortie: int | tuple[str, int] | tuple[str, int, str] = None,
+    ):
+        """initialise le bouton"""
+        PlateformeMouvantee.__init__(self, coordonnee, taille, couleur, entre, sortie)
+        self._chemin: list[list[tuple[int, int, int]]] = chemin
+        self._index_chemin: int = 0
+        if len(self._chemin) == 0 or len(self._chemin[0]) == 0:
+            self._index_parcour = -1
+        self._index_parcour: int = 0
+        self._distance_parcourue: int = 0
+
+    def activativer(self, map_: "Map") -> None:
+        """permet d'activer le bloc logique"""
+        self._active = self._active or map_.in_signal(self._entre)
+        self.mouvoir(map_)
+
+    def arriver_fin_parcour(self):
+        """permet de definir le comportement de la plateforme a la fin du parcour"""
+        self._active = False
+        self._index_parcour = 0
+        self._index_chemin += 1
+        if self._index_chemin >= len(self._chemin):
+            self.arriver_fin()
+
+    def mouvoir(self, map_):
+        if self._active and self._index_parcour >= 0:
+            if self._index_chemin >= len(self._chemin):
+                return None
+            axe, vitesse, distance = self._chemin[self._index_chemin][
+                self._index_parcour
+            ]
+            vitesse = min(abs(vitesse), abs(distance) - self._distance_parcourue) * (
+                1 if vitesse > 0 else -1
+            )
+            effectuer = self.deplacer_in_axe(
+                axe, vitesse, map_.get_colision(), map_.get_poussable()
+            )
+            self._distance_parcourue += abs(effectuer)
+            if self._distance_parcourue >= abs(distance):
+                self._distance_parcourue = 0
+                self._index_parcour += 1
+                if self._index_parcour >= len(self._chemin[self._index_chemin]):
+                    self.arriver_fin_parcour()
