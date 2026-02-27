@@ -1,18 +1,37 @@
+"""
+abandonne pour le moment, a revoir plus tard
+"""
+
 from typing import TYPE_CHECKING
 import pygame
 
 from py.objet.objet_visuel import ObjetVisuel2D
+from py.interface.element_it import ElementInterface
 
 
-class Box(ObjetVisuel2D):
+class Box(ObjetVisuel2D, ElementInterface):
     """Box est une zone qui a une image et un texte
     Args:
         ObjetVisuel (ObjetVisuel): est la zone de l'objet graphique
     """
 
-    def __init__(self, taille: tuple[int, int], ellement: list[ObjetVisuel2D]):
+    def __init__(
+        self,
+        taille: tuple[int, int] = None,
+        ellement: list[ObjetVisuel2D] = None,
+        parent: ElementInterface = None,
+    ):
+
+        if taille is None:
+            taille = (0, 0)
+            ElementInterface.__init__(self, True, parent)
+        else:
+            ElementInterface.__init__(self, False, parent)
         super().__init__((0, 0), taille)
+
         self.ellement = ellement
+        self.ecart = 0
+        self.ecart_auto = True
 
     def set_pos(self, valu: tuple[int, int]):
         """defini la position de l'objet"""
@@ -22,313 +41,50 @@ class Box(ObjetVisuel2D):
             i.add_pos(decalage)
 
     def set_size(self, valu):
-        super().set_size(valu)
-        self.actualiser()
+        ObjetVisuel2D.set_size(self, valu)
 
-    def actualiser(self, box: "Box" = None):
-        """repositionne les ellement dans la box"""
-        for i in self.ellement:
-            if isinstance(
-                i, Box
-            ):  # pylint: disable=isinstance-second-argument-not-valid-type
-                i.actualiser(self)
+    def ajouter_ellement(self, ellement: ElementInterface) -> None:
+        """ajoute un ellement a la box"""
+        self.ellement.append(ellement)
+        ellement.set_parent(self)
 
-    def afficher(
-        self,
-        decalage: tuple[int, int] = None,
-        surface: pygame.Surface = None,
-    ):
-        """permet de l'affiché sur la sur une surface et de savoir si il est affiché
+    def retirer_ellement(self, ellement: ElementInterface) -> None:
+        """retire un ellement de la box"""
+        self.ellement.remove(ellement)
+        ellement.set_parent(None)
 
-        Args:
-            decalage (tuple[int, int], optional): est le decalage de l'objet. Defaults to None.
-            surface (pygame.Surface, optional): est la surface sur laquel afficher. Defaults None.
-
-        Returns:
-            bool: si l'objet est affiché
-        """
-        for i in self.ellement:
-            i.afficher(decalage, surface)
+    def actualise_taille(self) -> None:
+        """actualise la taille de la box en fonction de ses ellement"""
+        raise NotImplementedError("la fonction n'est pas encore implémenté")
 
 
 class VBox(Box):
-    """Box est une zone qui a une image et un texte
+    """VBox est une box qui aligne ses ellement verticalement"""
+
+    def actualise_taille(self) -> None:
+        """actualise la taille de la box en fonction de ses ellement"""
+        # definir la taille fixe de la box en fonction de ses ellement qui ne change pas de taille
+        somme = 0
+        nb = 0
+        for i in self.ellement:
+            if i.get_size() != (0, 0):
+                somme += i.get_size()[1]
+                nb += 1
+
+        reste = self.get_size()[1] - somme
+        part = (reste / (len(self.ellement) - nb)) if len(self.ellement) - nb > 0 else 0
+
+
+def soustract_2_tuple(
+    tuple1: tuple[int, int], tuple2: tuple[int, int]
+) -> tuple[int, int]:
+    """permet de soustraire 2 tuple
+
     Args:
-        ObjetVisuel (ObjetVisuel): est la zone de l'objet graphique
-        position_H (str): est la position de la box (left, center, right)
-        position_V (str): est la position de la box (up, center, down)
-        justify_content (str): est la justification du contenu
-                               (space-between, space-around, space-evenly)
+        tuple1 (tuple[int, int]): est le premier tuple
+        tuple2 (tuple[int, int]): est le second tuple
+
+    Returns:
+        tuple[int, int]: le resultat de la soustraction
     """
-
-    def __init__(self, taille: tuple[int, int], ellement: list[ObjetVisuel2D]):
-        super().__init__(taille, ellement)
-        self.ecart = 0
-        self.ecart_auto = True
-        self.position_h = "center"
-        self.position_v = "center"
-        self.justify_content = "space-between"
-
-        self.actualiser()
-
-    def set_ecart(self, ecart: int) -> None:
-        """set l'ecart entre les ellement"""
-        self.ecart = ecart
-        self.ecart_auto = False
-        self.actualiser()
-
-    def auto_ecart(self, auto: bool) -> None:
-        """set l'ecart entre les ellement"""
-        self.ecart_auto = auto
-        self.actualiser()
-
-    def set_justify_content(self, justify_content: str) -> None:
-        """set la justification du contenu
-        args:
-            justify_content (str): est la justification du contenu
-                                   (space-between, space-around, space-evenly)
-        """
-        self.justify_content = justify_content
-        self.actualiser()
-
-    def set_position_h(self, position_h: str) -> None:
-        """set la position horizontal de la box
-        args:
-            position_H (str): est la position de la box (left, center, right)
-        """
-        self.position_h = position_h
-        self.actualiser()
-
-    def set_position_v(self, position_v: str) -> None:
-        """set la position vertical de la box
-        args:
-            position_V (str): est la position de la box (up, center, down)
-        """
-        self.position_v = position_v
-        self.actualiser()
-
-    def somme_hauteur_ellement(self) -> int:
-        """somme la longueur de tout les ellement"""
-        return sum([i.get_size()[1] for i in self.ellement])
-
-    def __actualiser_ecart(self):
-        """actualise l'ecart entre les ellement"""
-        if self.ecart_auto:
-            match self.justify_content:
-                case "space-between":
-                    self.ecart = (
-                        self.get_size()[1] - self.somme_hauteur_ellement()
-                    ) / (len(self.ellement) - 1)
-                case "space-around":
-                    self.ecart = (
-                        self.get_size()[1] - self.somme_hauteur_ellement()
-                    ) / len(self.ellement)
-                case "space-evenly":
-                    self.ecart = (
-                        self.get_size()[1] - self.somme_hauteur_ellement()
-                    ) / (len(self.ellement) + 1)
-
-    def __actualiser_position(self):
-        """actualise la position des ellement"""
-        self.__actualiser_ecart()
-        centre = self.get_center()
-        somme_hauteur = self.somme_hauteur_ellement()
-        nbre_ellement = len(self.ellement)
-        pos_suivant = 0
-        match self.position_v:
-            case "up":
-                pos_suivant = self.coordonnee[1]
-            case "center":
-                match self.justify_content:
-                    case "space-between":
-                        pos_suivant = self.coordonnee[1]
-                    case "space-around":
-                        pos_suivant = self.coordonnee[1] + self.ecart / 2
-                    case "space-evenly":
-                        pos_suivant = self.coordonnee[1] + self.ecart
-                    case _:
-                        pos_suivant = self.coordonnee[1]
-            case "down":
-                pos_suivant = (
-                    self.coordonnee[1]
-                    + self.get_size()[1]
-                    - somme_hauteur
-                    - (nbre_ellement - 1) * self.ecart
-                )
-
-        for i, ellement in enumerate(self.ellement):
-            taille_ellement = ellement.get_size()
-            match self.position_h:
-                case "left":
-                    ellement.set_pos((self.coordonnee[0], 0))
-                case "center":
-                    ellement.set_pos((centre[0] - taille_ellement[0] / 2, 0))
-                case "right":
-                    ellement.set_pos(
-                        (
-                            self.coordonnee[0]
-                            + self.get_size()[0]
-                            - taille_ellement[0],
-                            0,
-                        )
-                    )
-            pos_ellement = ellement.get_pos()
-            # self.position_V:
-            ellement.set_pos((pos_ellement[0], pos_suivant))
-            pos_suivant += taille_ellement[1] + self.ecart
-
-    def actualiser(self, box: "Box" = None):
-        """actualise la position des ellement"""
-        self.__actualiser_position()
-        super().actualiser()
-
-    def ajouter_ellement(self, ellement: ObjetVisuel2D):
-        """ajoute un ellement à la box"""
-        self.ellement.append(ellement)
-        self.actualiser()
-
-
-class HBox(Box):
-    """Box est une zone qui a une image et un texte
-    Args:
-        ObjetVisuel (ObjetVisuel): est la zone de l'objet graphique
-        position_h (str): est la position de la box (left, center, right)
-        position_v (str): est la position de la box (up, center, down)
-        justify_content (str): est la justification du contenu
-                               (space-between, space-around, space-evenly)
-    """
-
-    def __init__(self, taille: tuple[int, int], ellement: list[ObjetVisuel2D]):
-        super().__init__(taille, ellement)
-        self.ecart = 0
-        self.ecart_auto = True
-        self.position_h = "center"
-        self.position_v = "center"
-        self.justify_content = "space-between"
-
-        self.actualiser()
-
-    def set_ecart(self, ecart: int) -> None:
-        """set l'ecart entre les ellement"""
-        self.ecart = ecart
-        self.ecart_auto = False
-        self.actualiser()
-
-    def auto_ecart(self, auto: bool) -> None:
-        """set l'ecart entre les ellement"""
-        self.ecart_auto = auto
-        self.actualiser()
-
-    def set_justify_content(self, justify_content: str) -> None:
-        """set la justification du contenu
-        args:
-            justify_content (str): est la justification du contenu
-                                   (space-between, space-around, space-evenly)
-        """
-        self.justify_content = justify_content
-        self.actualiser()
-
-    def set_position_h(self, position_h: str) -> None:
-        """set la position horizontal de la box
-        args:
-            position_h (str): est la position de la box (left, center, right)
-        """
-        self.position_h = position_h
-        self.actualiser()
-
-    def set_position_v(self, position_v: str) -> None:
-        """set la position vertical de la box
-        args:
-            position_v (str): est la position de la box (up, center, down)
-        """
-        self.position_v = position_v
-        self.actualiser()
-
-    def somme_longueur_ellement(self, fin: int = None) -> int:
-        """somme la longueur de tout les ellement"""
-        if fin is None:
-            fin = len(self.ellement)
-        return sum([self.ellement[i].get_size()[0] for i in range(fin)])
-
-    def __actualiser_ecart(self):
-        """actualise l'ecart entre les ellement"""
-        if self.ecart_auto:
-            match self.justify_content:
-                case "space-between":
-                    self.ecart = (
-                        self.get_size()[0] - self.somme_longueur_ellement()
-                    ) / (len(self.ellement) - 1)
-                case "space-around":
-                    self.ecart = (
-                        self.get_size()[0] - self.somme_longueur_ellement()
-                    ) / len(self.ellement)
-                case "space-evenly":
-                    self.ecart = (
-                        self.get_size()[0] - self.somme_longueur_ellement()
-                    ) / (len(self.ellement) + 1)
-
-    def __actualiser_position(self):
-        """actualise la position des ellement"""
-        self.__actualiser_ecart()
-        centre = self.get_center()
-        somme_longueur = self.somme_longueur_ellement()
-        nbre_ellement = len(self.ellement)
-        pos_suivant = 0
-
-        match self.position_h:
-            case "left":
-                pos_suivant = self.coordonnee[0]
-            case "center":
-                match self.justify_content:
-                    case "space-between":
-                        pos_suivant = self.coordonnee[0]
-                    case "space-around":
-                        pos_suivant = self.coordonnee[0] + self.ecart / 2
-                    case "space-evenly":
-                        pos_suivant = self.coordonnee[0] + self.ecart
-                    case _:
-                        pos_suivant = self.coordonnee[0]
-            case "right":
-                pos_suivant = (
-                    self.coordonnee[0]
-                    + self.get_size()[0]
-                    - somme_longueur
-                    - (nbre_ellement - 1) * self.ecart
-                )
-
-        for i, ellement in enumerate(self.ellement):
-            taille_ellement = ellement.get_size()
-
-            match self.position_v:
-                case "up":
-                    ellement.set_pos((0, self.coordonnee[1]))
-                case "center":
-                    ellement.set_pos((0, centre[1] - taille_ellement[1] / 2))
-                case "down":
-                    ellement.set_pos(
-                        (
-                            0,
-                            self.coordonnee[1]
-                            + self.get_size()[1]
-                            - taille_ellement[1],
-                        )
-                    )
-            pos_ellement = ellement.get_pos()
-            # self.position_H:
-            ellement.set_pos((pos_suivant, pos_ellement[1]))
-            pos_suivant += taille_ellement[0] + self.ecart
-
-    def actualiser(self, box: "Box" = None):
-        """actualise la position des ellement"""
-        self.__actualiser_position()
-        super().actualiser()
-
-    def ajouter_ellement(self, ellement: ObjetVisuel2D):
-        """ajoute un ellement à la box"""
-        self.ellement.append(ellement)
-        self.actualiser()
-
-
-def soustract_2_tuple(t1: tuple[int, int], t2: tuple[int, int]) -> tuple[int, int]:
-    """soustrait deux tuple de deux int"""
-    return (t1[0] - t2[0], t1[1] - t2[1])
+    return (tuple1[0] - tuple2[0], tuple1[1] - tuple2[1])
