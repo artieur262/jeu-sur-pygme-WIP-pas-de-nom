@@ -347,14 +347,19 @@ class Zone2D:
         valeur: tuple[int, int],
         list_collision: set["Zone2D"] = None,
         list_poussable: set["Zone2D"] = None,
+        list_collision_poussable: set["Zone2D"] = None,
     ) -> None:
         """deplace l'objet dans un axe"""
         if len(valeur) != 2:
             raise ValueError("la valeur doit etre de la forme (x,y)")
         if valeur[0]:
-            self.deplacer_in_axe(0, valeur[0], list_collision, list_poussable)
+            self.deplacer_in_axe(
+                0, valeur[0], list_collision, list_poussable, list_collision_poussable
+            )
         if valeur[1]:
-            self.deplacer_in_axe(1, valeur[1], list_collision, list_poussable)
+            self.deplacer_in_axe(
+                1, valeur[1], list_collision, list_poussable, list_collision_poussable
+            )
 
 
 class Zone3D(Zone2D):
@@ -520,24 +525,34 @@ class Zone3D(Zone2D):
         valeur: int,
         list_collision: set["Zone3D"] = None,
         list_poussable: set["Zone3D"] = None,
+        list_collision_poussable: set["Zone3D"] = None,
     ) -> int:
-        return super().deplacer_in_axe(axe, valeur, list_collision, list_poussable)
+        return super().deplacer_in_axe(
+            axe, valeur, list_collision, list_poussable, list_collision_poussable
+        )
 
     def deplacer_indepant_axe(
         self,
         valeur: tuple[int, int, int],
         list_collision: set["Zone3D"] = None,
         list_poussable: set["Zone3D"] = None,
+        list_collision_poussable: set["Zone3D"] = None,
     ) -> None:
         """deplace l'objet dans un axe"""
         if len(valeur) != 3:
             raise ValueError("la valeur doit etre de la forme (x,y,z)")
         if valeur[0]:
-            self.deplacer_in_axe(0, valeur[0], list_collision, list_poussable)
+            self.deplacer_in_axe(
+                0, valeur[0], list_collision, list_poussable, list_collision_poussable
+            )
         if valeur[1]:
-            self.deplacer_in_axe(1, valeur[1], list_collision, list_poussable)
+            self.deplacer_in_axe(
+                1, valeur[1], list_collision, list_poussable, list_collision_poussable
+            )
         if valeur[2]:
-            self.deplacer_in_axe(2, valeur[2], list_collision, list_poussable)
+            self.deplacer_in_axe(
+                2, valeur[2], list_collision, list_poussable, list_collision_poussable
+            )
 
     def ajouter_map(self, map_):
         """ajoute la zone à la map"""
