@@ -30,18 +30,6 @@ class Grid(Box):
         """get l'espacement entre les éléments de la grille"""
         return self._espacement
 
-    def get_element(self) -> list["ElementInterface"]:
-        """get les éléments de la grille"""
-        return self._element
-
-    def add_element(self, element: "ElementInterface") -> None:
-        """ajoute un élément à la grille
-
-        Args:
-            element (elementInterface): élément à ajouter
-        """
-        self._element.append(element)
-
     def actualise_taille(self) -> None:
         """actualise la taille de la box en fonction de ses element"""
         for element in self._element:
