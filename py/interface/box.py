@@ -3,13 +3,16 @@ abandonne pour le moment, a revoir plus tard
 """
 
 from typing import TYPE_CHECKING
-import pygame
+
 
 from py.objet.objet_visuel import ObjetVisuel2D
 from py.interface.element_it import ElementInterface
 
+if TYPE_CHECKING:
+    import pygame
 
-class Box(ObjetVisuel2D, ElementInterface):
+
+class Box(ElementInterface):
     """Box est une zone qui a une image et un texte
     Args:
         ObjetVisuel (ObjetVisuel): est la zone de l'objet graphique
@@ -17,62 +20,55 @@ class Box(ObjetVisuel2D, ElementInterface):
 
     def __init__(
         self,
+        pos: tuple[int, int],
         taille: tuple[int, int] = None,
-        ellement: list[ObjetVisuel2D] = None,
+        element: list[ElementInterface | ObjetVisuel2D] = None,
+        auto_taille: bool = False,
         parent: ElementInterface = None,
     ):
 
-        if taille is None:
-            taille = (0, 0)
-            ElementInterface.__init__(self, True, parent)
-        else:
-            ElementInterface.__init__(self, False, parent)
-        super().__init__((0, 0), taille)
-
-        self.ellement = ellement
-        self.ecart = 0
-        self.ecart_auto = True
+        super().__init__(pos, taille, auto_taille, parent)
+        self._element = element
 
     def set_pos(self, valu: tuple[int, int]):
         """defini la position de l'objet"""
         decalage = soustract_2_tuple(valu, self.coordonnee)
         super().set_pos(valu)
-        for i in self.ellement:
+        for i in self._element:
             i.add_pos(decalage)
 
-    def set_size(self, valu):
-        ObjetVisuel2D.set_size(self, valu)
+    def add_pos(self, valu: tuple[int, int]):
+        """ajoute une position a l'objet"""
+        super().add_pos(valu)
+        for i in self._element:
+            i.add_pos(valu)
 
-    def ajouter_ellement(self, ellement: ElementInterface) -> None:
-        """ajoute un ellement a la box"""
-        self.ellement.append(ellement)
-        ellement.set_parent(self)
+    def ajouter_element(self, element: ElementInterface) -> None:
+        """ajoute un element a la box"""
+        self._element.append(element)
+        element.set_parent(self)
 
-    def retirer_ellement(self, ellement: ElementInterface) -> None:
-        """retire un ellement de la box"""
-        self.ellement.remove(ellement)
-        ellement.set_parent(None)
-
-    def actualise_taille(self) -> None:
-        """actualise la taille de la box en fonction de ses ellement"""
-        raise NotImplementedError("la fonction n'est pas encore implémenté")
-
-
-class VBox(Box):
-    """VBox est une box qui aligne ses ellement verticalement"""
+    def retirer_element(self, element: ElementInterface) -> None:
+        """retire un element de la box"""
+        self._element.remove(element)
+        element.set_parent(None)
 
     def actualise_taille(self) -> None:
-        """actualise la taille de la box en fonction de ses ellement"""
-        # definir la taille fixe de la box en fonction de ses ellement qui ne change pas de taille
-        somme = 0
-        nb = 0
-        for i in self.ellement:
-            if i.get_size() != (0, 0):
-                somme += i.get_size()[1]
-                nb += 1
+        """actualise la taille de la box en fonction de ses element"""
+        raise NotImplementedError(
+            "Cette méthode doit être implémentée par les sous-classes."
+        )
 
-        reste = self.get_size()[1] - somme
-        part = (reste / (len(self.ellement) - nb)) if len(self.ellement) - nb > 0 else 0
+    def affiche(
+        self, decalage: tuple[int, int] = None, surface: "pygame.Surface" | None = None
+    ) -> None:
+        """affiche la grille sur la surface donnée
+
+        Args:
+            surface (pygame.Surface): est la surface sur laquelle afficher la grille
+        """
+        for element in self._element:
+            element.affiche(decalage, surface)
 
 
 def soustract_2_tuple(

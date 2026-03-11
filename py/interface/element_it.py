@@ -38,7 +38,7 @@ class ElementInterface(Zone2D):
         self._parent = parent
 
     def actualise_taille(self) -> None:
-        """actualise la taille de la box en fonction de ses ellement"""
+        """actualise la taille de la box en fonction de ses element"""
         raise NotImplementedError(
             "Cette méthode doit être implémentée par les sous-classes."
         )
