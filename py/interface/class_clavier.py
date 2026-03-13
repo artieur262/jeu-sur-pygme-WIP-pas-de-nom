@@ -10,7 +10,17 @@ et 2 dictionnaire:
 """
 
 from typing import Literal
+
 import pygame
+import enum
+
+
+class ClickStatut(enum.Enum):
+    """enum pour les états de clique"""
+    LACHER = 0
+    VIEN_LACHER = 1
+    PRESSER = 2
+    VIEN_PRESSER = 3
 
 
 class Peripherique:
