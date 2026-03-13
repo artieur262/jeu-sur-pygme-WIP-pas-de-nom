@@ -26,8 +26,10 @@ class ObjetGraphique(ObjetVisuel2D):
             if isinstance(i, Image):
                 self.texture.append(i)
             else:
-                textures.append(Image(i))
-        super().__init__(coordonnee, taille)
+                self.texture.append(Image(i))
+        texture = self.texture
+        super().__init__(coordonnee, taille, texture[0])
+        self.texture = texture
         self.animation = animation
 
     def image_actuel(self) -> Image:

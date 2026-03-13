@@ -10,7 +10,10 @@ class ObjetVisuel2D(Zone2D):
         Zone (Zone): est la zone de l'objet graphique
     """
 
-    def __init__(self, coordonnee: list, taille: tuple[int, int]):
+    def __init__(
+        self, coordonnee: list, taille: tuple[int, int], texutre: Image = None
+    ):
+        self.texture = texutre
         super().__init__(coordonnee, taille)
 
     def afficher(
@@ -32,14 +35,15 @@ class ObjetVisuel2D(Zone2D):
         if surface is None:
             surface = pygame.display.get_surface()
         # Vérifie si l'objet est dans la surface
-        if (
-            self.coordonnee[0] + decalage[0] + self.get_size()[0] < 0
-            or self.coordonnee[0] + decalage[0] > surface.get_width()
-            or self.coordonnee[1] + decalage[1] + self.get_size()[1] < 0
-            or self.coordonnee[1] + decalage[1] > surface.get_height()
-        ):
-            return False
-        return True
+        pos_surface = (0, 0)
+        taille_surface = surface.get_size()
+        if self.texture.if_in_zone(pos_surface, (0, 0), taille_surface):
+            self.texture.afficher(
+                (self.coordonnee[0] + decalage[0], self.coordonnee[1] + decalage[1]),
+                surface,
+            )
+            return True
+        return False
 
 
 class ObjetVisuel3D(Zone3D):
