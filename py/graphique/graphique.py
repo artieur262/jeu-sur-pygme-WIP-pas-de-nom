@@ -21,7 +21,7 @@ et 1 variable:
 # import os
 import pygame
 import numpy as nup
-from py.autre import save
+# from py.autre import save
 
 
 def surfaces_egales(surface1: pygame.Surface, surface2: pygame.Surface) -> bool:

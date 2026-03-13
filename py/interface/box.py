@@ -59,7 +59,7 @@ class Box(ElementInterface):
             "Cette méthode doit être implémentée par les sous-classes."
         )
 
-    def affiche(
+    def afficher(
         self, decalage: tuple[int, int] = None, surface: "pygame.Surface" | None = None
     ) -> None:
         """affiche la grille sur la surface donnée
@@ -68,7 +68,7 @@ class Box(ElementInterface):
             surface (pygame.Surface): est la surface sur laquelle afficher la grille
         """
         for element in self._element:
-            element.affiche(decalage, surface)
+            element.afficher(decalage, surface)
 
 
 def soustract_2_tuple(

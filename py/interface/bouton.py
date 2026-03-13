@@ -7,12 +7,17 @@ class :
 
 """
 
+from typing import TYPE_CHECKING
 from py.graphique.objetGraphique import ObjetGraphique
+from py.graphique.graphique import place_texte_in_texture
+from py.interface.element_it import ElementInterface
 
-# from py.interface.class_clavier import Souris
+
+if TYPE_CHECKING:
+    import pygame
 
 
-class Bouton(ObjetGraphique):
+class Bouton(ObjetGraphique, ElementInterface):
     """Bouton est un objet graphique qui a une image et un texte
     Args:
         ObjetGraphique (ObjetGraphique): est l'objet graphique
@@ -24,13 +29,18 @@ class Bouton(ObjetGraphique):
         textures: list[str],
         taille: tuple[int, int],
         mode: str = "clique",
+        parent: ElementInterface = None,
     ):
         """initialise le bouton"""
-        super().__init__(coordonnee, textures, taille)
+        ObjetGraphique.__init__(self, coordonnee, textures, taille)
+        ElementInterface.__init__(self, coordonnee, taille, False, parent)
         self.mode = mode
         self.__actif = False
         self.__clique = False
         self.__survol = False
+
+    def actualise_taille(self):
+        pass
 
     def get_mode(self) -> str:
         """get le mode du bouton"""
@@ -82,3 +92,79 @@ class Bouton(ObjetGraphique):
     def get_survol(self) -> bool:
         """get l'etat du bouton"""
         return self.__survol
+
+
+class BoutonRedimentionable(Bouton, ElementInterface):
+    """BoutonRedimentionable est un bouton qui peut être redimentionable
+    Args:
+        Bouton (Bouton): est le bouton de base
+    """
+
+    def __init__(
+        self,
+        coordonnee: list,
+        textures: list[str],
+        taille: tuple[int, int],
+        mode: str = "clique",
+        auto_taille: bool = False,
+        parent: ElementInterface = None,
+    ):
+        """initialise le bouton redimentionable"""
+        self.intial_texture = textures
+        super().__init__(coordonnee, textures, taille, mode, parent)
+        ElementInterface.__init__(self, coordonnee, taille, auto_taille, parent)
+
+    def actualise_taille(self) -> None:
+        """actualise la taille du bouton en fonction de son contenu"""
+        pass  # pylint: disable=unnecessary-pass
+
+    def set_size(self, valu):
+        super().set_size(valu)
+        self.set_texture(self.intial_texture)
+
+    def set_size_in_axe(self, axe: int, valeur: int) -> None:
+        super().set_size_in_axe(axe, valeur)
+        self.set_texture(self.intial_texture)
+
+    def add_size_in_axe(self, axe: int, valeur: int) -> None:
+        super().add_size_in_axe(axe, valeur)
+        self.set_texture(self.intial_texture)
+
+
+class BoutonText(BoutonRedimentionable):
+    """BoutonText est un bouton qui a un texte
+    Args:
+        BoutonRedimentionable (BoutonRedimentionable): est le bouton redimentionable de base
+    """
+
+    def __init__(
+        self,
+        coordonnee: list,
+        textures: list[str],
+        taille: tuple[int, int],
+        textes: str,
+        text_police: "pygame.font.Font",
+        color_text: tuple[int, int, int] | tuple[int | int | int | int] = None,
+        text_mode: str = "center",
+        mode: str = "clique",
+        auto_taille: bool = False,
+        parent: ElementInterface = None,
+    ):
+        """initialise le bouton text"""
+        super().__init__(coordonnee, textures, taille, mode, auto_taille, parent)
+        self.textes = textes
+        self.color_text = color_text
+        self.text_mode = text_mode
+        self.police = text_police
+        self.actualise_text()
+
+    def actualise_text(self) -> None:
+        """actualise le texte du bouton"""
+        for texture in self.texture:
+            place_texte_in_texture(
+                texture.texture,
+                self.textes,
+                self.color_text,
+                self.police,
+                self.text_mode,
+            )

@@ -43,7 +43,7 @@ class ElementInterface(Zone2D):
             "Cette méthode doit être implémentée par les sous-classes."
         )
 
-    def affiche(
+    def afficher(
         self, decalage: tuple[int, int] = None, surface: "pygame.Surface" | None = None
     ) -> None:
         """affiche l'interface sur la surface donnée

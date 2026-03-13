@@ -35,7 +35,7 @@ class Iframe(ObjetVisuel2D, Box):
         self.texture.texture.fill((0, 0, 0, 0))
         for element in self._element:
             element.actualise_taille()
-            element.affiche(
+            element.afficher(
                 (-self.get_pos()[0], -self.get_pos()[1]), self.texture.texture
             )
 

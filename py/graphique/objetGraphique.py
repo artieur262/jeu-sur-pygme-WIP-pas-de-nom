@@ -32,6 +32,19 @@ class ObjetGraphique(ObjetVisuel2D):
         self.texture = texture
         self.animation = animation
 
+    def set_texture(
+        self, texture: list[str | pygame.Surface | Image | tuple[str | tuple[int, int]]]
+    ):
+        """set la texture de l'objet graphique"""
+        self.texture = []
+        for i in texture:
+            if isinstance(i, Image):
+                self.texture.append(i)
+            else:
+                self.texture.append(Image(i))
+        if self.animation >= len(self.texture):
+            self.animation = 0
+
     def image_actuel(self) -> Image:
         """get la texture de l'objet graphique"""
         return self.texture[self.animation]
