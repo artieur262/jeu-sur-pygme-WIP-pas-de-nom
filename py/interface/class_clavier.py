@@ -12,19 +12,15 @@ et 2 dictionnaire:
 from typing import Literal
 
 import pygame
-import enum
-
-
-class ClickStatut(enum.Enum):
-    """enum pour les états de clique"""
-    LACHER = 0
-    VIEN_LACHER = 1
-    PRESSER = 2
-    VIEN_PRESSER = 3
 
 
 class Peripherique:
     """classe de base pour les périphériques (clavier, souris, manette, etc.)"""
+
+    LACHER = 0
+    VIEN_LACHER = 1
+    PRESSER = 2
+    VIEN_PRESSER = 3
 
     CLICK_NAMES = [
         "lacher",
@@ -45,16 +41,17 @@ class Peripherique:
     def lacher_tout(self):
         """met toute les touches a lacher"""
         for clee, value in self.dict_touches.items():
-            if value != 0:
-                self.dict_touches[clee] = 1
+            if value != self.LACHER:
+                self.dict_touches[clee] = self.LACHER
 
     def update_all_key(self):
         """actualise toute les touches"""
         clee_a_supprimer = []
         for clee, touche in self.dict_touches.items():
-            if touche == 4:
-                self.dict_touches[clee] = 3
-            elif touche <= 1:
+            print(clee, touche)
+            if touche == self.VIEN_PRESSER:
+                self.dict_touches[clee] = self.PRESSER
+            elif touche <= self.VIEN_LACHER:
                 clee_a_supprimer.append(clee)
         for clee in clee_a_supprimer:
             del self.dict_touches[clee]
@@ -71,7 +68,7 @@ class Peripherique:
         if clee in self.dict_touches:
             return self.dict_touches[clee]
         else:
-            return 0
+            return self.LACHER
 
     def set_pression(self, clee: int, value: Literal[3, 2, 1, 0]) -> None:
         """change la pression d'une touche

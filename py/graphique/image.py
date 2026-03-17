@@ -1,5 +1,6 @@
 """module pour gérer les images"""
 
+from typing import Union
 import pygame
 
 from py.graphique.graphique import screen
@@ -15,7 +16,9 @@ class Image:
     """
 
     def __init__(
-        self, texture: str | pygame.Surface | "Image", ancre: tuple[int, int] = None
+        self,
+        texture: Union[str, pygame.Surface, "Image"],
+        ancre: tuple[int, int] = None,
     ):
         if ancre is None:
             ancre = (0, 0)

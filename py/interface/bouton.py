@@ -30,11 +30,13 @@ class Bouton(ObjetGraphique, ElementInterface):
         taille: tuple[int, int],
         mode: str = "clique",
         parent: ElementInterface = None,
+        action: callable = None,
     ):
         """initialise le bouton"""
         ObjetGraphique.__init__(self, coordonnee, textures, taille)
         ElementInterface.__init__(self, coordonnee, taille, False, parent)
         self.mode = mode
+        self.action = action
         self.__actif = False
         self.__clique = False
         self.__survol = False
@@ -108,10 +110,11 @@ class BoutonRedimentionable(Bouton, ElementInterface):
         mode: str = "clique",
         auto_taille: bool = False,
         parent: ElementInterface = None,
+        action: callable = None,
     ):
         """initialise le bouton redimentionable"""
         self.intial_texture = textures
-        super().__init__(coordonnee, textures, taille, mode, parent)
+        super().__init__(coordonnee, textures, taille, mode, parent, action)
         ElementInterface.__init__(self, coordonnee, taille, auto_taille, parent)
 
     def actualise_taille(self) -> None:
@@ -151,7 +154,7 @@ class BoutonText(BoutonRedimentionable):
         parent: ElementInterface = None,
     ):
         """initialise le bouton text"""
-        super().__init__(coordonnee, textures, taille, mode, auto_taille, parent)
+        super().__init__(coordonnee, textures, taille, mode, auto_taille, parent, action=None)
         self.textes = textes
         self.color_text = color_text
         self.text_mode = text_mode

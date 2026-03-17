@@ -19,7 +19,7 @@ def actualise_event(clavier: Clavier, souris: Souris) -> set[str]:
     return set["quitter","redimentione"]
     """
     event_autre = set()
-    souris.actualise_all_clique()
+    souris.update_all_key()
     clavier.update_all_key()
 
     for event in pygame.event.get():
@@ -32,16 +32,16 @@ def actualise_event(clavier: Clavier, souris: Souris) -> set[str]:
             event_autre.add("redimentione")
 
         elif event.type == pygame.KEYDOWN:
-            clavier.set_pression(event.key, "vien_presser")
+            clavier.set_pression(event.key, clavier.VIEN_PRESSER)
 
         elif event.type == pygame.KEYUP:
-            clavier.set_pression(event.key, "vien_lacher")
+            clavier.set_pression(event.key, clavier.VIEN_LACHER)
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            souris.set_pression(event.button, "vien_presser")
+            souris.set_pression(event.button, souris.VIEN_PRESSER)
 
         elif event.type == pygame.MOUSEBUTTONUP:
-            souris.set_pression(event.button, "vien_lacher")
+            souris.set_pression(event.button, souris.VIEN_LACHER)
         # if event.type not in (pygame.MOUSEMOTION, pygame.FINGERMOTION):
         #     print(event)
 
