@@ -10,19 +10,24 @@ et 2 dictionnaire:
 """
 
 from typing import Literal
+import enum
 
 import pygame
 
 
-class Peripherique:
-    """classe de base pour les périphériques (clavier, souris, manette, etc.)"""
+class ClickState(enum.IntEnum):
+    """enum pour les états de clique"""
 
     LACHER = 0
     VIEN_LACHER = 1
     PRESSER = 2
     VIEN_PRESSER = 3
 
-    CLICK_NAMES = [
+
+class Peripherique:
+    """classe de base pour les périphériques (clavier, souris, manette, etc.)"""
+
+    CLICK_STATUT = [
         "lacher",
         "vien_lacher",
         "presser",
@@ -41,17 +46,17 @@ class Peripherique:
     def lacher_tout(self):
         """met toute les touches a lacher"""
         for clee, value in self.dict_touches.items():
-            if value != self.LACHER:
-                self.dict_touches[clee] = self.LACHER
+            if value != ClickState.LACHER:
+                self.dict_touches[clee] = ClickState.LACHER
 
     def update_all_key(self):
         """actualise toute les touches"""
         clee_a_supprimer = []
         for clee, touche in self.dict_touches.items():
-            print(clee, touche)
-            if touche == self.VIEN_PRESSER:
-                self.dict_touches[clee] = self.PRESSER
-            elif touche <= self.VIEN_LACHER:
+            print(f"update_all_key: {clee} : {self.CLICK_STATUT[touche]}")
+            if touche == ClickState.VIEN_PRESSER:
+                self.dict_touches[clee] = ClickState.PRESSER
+            elif touche <= ClickState.VIEN_LACHER:
                 clee_a_supprimer.append(clee)
         for clee in clee_a_supprimer:
             del self.dict_touches[clee]
@@ -68,9 +73,9 @@ class Peripherique:
         if clee in self.dict_touches:
             return self.dict_touches[clee]
         else:
-            return self.LACHER
+            return ClickState.LACHER
 
-    def set_pression(self, clee: int, value: Literal[3, 2, 1, 0]) -> None:
+    def set_pression(self, clee: int, value: Literal[3, 2, 1, 0] | ClickState) -> None:
         """change la pression d'une touche
         args:
             clee (int): est la clee de la touche
@@ -85,7 +90,7 @@ class Peripherique:
     def __str__(self) -> str:
         res = "-{"
         for clee, value in self.dict_touches.items():
-            res += f"{clee}:{self.CLICK_NAMES[value]},"
+            res += f"{clee}:{self.CLICK_STATUT[value]},"
         res += "}-"
         return res
 

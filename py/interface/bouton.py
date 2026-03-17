@@ -95,6 +95,11 @@ class Bouton(ObjetGraphique, ElementInterface):
         """get l'etat du bouton"""
         return self.__survol
 
+    def play_action(self):
+        """permet de passer l'action du bouton"""
+        if self.action is not None:
+            self.action()
+
 
 class BoutonRedimentionable(Bouton, ElementInterface):
     """BoutonRedimentionable est un bouton qui peut être redimentionable
@@ -154,7 +159,9 @@ class BoutonText(BoutonRedimentionable):
         parent: ElementInterface = None,
     ):
         """initialise le bouton text"""
-        super().__init__(coordonnee, textures, taille, mode, auto_taille, parent, action=None)
+        super().__init__(
+            coordonnee, textures, taille, mode, auto_taille, parent, action=None
+        )
         self.textes = textes
         self.color_text = color_text
         self.text_mode = text_mode
@@ -171,3 +178,22 @@ class BoutonText(BoutonRedimentionable):
                 self.police,
                 self.text_mode,
             )
+
+
+def get_callable(fn, *args, **kwargs) -> callable:
+    """get une fonction avec des arguments
+
+    Args:
+        fn (callable): est la fonction a appeler
+        *args: sont les arguments de la fonction sous forme de tuple
+        **kwargs: sont les arguments de la fonction sous forme de dictionnaire
+
+
+    Returns:
+        callable: est la fonction avec les arguments
+    """
+
+    def runner():
+        return fn(*args, **kwargs)
+
+    return runner

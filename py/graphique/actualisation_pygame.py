@@ -10,7 +10,7 @@ il y a 3 fonctions:
 import pygame
 
 from py.graphique.graphique import screen
-from py.interface.class_clavier import Clavier, Souris
+from py.interface.class_clavier import Clavier, Souris, ClickState
 
 
 def actualise_event(clavier: Clavier, souris: Souris) -> set[str]:
@@ -32,16 +32,16 @@ def actualise_event(clavier: Clavier, souris: Souris) -> set[str]:
             event_autre.add("redimentione")
 
         elif event.type == pygame.KEYDOWN:
-            clavier.set_pression(event.key, clavier.VIEN_PRESSER)
+            clavier.set_pression(event.key, ClickState.VIEN_PRESSER)
 
         elif event.type == pygame.KEYUP:
-            clavier.set_pression(event.key, clavier.VIEN_LACHER)
+            clavier.set_pression(event.key, ClickState.VIEN_LACHER)
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            souris.set_pression(event.button, souris.VIEN_PRESSER)
+            souris.set_pression(event.button, ClickState.VIEN_PRESSER)
 
         elif event.type == pygame.MOUSEBUTTONUP:
-            souris.set_pression(event.button, souris.VIEN_LACHER)
+            souris.set_pression(event.button, ClickState.VIEN_LACHER)
         # if event.type not in (pygame.MOUSEMOTION, pygame.FINGERMOTION):
         #     print(event)
 
