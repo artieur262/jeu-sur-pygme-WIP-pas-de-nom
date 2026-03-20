@@ -9,8 +9,9 @@ il contient les classes:
 """
 
 import pygame
-from py.graphique.graphique import screen
-from py.graphique.image import Image
+
+# from py.graphique.graphique import screen
+# from py.graphique.image import Image
 from py.objet.objet_visuel import ObjetVisuel3D, ObjetVisuel2D
 
 
@@ -23,33 +24,10 @@ class ObjetUnicolor2D(ObjetVisuel2D):
     def __init__(
         self, coordonnee: list, taille: tuple[int, int], couleur: tuple[int, int, int]
     ):
-        super().__init__(coordonnee, taille)
+        surface = pygame.Surface(taille)
+        surface.fill(couleur)
         self.couleur = couleur
-        self.surface = pygame.Surface(taille)
-        self.surface.fill(couleur)
-
-    def afficher(
-        self,
-        decalage: tuple[int, int] = None,
-        surface: pygame.Surface = None,
-    ) -> bool:
-        """permet de l'affiché sur la sur une surface et de savoir si il est affiché
-
-        Args:
-            decalage (tuple[int, int], optional): est le decalage de l'objet. Defaults to None.
-            surface (pygame.Surface, optional): est la surface sur laquel afficher. Defaults None.
-
-        Returns:
-            bool: si l'objet est affiché
-        """
-        if surface is None:
-            surface = screen
-        if decalage is None:
-            decalage = (0, 0)
-        surface.blit(
-            self.surface,
-            (self.coordonnee[0] + decalage[0], self.coordonnee[1] + decalage[1]),
-        )
+        super().__init__(coordonnee, taille, surface)
 
 
 class ObjetUnicolor3D(ObjetVisuel3D):
@@ -66,12 +44,12 @@ class ObjetUnicolor3D(ObjetVisuel3D):
     ):
         """initialise le bouton"""
         face_graphique = [
-            Image(pygame.Surface((taille[1], taille[2]), pygame.SRCALPHA)),
-            Image(pygame.Surface((taille[0], taille[2]), pygame.SRCALPHA)),
-            Image(pygame.Surface((taille[0], taille[1]), pygame.SRCALPHA)),
+            pygame.Surface((taille[1], taille[2]), pygame.SRCALPHA),
+            pygame.Surface((taille[0], taille[2]), pygame.SRCALPHA),
+            pygame.Surface((taille[0], taille[1]), pygame.SRCALPHA),
         ]
         for i in face_graphique:
-            i.texture.fill(couleur)
+            i.fill(couleur)
         super().__init__(coordonnee, taille, face_graphique)
         self.couleur = couleur
 

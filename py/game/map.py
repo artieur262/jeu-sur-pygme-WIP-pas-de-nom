@@ -4,7 +4,7 @@ from py.autre.operateur import Operateur
 if TYPE_CHECKING:
     from py.game.game import Game
     from py.block.playeur import Playeur
-    from py.block.plateforme import Plateforme
+    from py.block.poussable import Poussable
     from py.block.activateur.activateur import Activateur
     from py.block.activable.activable import Activable
     from py.logique.bloc_logique import Logique
@@ -34,7 +34,7 @@ class Map:
         self.__logique: set["Logique"] = set()
         self.__activateur: set["Activateur"] = set()
         self.__activable: set["Activable"] = set()
-        self.__poussable: set = set()
+        self.__poussable: set["Poussable"] = set()
 
         self.__actualisable: set["Actualisable"] = set()
         self.__special: dict[tuple[int, int], list["Special"]] = dict()

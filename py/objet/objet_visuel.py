@@ -11,9 +11,9 @@ class ObjetVisuel2D(Zone2D):
     """
 
     def __init__(
-        self, coordonnee: list, taille: tuple[int, int], texutre: Image = None
+        self, coordonnee: list, taille: tuple[int, int], texture: Image = None
     ):
-        self.texture = texutre
+        self.texture = Image(texture)
         super().__init__(coordonnee, taille)
 
     def afficher(
@@ -62,7 +62,10 @@ class ObjetVisuel3D(Zone3D):
     ):
         """initialise le bouton"""
         super().__init__(coordonnee, taille)
-        self.face_graphique = face
+
+        self.face_graphique = []
+        for i in face:
+            self.face_graphique.append(Image(i))
 
     def afficher(
         self,

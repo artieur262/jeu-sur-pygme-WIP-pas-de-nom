@@ -1,6 +1,6 @@
 import pygame
 
-from py.interface.class_clavier import Clavier, Souris
+from py.interface.class_clavier import Clavier, Souris, ClickState
 from py.graphique.graphique import screen
 from py.graphique.actualisation_pygame import actualise_event, change_fullscreen
 from py.game.map import Map
@@ -75,13 +75,13 @@ class Game:
         plan = self.__plan_actuel
         cla = self.clavier
         if not self.map.get_graviter():
-            if cla.get_pression(self.__touche["haut"]) == "presser":
+            if cla.get_pression(self.__touche["haut"]) >= ClickState.PRESSER:
                 self.deplacer_dans_plan((0, -2), plan)
-            if cla.get_pression(self.__touche["bas"]) == "presser":
+            if cla.get_pression(self.__touche["bas"]) >= ClickState.PRESSER:
                 self.deplacer_dans_plan((0, 2), plan)
-        if cla.get_pression(self.__touche["gauche"]) == "presser":
+        if cla.get_pression(self.__touche["gauche"]) >= ClickState.PRESSER:
             self.deplacer_dans_plan((-2, 0), plan)
-        if cla.get_pression(self.__touche["droite"]) == "presser":
+        if cla.get_pression(self.__touche["droite"]) >= ClickState.PRESSER:
             self.deplacer_dans_plan((2, 0), plan)
 
     def afficher(self) -> None:
@@ -95,11 +95,11 @@ class Game:
         """mode debug"""
         if self.debug:
             cla = self.clavier
-            if cla.get_pression(pygame.K_1) == "presser":
+            if cla.get_pression(pygame.K_1) >= ClickState.PRESSER:
                 self.set_plan(0)
-            if cla.get_pression(pygame.K_2) == "presser":
+            if cla.get_pression(pygame.K_2) >= ClickState.PRESSER:
                 self.set_plan(1)
-            if cla.get_pression(pygame.K_3) == "presser":
+            if cla.get_pression(pygame.K_3) >= ClickState.PRESSER:
                 self.set_plan(2)
 
     def run(self) -> None:
@@ -110,7 +110,10 @@ class Game:
                 self.__running = False
             if self.clavier.get_pression(pygame.K_F11) in event:
                 change_fullscreen()
-            if self.clavier.get_pression(self.__touche["debug"]) == "vien_presser":
+            if (
+                self.clavier.get_pression(self.__touche["debug"])
+                == ClickState.VIEN_PRESSER
+            ):
                 self.debug = True
             self.debug_mode()
             self.deplacer()

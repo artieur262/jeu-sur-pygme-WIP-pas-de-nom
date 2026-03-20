@@ -9,7 +9,6 @@ et 2 dictionnaire:
     - mouse_names : dictionnaire pour les noms des cliques de la souris
 """
 
-from typing import Literal
 import enum
 
 import pygame
@@ -35,7 +34,7 @@ class Peripherique:
     ]
 
     def __init__(self):
-        self.dict_touches: dict[int, int] = {}
+        self.dict_touches: dict[int, ClickState] = {}
 
     def reset(self):
         """reset la pression de toute les touches
@@ -53,7 +52,7 @@ class Peripherique:
         """actualise toute les touches"""
         clee_a_supprimer = []
         for clee, touche in self.dict_touches.items():
-            print(f"update_all_key: {clee} : {self.CLICK_STATUT[touche]}")
+            # print(f"update_all_key: {clee} : {self.CLICK_STATUT[touche]}")
             if touche == ClickState.VIEN_PRESSER:
                 self.dict_touches[clee] = ClickState.PRESSER
             elif touche <= ClickState.VIEN_LACHER:
@@ -61,29 +60,29 @@ class Peripherique:
         for clee in clee_a_supprimer:
             del self.dict_touches[clee]
 
-    def get_pression(self, clee: int) -> Literal[3, 2, 1, 0]:
+    def get_pression(self, clee: int) -> ClickState:
         """get la pression d'une touche
 
-        retrun : Literal[3, 2, 1, 0]
-            0 : lacher
-            1 : vien_lacher
-            2 : presser
-            3 : vien_presser
+        retrun : ClickState
+            ClickState.LACHER : 0 ou lacher
+            ClickState.VIEN_LACHER : 1 ou vien_lacher
+            ClickState.PRESSER : 2 ou presser
+            ClickState.VIEN_PRESSER : 3 ou vien_presser
         """
         if clee in self.dict_touches:
             return self.dict_touches[clee]
         else:
             return ClickState.LACHER
 
-    def set_pression(self, clee: int, value: Literal[3, 2, 1, 0] | ClickState) -> None:
+    def set_pression(self, clee: int, value: ClickState) -> None:
         """change la pression d'une touche
         args:
             clee (int): est la clee de la touche
-            value (Literal[3, 2, 1, 0]): est la nouvelle valeur de la touche
-                0 : lacher
-                1 : vien_lacher
-                2 : presser
-                3 : vien_presser
+            value (ClickState): est la nouvelle valeur de la touche
+                ClickState.LACHER : 0 ou lacher
+                ClickState.VIEN_LACHER : 1 ou vien_lacher
+                ClickState.PRESSER : 2 ou presser
+                ClickState.VIEN_PRESSER : 3 ou vien_presser
         """
         self.dict_touches[clee] = value
 

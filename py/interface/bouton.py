@@ -8,6 +8,8 @@ class :
 """
 
 from typing import TYPE_CHECKING
+import enum
+
 from py.graphique.objetGraphique import ObjetGraphique
 from py.graphique.graphique import place_texte_in_texture
 from py.interface.element_it import ElementInterface
@@ -15,6 +17,13 @@ from py.interface.element_it import ElementInterface
 
 if TYPE_CHECKING:
     import pygame
+
+
+class ModeBouton(enum.StrEnum):
+    """enum pour les modes de bouton"""
+
+    ON_OFF = "on/off"
+    CLIQUE = "clique"
 
 
 class Bouton(ObjetGraphique, ElementInterface):
@@ -28,7 +37,7 @@ class Bouton(ObjetGraphique, ElementInterface):
         coordonnee: list,
         textures: list[str],
         taille: tuple[int, int],
-        mode: str = "clique",
+        mode: ModeBouton = ModeBouton.CLIQUE,
         parent: ElementInterface = None,
         action: callable = None,
     ):
@@ -44,7 +53,7 @@ class Bouton(ObjetGraphique, ElementInterface):
     def actualise_taille(self):
         pass
 
-    def get_mode(self) -> str:
+    def get_mode(self) -> ModeBouton:
         """get le mode du bouton"""
         return self.mode
 
@@ -60,7 +69,7 @@ class Bouton(ObjetGraphique, ElementInterface):
     def actualise_animation(self) -> None:
         """actualise l'animation du bouton"""
         match self.mode:
-            case "on/off":
+            case ModeBouton.ON_OFF:
                 if self.__actif:
                     if self.__survol:
                         self.set_animation(3)
@@ -70,7 +79,7 @@ class Bouton(ObjetGraphique, ElementInterface):
                     self.set_animation(1)
                 else:
                     self.set_animation(0)
-            case "clique":
+            case ModeBouton.CLIQUE:
                 if self.__survol:
                     self.set_animation(1)
                 else:
@@ -112,7 +121,7 @@ class BoutonRedimentionable(Bouton, ElementInterface):
         coordonnee: list,
         textures: list[str],
         taille: tuple[int, int],
-        mode: str = "clique",
+        mode: ModeBouton = ModeBouton.CLIQUE,
         auto_taille: bool = False,
         parent: ElementInterface = None,
         action: callable = None,
@@ -154,7 +163,7 @@ class BoutonText(BoutonRedimentionable):
         text_police: "pygame.font.Font",
         color_text: tuple[int, int, int] | tuple[int | int | int | int] = None,
         text_mode: str = "center",
-        mode: str = "clique",
+        mode: ModeBouton = ModeBouton.CLIQUE,
         auto_taille: bool = False,
         parent: ElementInterface = None,
     ):
