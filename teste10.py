@@ -12,7 +12,7 @@ def main():
     print(type("Cat"))
 
     print(type(str | int))
-    print(Union[str, "Chaton"])
+    print(Union[str, "Cat"])
 
 
 if __name__ == "__main__":
