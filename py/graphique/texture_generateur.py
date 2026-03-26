@@ -14,12 +14,15 @@ class TextureGenerateur:
 
 
 def rectange_avec_bordure(
-    taille: tuple[int, int], couleur: tuple[int, int, int], bordure: int
+    taille: tuple[int, int],
+    couleur_fond: tuple[int, int, int],
+    couleur_bordure: tuple[int, int, int],
+    bordure: int,
 ):
     """Génère une texture de bordure"""
     surface = pygame.Surface(taille)
-    surface.fill((0, 0, 0))
-    pygame.draw.rect(surface, couleur, (0, 0, taille[0], taille[1]), bordure)
+    surface.fill(couleur_fond)
+    pygame.draw.rect(surface, couleur_bordure, (0, 0, taille[0], taille[1]), bordure)
     return surface
 
 

@@ -1,7 +1,7 @@
 import pygame
 from py.interface.class_clavier import Clavier, Souris
-from py.graphique.graphique import screen
-from py.graphique.actualisation_pygame import actualise_event, change_fullscreen
+# from py.graphique.graphique import screen
+# from py.graphique.actualisation_pygame import actualise_event, change_fullscreen
 from py.game.game import Game
 from py.block.plateforme import Plateforme
 from py.block.playeur import Playeur
