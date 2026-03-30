@@ -32,11 +32,11 @@ class Iframe(ObjetVisuel2D, Box):
 
     def actualise_graphique(self):
         """actualise la surface de l'iframe en fonction de ses elements"""
-        self.texture.texture.fill((0, 0, 0, 0))
+        self._texture.texture.fill((0, 0, 0, 0))
         for element in self._element:
             element.actualise_taille()
             element.afficher(
-                (-self.get_pos()[0], -self.get_pos()[1]), self.texture.texture
+                (-self.get_pos()[0], -self.get_pos()[1]), self._texture.texture
             )
 
     def afficher(
@@ -59,8 +59,8 @@ class Iframe(ObjetVisuel2D, Box):
             surface = pygame.display.get_surface()
         if self._auto_actualise:
             self.actualise_graphique()
-        if self.texture.if_in_zone((0, 0), (0, 0), surface.get_size()):
-            self.texture.afficher(
+        if self._texture.if_in_zone((0, 0), (0, 0), surface.get_size()):
+            self._texture.afficher(
                 (self.coordonnee[0] + decalage[0], self.coordonnee[1] + decalage[1]),
                 surface,
             )

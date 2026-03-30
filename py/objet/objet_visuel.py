@@ -25,7 +25,7 @@ class ObjetVisuel2D(Zone2D):
         ),
     ):
         super().__init__(coordonnee, taille)
-        self.texture = genere_image(texture)
+        self._texture = genere_image(texture)
 
     def afficher(
         self,
@@ -48,8 +48,8 @@ class ObjetVisuel2D(Zone2D):
         # Vérifie si l'objet est dans la surface
         pos_surface = (0, 0)
         taille_surface = surface.get_size()
-        if self.texture.if_in_zone(pos_surface, (0, 0), taille_surface):
-            self.texture.afficher(
+        if self._texture.if_in_zone(pos_surface, (0, 0), taille_surface):
+            self._texture.afficher(
                 (self.coordonnee[0] + decalage[0], self.coordonnee[1] + decalage[1]),
                 surface,
             )

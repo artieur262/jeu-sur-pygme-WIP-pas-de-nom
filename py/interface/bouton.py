@@ -179,7 +179,7 @@ class BoutonText(BoutonRedimentionable):
 
     def actualise_text(self) -> None:
         """actualise le texte du bouton"""
-        for texture in self.__textures:
+        for texture in self._textures:
             place_texte_in_texture(
                 texture.texture,
                 self.textes,

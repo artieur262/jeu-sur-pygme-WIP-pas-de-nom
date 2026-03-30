@@ -29,27 +29,28 @@ class ObjetGraphique(ObjetVisuel2D):
         taille: tuple[int, int],
         animation: int = 0,
     ):
-        self.__textures: list[Image] = []
+        self._textures: list[Image] = []
         textures = [genere_image(i) for i in textures]
         super().__init__(coordonnee, taille, textures[0])
+        self._textures = textures
         self.animation = animation
 
     def set_texture(
         self, texture: list[str | pygame.Surface | Image | tuple[str | tuple[int, int]]]
     ):
         """set la texture de l'objet graphique"""
-        self.__textures = []
+        self._textures = []
         for i in texture:
             if isinstance(i, Image):
-                self.__textures.append(i)
+                self._textures.append(i)
             else:
-                self.__textures.append(Image(i))
-        if self.animation >= len(self.__textures):
+                self._textures.append(Image(i))
+        if self.animation >= len(self._textures):
             self.animation = 0
 
     def image_actuel(self) -> Image:
         """get la texture de l'objet graphique"""
-        return self.__textures[self.animation]
+        return self._textures[self.animation]
 
     def get_animation(self) -> int:
         """get l'animation de l'objet graphique"""
@@ -67,7 +68,7 @@ class ObjetGraphique(ObjetVisuel2D):
 
     def redimentione_all_image(self, taille: tuple[int]):
         """redimentionne toute les images"""
-        for image in self.__textures:
+        for image in self._textures:
             image.redimentione(taille)
 
     def afficher(
@@ -87,7 +88,7 @@ class ObjetGraphique(ObjetVisuel2D):
             decalage = (0, 0)
         # print(self.animation)
         if self.imgage_dans_surface(decalage, surface.get_size()):
-            self.__textures[self.animation].afficher(
+            self._textures[self.animation].afficher(
                 (self.coordonnee[0] - decalage[0], self.coordonnee[1] - decalage[1]),
                 surface,
             )
