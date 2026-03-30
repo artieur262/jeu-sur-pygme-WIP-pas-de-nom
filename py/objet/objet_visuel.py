@@ -1,6 +1,8 @@
 import pygame
 
 from py.graphique.image import Image
+from py.graphique.texture_generateur import TextureGenerateur
+from py.graphique.builder_image import genere_image
 from py.objet.zone import Zone2D, Zone3D
 
 
@@ -11,10 +13,19 @@ class ObjetVisuel2D(Zone2D):
     """
 
     def __init__(
-        self, coordonnee: list, taille: tuple[int, int], texture: Image = None
+        self,
+        coordonnee: list,
+        taille: tuple[int, int],
+        texture: (
+            Image
+            | str
+            | tuple[str, tuple[int, int]]
+            | pygame.Surface
+            | TextureGenerateur
+        ),
     ):
-        self.texture = Image(texture)
         super().__init__(coordonnee, taille)
+        self.texture = genere_image(texture)
 
     def afficher(
         self,
@@ -58,14 +69,16 @@ class ObjetVisuel3D(Zone3D):
         self,
         coordonnee: list[int],
         taille: tuple[int, int, int],
-        face: tuple[Image, Image, Image],
+        face: tuple[
+            Image | str | TextureGenerateur | pygame.Surface,
+            Image | str | TextureGenerateur | pygame.Surface,
+            Image | str | TextureGenerateur | pygame.Surface,
+        ],
     ):
         """initialise le bouton"""
         super().__init__(coordonnee, taille)
 
-        self.face_graphique = []
-        for i in face:
-            self.face_graphique.append(Image(i))
+        self.face_graphique = tuple(genere_image(f) for f in face)
 
     def afficher(
         self,

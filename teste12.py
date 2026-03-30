@@ -9,9 +9,10 @@ if __name__ == "__main__":
     souris = Souris()
     clavier = Clavier()
     texture_gen = TextureGenerateur(
-        FONCTIONS["rectange_avec_bordure"], (255, 0, 0), (0, 255, 0), 5
+        FONCTIONS["cercle_avec_bordure"], (255, 0, 0), (0, 255, 0), 5
     )
     texture = texture_gen.generer_texture((200, 200))
+
     while "quitter" not in event:
         event = actualise_event(clavier, souris)
         if "redimentione" in event:

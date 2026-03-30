@@ -1,9 +1,12 @@
 """module pour gérer les images"""
 
-from typing import Union
+from typing import Union, TYPE_CHECKING
 import pygame
 
 from py.graphique.graphique import screen
+
+if TYPE_CHECKING:
+    from py.graphique.texture_generateur import TextureGenerateur
 
 
 class Image:
@@ -96,30 +99,3 @@ class Image:
         image.afficher(
             (position[0] + self.ancre[0], position[1] + self.ancre[1]), self.texture
         )
-
-    @staticmethod
-    def genere_list_image(
-        entre: list[str | tuple[str | tuple[int, int]]],
-    ) -> list["Image"]:
-        """genere une list d'image a partir d'une list de str ou de tuple
-        Args:
-            entre (list): list de str ou de tuple
-        Returns:
-            list[Image]: list d'image
-        """
-        if isinstance(entre, list | tuple):
-            sortie = []
-            for i in entre:
-                if isinstance(i, str):
-                    sortie.append(Image(i))
-                elif isinstance(i, tuple):
-                    sortie.append(Image(i[0], i[1]))
-                elif isinstance(i, pygame.Surface):
-                    sortie.append(Image(i))
-                elif isinstance(i, Image):
-                    sortie.append(i)
-        else:
-            raise ValueError("entre doit être une list")
-        if isinstance(entre, tuple):
-            return tuple(sortie)
-        return sortie

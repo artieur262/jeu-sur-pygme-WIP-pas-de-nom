@@ -6,6 +6,8 @@ import pygame
 
 from py.objet.objet_visuel import ObjetVisuel2D
 from py.graphique.image import Image
+from py.graphique.texture_generateur import TextureGenerateur
+from py.graphique.builder_image import genere_image
 
 
 class ObjetGraphique(ObjetVisuel2D):
@@ -17,37 +19,37 @@ class ObjetGraphique(ObjetVisuel2D):
     def __init__(
         self,
         coordonnee: list,
-        textures: list[str | pygame.Surface | Image | tuple[str | tuple[int, int]]],
+        textures: list[
+            str
+            | pygame.Surface
+            | Image
+            | tuple[str | tuple[int, int]]
+            | TextureGenerateur
+        ],
         taille: tuple[int, int],
         animation: int = 0,
     ):
-        self.texture: list[Image] = []
-        for i in textures:
-            if isinstance(i, Image):
-                self.texture.append(i)
-            else:
-                self.texture.append(Image(i))
-        texture = self.texture
-        super().__init__(coordonnee, taille, texture[0])
-        self.texture = texture
+        self.__textures: list[Image] = []
+        textures = [genere_image(i) for i in textures]
+        super().__init__(coordonnee, taille, textures[0])
         self.animation = animation
 
     def set_texture(
         self, texture: list[str | pygame.Surface | Image | tuple[str | tuple[int, int]]]
     ):
         """set la texture de l'objet graphique"""
-        self.texture = []
+        self.__textures = []
         for i in texture:
             if isinstance(i, Image):
-                self.texture.append(i)
+                self.__textures.append(i)
             else:
-                self.texture.append(Image(i))
-        if self.animation >= len(self.texture):
+                self.__textures.append(Image(i))
+        if self.animation >= len(self.__textures):
             self.animation = 0
 
     def image_actuel(self) -> Image:
         """get la texture de l'objet graphique"""
-        return self.texture[self.animation]
+        return self.__textures[self.animation]
 
     def get_animation(self) -> int:
         """get l'animation de l'objet graphique"""
@@ -65,7 +67,7 @@ class ObjetGraphique(ObjetVisuel2D):
 
     def redimentione_all_image(self, taille: tuple[int]):
         """redimentionne toute les images"""
-        for image in self.texture:
+        for image in self.__textures:
             image.redimentione(taille)
 
     def afficher(
@@ -85,7 +87,7 @@ class ObjetGraphique(ObjetVisuel2D):
             decalage = (0, 0)
         # print(self.animation)
         if self.imgage_dans_surface(decalage, surface.get_size()):
-            self.texture[self.animation].afficher(
+            self.__textures[self.animation].afficher(
                 (self.coordonnee[0] - decalage[0], self.coordonnee[1] - decalage[1]),
                 surface,
             )

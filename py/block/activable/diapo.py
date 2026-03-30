@@ -1,7 +1,18 @@
+"""
+Ce module contient la classe Diapo qui est une zone qui a pour but d'être affiché sur une surface
+son but est de changer d'image en fonction d'une entree logique
+il contient les classes:
+- Diapo
+- DiapoBoucle
+- DiapoAllerRetour
+- DiapoFin
+"""
+
 from typing import TYPE_CHECKING
 from py.block.activable.activable import Activable
 from py.objet.objet_visuel import ObjetVisuel3D
 from py.graphique.image import Image
+from py.graphique.builder_image import genere_image
 
 
 if TYPE_CHECKING:
@@ -31,7 +42,7 @@ class Diapo(Activable, ObjetVisuel3D):
             self, coordonnee, taille, [img[0] for img in texture_pack]
         )
         self._texture_pack = [
-            Image.genere_list_image(texture) for texture in texture_pack
+            (genere_image(i) for i in texture) for texture in texture_pack
         ]
         self._entre: str = entre
         self._index_texture: int = 0

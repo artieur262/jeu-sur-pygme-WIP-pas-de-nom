@@ -35,6 +35,9 @@ def main():
     ab2.executer(42)
     if a1 in dict_fonc.values():
         print("a1 est dans dict_fonc")
+    print("dict_fonc: ", dict_fonc.values())
+    print("a1: ", a1.__name__)
+    print("b2: ", b2.__name__)
 
 
 if __name__ == "__main__":
