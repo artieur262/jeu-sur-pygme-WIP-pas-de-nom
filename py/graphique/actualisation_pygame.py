@@ -7,16 +7,25 @@ il y a 3 fonctions:
     - change_fullscreen : change le mode plein écran"""
 
 # pylint: disable=no-member
+from enum import StrEnum
 import pygame
+
 
 from py.graphique.graphique import screen
 from py.interface.class_clavier import Clavier, Souris, ClickState
 
 
-def actualise_event(clavier: Clavier, souris: Souris) -> set[str]:
+class Event(StrEnum):
+    """enum pour les événement autre que les touches et les cliques"""
+
+    QUITTER = "quitter"
+    REDIMENTIONE = "redimentione"
+
+
+def actualise_event(clavier: Clavier, souris: Souris) -> set[Event]:
     """actualise les événement et retourne les événement autre que les touches et les cliques
 
-    return set["quitter","redimentione"]
+    return set[Event]: les événement autre que les touches et les cliques
     """
     event_autre = set()
     souris.update_all_key()
@@ -24,12 +33,12 @@ def actualise_event(clavier: Clavier, souris: Souris) -> set[str]:
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            event_autre.add("quitter")
+            event_autre.add(Event.QUITTER)
         elif event.type in (
             pygame.VIDEORESIZE,
             pygame.WINDOWSIZECHANGED,
         ):
-            event_autre.add("redimentione")
+            event_autre.add(Event.REDIMENTIONE)
 
         elif event.type == pygame.KEYDOWN:
             clavier.set_pression(event.key, ClickState.VIEN_PRESSER)
