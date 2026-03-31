@@ -88,7 +88,7 @@ class ObjetGraphique(ObjetVisuel2D):
         if decalage is None:
             decalage = (0, 0)
         # print(self.animation)
-        print(surface)
+        # print(surface)
         if self.imgage_dans_surface(decalage, surface.get_size()):
             self._textures[self.animation].afficher(
                 (self.coordonnee[0] - decalage[0], self.coordonnee[1] - decalage[1]),

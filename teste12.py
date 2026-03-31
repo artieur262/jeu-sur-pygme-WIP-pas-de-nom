@@ -57,6 +57,15 @@ def main2():
             print("redimentione")
         if clavier.get_pression(pygame.K_f) == 1:
             change_fullscreen()
+        if bouton.point_dans_objet(souris.get_pos()):
+            if souris.get_pression(1) >= 1:
+                print("clique")
+                bouton.set_animation(2)
+            else:
+                print("hover")
+                bouton.set_animation(1)
+        else:
+            bouton.set_animation(0)
         screen.fill((0, 0, 0))
         bouton.afficher()
         pygame.display.flip()
