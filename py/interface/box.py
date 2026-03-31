@@ -56,11 +56,13 @@ class Box(ElementInterface):
         self._element.remove(element)
         element.set_parent(None)
 
+    def get_element(self) -> list[ElementInterface]:
+        """get les element de la box"""
+        return self._element
+
     def actualise_taille(self) -> None:
         """actualise la taille de la box en fonction de ses element"""
-        raise NotImplementedError(
-            "Cette méthode doit être implémentée par les sous-classes."
-        )
+        pass  # pylint: disable=unnecessary-pass
 
     def afficher(
         self,
