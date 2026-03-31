@@ -7,6 +7,7 @@ import pygame
 from py.objet.objet_visuel import ObjetVisuel2D
 from py.graphique.image import Image
 from py.graphique.texture_generateur import TextureGenerateur
+from py.graphique.actualisation_pygame import screen
 from py.graphique.builder_image import genere_image
 
 
@@ -74,7 +75,7 @@ class ObjetGraphique(ObjetVisuel2D):
     def afficher(
         self,
         decalage: tuple[int, int] = None,
-        surface: pygame.Surface = None,
+        surface: pygame.Surface = screen,
     ) -> bool:
         """permet de l'affiché sur la sur une surface et de savoir si il est affiché
 
@@ -87,6 +88,7 @@ class ObjetGraphique(ObjetVisuel2D):
         if decalage is None:
             decalage = (0, 0)
         # print(self.animation)
+        print(surface)
         if self.imgage_dans_surface(decalage, surface.get_size()):
             self._textures[self.animation].afficher(
                 (self.coordonnee[0] - decalage[0], self.coordonnee[1] - decalage[1]),

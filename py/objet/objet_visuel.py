@@ -24,7 +24,7 @@ class ObjetVisuel2D(Zone2D):
             | TextureGenerateur
         ),
     ):
-        super().__init__(coordonnee, taille)
+        Zone2D.__init__(self, coordonnee, taille)
         self._texture = genere_image(texture, taille)
 
     def afficher(
@@ -76,7 +76,7 @@ class ObjetVisuel3D(Zone3D):
         ],
     ):
         """initialise le bouton"""
-        super().__init__(coordonnee, taille)
+        Zone3D.__init__(self, coordonnee, taille)
         taille_face = (
             (taille[1], taille[2]),
             (taille[0], taille[2]),

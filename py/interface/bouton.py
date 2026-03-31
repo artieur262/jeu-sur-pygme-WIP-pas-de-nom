@@ -43,9 +43,8 @@ class Bouton(ObjetGraphique, ElementInterface):
         action: callable = None,
     ):
         """initialise le bouton"""
-        super(ObjetGraphique, self).__init__(coordonnee, textures, taille)
-        print("cat")
-        super(ElementInterface).__init__(coordonnee, taille, False, parent)
+        ObjetGraphique.__init__(self, coordonnee, textures, taille)
+        ElementInterface.__init__(self, coordonnee, taille, False, parent)
         self.mode = mode
         self.action = action
         self.__actif = False
