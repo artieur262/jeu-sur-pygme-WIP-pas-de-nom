@@ -1,15 +1,13 @@
-from typing import TYPE_CHECKING
+import pygame
 from py.objet.zone import Zone2D
-
-if TYPE_CHECKING:
-    import pygame
 
 
 class ElementInterface(Zone2D):
     """Interface pour les éléments interactifs.
 
     args:
-        taille_auto (bool): indique si la taille de l'élément doit être automatiquement ajustée en fonction de son contenu.
+        taille_auto (bool): indique si la taille de l'élément doit être automatiquement ajustée
+            en fonction de son contenu.
         parent (ElementInterface, optional): est l'interface parente. Defaults to None.
     """
 
@@ -44,7 +42,7 @@ class ElementInterface(Zone2D):
         )
 
     def afficher(
-        self, decalage: tuple[int, int] = None, surface: "pygame.Surface" | None = None
+        self, decalage: tuple[int, int] = None, surface: pygame.Surface | None = None
     ) -> None:
         """affiche l'interface sur la surface donnée
 

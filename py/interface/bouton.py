@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING
 import enum
 
 from py.graphique.objetGraphique import ObjetGraphique
+from py.graphique.image import Image
 from py.graphique.graphique import place_texte_in_texture
 from py.interface.element_it import ElementInterface
 
@@ -35,15 +36,16 @@ class Bouton(ObjetGraphique, ElementInterface):
     def __init__(
         self,
         coordonnee: list,
-        textures: list[str],
+        textures: list[Image],
         taille: tuple[int, int],
         mode: ModeBouton = ModeBouton.CLIQUE,
         parent: ElementInterface = None,
         action: callable = None,
     ):
         """initialise le bouton"""
-        ObjetGraphique.__init__(self, coordonnee, textures, taille)
-        ElementInterface.__init__(self, coordonnee, taille, False, parent)
+        super(ObjetGraphique, self).__init__(coordonnee, textures, taille)
+        print("cat")
+        super(ElementInterface).__init__(coordonnee, taille, False, parent)
         self.mode = mode
         self.action = action
         self.__actif = False
@@ -119,7 +121,7 @@ class BoutonRedimentionable(Bouton, ElementInterface):
     def __init__(
         self,
         coordonnee: list,
-        textures: list[str],
+        textures: list[Image],
         taille: tuple[int, int],
         mode: ModeBouton = ModeBouton.CLIQUE,
         auto_taille: bool = False,
@@ -157,7 +159,7 @@ class BoutonText(BoutonRedimentionable):
     def __init__(
         self,
         coordonnee: list,
-        textures: list[str],
+        textures: list[Image],
         taille: tuple[int, int],
         textes: str,
         text_police: "pygame.font.Font",

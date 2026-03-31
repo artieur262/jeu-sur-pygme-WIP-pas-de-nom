@@ -30,7 +30,7 @@ class ObjetGraphique(ObjetVisuel2D):
         animation: int = 0,
     ):
         self._textures: list[Image] = []
-        textures = [genere_image(i) for i in textures]
+        textures = [genere_image(i, taille) for i in textures]
         super().__init__(coordonnee, taille, textures[0])
         self._textures = textures
         self.animation = animation

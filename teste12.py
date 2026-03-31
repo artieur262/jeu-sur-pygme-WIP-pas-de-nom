@@ -3,8 +3,11 @@ import pygame
 from py.graphique.texture_generateur import FONCTIONS, TextureGenerateur
 from py.graphique.actualisation_pygame import actualise_event, change_fullscreen, screen
 from py.interface.class_clavier import Clavier, Souris
+from py.interface.bouton import Bouton, ModeBouton
 
-if __name__ == "__main__":
+
+def main1():
+    """test pour la classe TextureGenerateur"""
     event = {}
     souris = Souris()
     clavier = Clavier()
@@ -24,3 +27,42 @@ if __name__ == "__main__":
         pygame.display.flip()
     pygame.quit()
     exit()
+
+
+def main2():
+    """test pour la classe TextureGenerateur"""
+    event = {}
+    souris = Souris()
+    clavier = Clavier()
+    bouton = Bouton(
+        [100, 100],
+        [
+            TextureGenerateur(
+                FONCTIONS["rectange_avec_bordure"], (255, 0, 0), (125, 0, 0), 5
+            ),
+            TextureGenerateur(
+                FONCTIONS["rectange_avec_bordure"], (0, 255, 0), (0, 125, 0), 5
+            ),
+            TextureGenerateur(
+                FONCTIONS["rectange_avec_bordure"], (0, 0, 255), (0, 0, 125), 5
+            ),
+        ],
+        (200, 50),
+        ModeBouton.CLIQUE,
+    )
+
+    while "quitter" not in event:
+        event = actualise_event(clavier, souris)
+        if "redimentione" in event:
+            print("redimentione")
+        if clavier.get_pression(pygame.K_f) == 1:
+            change_fullscreen()
+        screen.fill((0, 0, 0))
+        bouton.afficher()
+        pygame.display.flip()
+    pygame.quit()
+    exit()
+
+
+if __name__ == "__main__":
+    main2()

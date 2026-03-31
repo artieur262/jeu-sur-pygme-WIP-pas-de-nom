@@ -25,7 +25,7 @@ class ObjetVisuel2D(Zone2D):
         ),
     ):
         super().__init__(coordonnee, taille)
-        self._texture = genere_image(texture)
+        self._texture = genere_image(texture, taille)
 
     def afficher(
         self,
@@ -77,8 +77,14 @@ class ObjetVisuel3D(Zone3D):
     ):
         """initialise le bouton"""
         super().__init__(coordonnee, taille)
-
-        self.face_graphique = tuple(genere_image(f) for f in face)
+        taille_face = (
+            (taille[1], taille[2]),
+            (taille[0], taille[2]),
+            (taille[0], taille[1]),
+        )
+        self.face_graphique = tuple(
+            genere_image(face[i], taille_face[i]) for i in range(3)
+        )
 
     def afficher(
         self,
