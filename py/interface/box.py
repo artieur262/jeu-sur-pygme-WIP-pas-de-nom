@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING
 
 # from py.objet.objet_visuel import ObjetVisuel2D
 from py.interface.element_it import ElementInterface
+from py.graphique.actualisation_pygame import screen
 
 if TYPE_CHECKING:
     import pygame
@@ -40,7 +41,9 @@ class Box(ElementInterface):
     def add_pos(self, valu: tuple[int, int]):
         """ajoute une position a l'objet"""
         super().add_pos(valu)
+        print(self._element)
         for i in self._element:
+            print("add pos", valu)
             i.add_pos(valu)
 
     def ajouter_element(self, element: ElementInterface) -> None:
@@ -60,7 +63,9 @@ class Box(ElementInterface):
         )
 
     def afficher(
-        self, decalage: tuple[int, int] = None, surface: "pygame.Surface" | None = None
+        self,
+        decalage: tuple[int, int] = None,
+        surface: "pygame.Surface" = screen,
     ) -> None:
         """affiche la grille sur la surface donnée
 

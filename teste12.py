@@ -4,7 +4,8 @@ from py.graphique.texture_generateur import FONCTIONS, TextureGenerateur
 from py.graphique.actualisation_pygame import actualise_event, change_fullscreen, screen
 from py.interface.class_clavier import Clavier, Souris
 from py.interface.bouton import Bouton, ModeBouton
-from py.objet.objet_visuel import ObjetVisuel2D
+from py.interface.box import Box
+from py.interface.visu_it import ObjetVisuel2DInterface
 
 
 def main1():
@@ -52,12 +53,31 @@ def main2():
         ModeBouton.CLIQUE,
     )
 
-    objet = ObjetVisuel2D(
-        (100, 100),
+    objet = ObjetVisuel2DInterface(
+        (200, 200),
         (200, 50),
         TextureGenerateur(FONCTIONS["rectange_full_couleur"], (125, 125, 125)),
     )
 
+    boite = Box((0, 0), (300, 300), [objet, bouton], False)
+    print(
+        "boite :",
+        boite.get_pos(),
+        "bouton :",
+        bouton.get_pos(),
+        "objet :",
+        objet.get_pos(),
+    )
+    boite.add_pos((-100, -100))
+
+    print(
+        "boite :",
+        boite.get_pos(),
+        "bouton :",
+        bouton.get_pos(),
+        "objet :",
+        objet.get_pos(),
+    )
     while "quitter" not in event:
         event = actualise_event(clavier, souris)
         if "redimentione" in event:
@@ -74,8 +94,7 @@ def main2():
         else:
             bouton.set_animation(0)
         screen.fill((0, 0, 0))
-        objet.afficher((-100, -100))
-        bouton.afficher()
+        boite.afficher()
         pygame.display.flip()
     pygame.quit()
     exit()

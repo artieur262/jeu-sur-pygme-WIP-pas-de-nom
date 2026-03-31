@@ -33,7 +33,13 @@ class ElementInterface(Zone2D):
 
     def set_parent(self, parent: "ElementInterface") -> None:
         """set l'interface parente de l'interface"""
+        if self._parent is None and parent is not None:
+            raise ValueError("L'interface a déjà un parent.")
         self._parent = parent
+
+    def retirer_parent(self) -> None:
+        """retire l'interface parente de l'interface"""
+        self._parent = None
 
     def actualise_taille(self) -> None:
         """actualise la taille de la box en fonction de ses element"""

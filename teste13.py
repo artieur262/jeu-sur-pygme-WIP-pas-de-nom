@@ -6,7 +6,8 @@ class A1:
 
 class B2(A1):
     def __init__(self, x, y, z):
-        # le super ne fonctionne pas dans ce cas, il faut appeler le constructeur de la classe parente directement
+        # le super ne fonctionne pas dans ce cas, il faut appeler le constructeur
+        #   de la classe parente directement
         # car sinon, le constructeur de C3 va écraser les attributs x et y de A1
         A1.__init__(self, x, y)
 
